@@ -37,7 +37,31 @@ useEffect(() => {
 
   return (
     <div className="container">
-      <img src="https://ipfs.io/ipfs/bafybeihkhckfk72hi77yrr3sf7leby5agmsq5cpdvel65vw43cb6bx2zb4" className="bg" />
+      <picture className="background">
+  {/* 🖥️ Ultra-wide / retina desktop */}
+  <source
+    media="(min-width: 1400px)"
+    srcSet="https://ipfs.io/ipfs/bafybeigxprm4pptl6cg2lysvocw6ocfnv66ygn7evtxjuadqayevzvun2m"
+  />
+
+  {/* 🖥️ Standard desktop */}
+  <source
+    media="(min-width: 768px)"
+    srcSet="https://ipfs.io/ipfs/bafybeihkhckfk72hi77yrr3sf7leby5agmsq5cpdvel65vw43cb6bx2zb4"
+  />
+
+  {/* ⚡ Tablet / fallback */}
+  <source
+    media="(min-width: 480px)"
+    srcSet="https://ipfs.io/ipfs/bafkreif6hlgr73cqxolmjh2mir4flvpi26apl2mvt53ra4gtav57ewltby"
+  />
+
+  {/* 📱 Mobile (DEFAULT + MOST IMPORTANT) */}
+  <img
+    src="https://ipfs.io/ipfs/bafkreiclut5bpexxx7bcjoe3fomtw2yqoys3ltt2tm3d4ldsfw2tn24lmm"
+    alt="background"
+  />
+</picture>
 
       <Character currentTab={tab} tabsRef={tabsRef} />
 
@@ -238,6 +262,27 @@ body {
 
 .dot.active {
   background:white;
+}
+.background {
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  z-index:0;
+  pointer-events:none;
+}
+
+.background img {
+  transform: scale(1.02);
+}
+
+.background::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  background: radial-gradient(circle at center, transparent 60%, rgba(0,0,0,0.4));
 }
 
 .background { z-index:0; }
