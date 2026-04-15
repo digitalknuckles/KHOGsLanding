@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Character from './components/Character';
 import Navigation from './components/Navigation';
 import NFTCard from './components/NFTCard';
