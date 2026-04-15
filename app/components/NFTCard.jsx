@@ -1,18 +1,49 @@
 'use client';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
-export default function NFTCard({ nft }) {
+export default function NFTCard({ nfts, activeIndex, setActiveIndex }) {
   const [open, setOpen] = useState(false);
+  const touchStartX = useRef(0);
 
-  if (!nft) {
-    return <div className="card show">No NFT Found</div>;
+  if (!nfts || nfts.length === 0) {
+    return <div className="card show">No NFTs Found</div>;
+  }
+
+  const nft = nfts[activeIndex];
+
+  function handleTouchStart(e) {
+    touchStartX.current = e.touches[0].clientX;
+  }
+
+  function handleTouchEnd(e) {
+    const delta = e.changedTouches[0].clientX - touchStartX.current;
+
+    if (delta > 50 && activeIndex > 0) {
+      setActiveIndex(activeIndex - 1);
+    } else if (delta < -50 && activeIndex < nfts.length - 1) {
+      setActiveIndex(activeIndex + 1);
+    }
   }
 
   return (
-    <div className="card show">
+    <div
+      className="card show"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       <img src={nft.image} className="nft-img" />
 
       <h3>{nft.name}</h3>
+
+      {/* Carousel indicators */}
+      <div className="dots">
+        {nfts.map((_, i) => (
+          <span
+            key={i}
+            className={i === activeIndex ? 'dot active' : 'dot'}
+          />
+        ))}
+      </div>
 
       <button className="dropdown" onClick={() => setOpen(!open)}>
         {open ? 'Hide Traits ▲' : 'Show Traits ▼'}
