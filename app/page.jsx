@@ -14,180 +14,188 @@ export default function Page() {
   const [nfts, setNfts] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  //For both single and plural fetch
-//export async function fetchNFT(address) {
- // const nfts = await fetchNFTs(address);
- // return nfts[0];
-//}
-  
-useEffect(() => {
-  if (tab === 3 && wallet) {
-    fetchNFTs(wallet).then(setNfts);
-  }
-}, [tab, wallet]);
-  
-  //useEffect(() => {
-  //if (tab === 3 && wallet) {
-    //fetchNFT(wallet).then(data => {
-    //  console.log("NFT:", data);
-     // setNft(data);
-    //});
- // }
-//}, [tab, wallet]);
+  // 🎯 Fetch NFTs when Profile tab active
+  useEffect(() => {
+    if (tab === 3 && wallet) {
+      fetchNFTs(wallet).then((data) => {
+        setNfts(data || []);
+        setActiveIndex(0); // reset carousel
+      });
+    }
+  }, [tab, wallet]);
+
+  // 🔒 HARD LOCK mobile gestures (pinch/zoom/scroll)
+  useEffect(() => {
+    const prevent = (e) => e.preventDefault();
+
+    document.addEventListener('gesturestart', prevent);
+    document.addEventListener('gesturechange', prevent);
+    document.addEventListener('gestureend', prevent);
+    document.addEventListener('touchmove', prevent, { passive: false });
+
+    return () => {
+      document.removeEventListener('gesturestart', prevent);
+      document.removeEventListener('gesturechange', prevent);
+      document.removeEventListener('gestureend', prevent);
+      document.removeEventListener('touchmove', prevent);
+    };
+  }, []);
 
   return (
     <div className="container">
+
+      {/* 🌄 RESPONSIVE BACKGROUND */}
       <picture className="background">
-  {/* 🖥️ Ultra-wide / retina desktop */}
-  <source
-    media="(min-width: 1400px)"
-    srcSet="https://ipfs.io/ipfs/bafybeigxprm4pptl6cg2lysvocw6ocfnv66ygn7evtxjuadqayevzvun2m"
-  />
+        <source
+          media="(min-width: 1400px)"
+          srcSet="https://ipfs.io/ipfs/bafybeigxprm4pptl6cg2lysvocw6ocfnv66ygn7evtxjuadqayevzvun2m"
+        />
+        <source
+          media="(min-width: 768px)"
+          srcSet="https://ipfs.io/ipfs/bafybeihkhckfk72hi77yrr3sf7leby5agmsq5cpdvel65vw43cb6bx2zb4"
+        />
+        <source
+          media="(min-width: 480px)"
+          srcSet="https://ipfs.io/ipfs/bafkreif6hlgr73cqxolmjh2mir4flvpi26apl2mvt53ra4gtav57ewltby"
+        />
+        <img
+          src="https://ipfs.io/ipfs/bafkreiclut5bpexxx7bcjoe3fomtw2yqoys3ltt2tm3d4ldsfw2tn24lmm"
+          alt="background"
+        />
+      </picture>
 
-  {/* 🖥️ Standard desktop */}
-  <source
-    media="(min-width: 768px)"
-    srcSet="https://ipfs.io/ipfs/bafybeihkhckfk72hi77yrr3sf7leby5agmsq5cpdvel65vw43cb6bx2zb4"
-  />
-
-  {/* ⚡ Tablet / fallback */}
-  <source
-    media="(min-width: 480px)"
-    srcSet="https://ipfs.io/ipfs/bafkreif6hlgr73cqxolmjh2mir4flvpi26apl2mvt53ra4gtav57ewltby"
-  />
-
-  {/* 📱 Mobile (DEFAULT + MOST IMPORTANT) */}
-  <img
-    src="https://ipfs.io/ipfs/bafkreiclut5bpexxx7bcjoe3fomtw2yqoys3ltt2tm3d4ldsfw2tn24lmm"
-    alt="background"
-  />
-</picture>
-
+      {/* 🎮 CHARACTER */}
       <Character currentTab={tab} tabsRef={tabsRef} />
 
+      {/* 🧭 NAV */}
       <Navigation
         setTab={setTab}
         tabsRef={tabsRef}
         activeTab={tab}
       />
 
-      <button className="wallet" onClick={() => connectWallet(setWallet)}>
-        {wallet ? wallet.slice(0,6) + '...' : 'Connect Wallet'}
+      {/* 🔗 WALLET */}
+      <button
+        className="wallet"
+        onClick={() => connectWallet(setWallet)}
+      >
+        {wallet
+          ? wallet.slice(0, 6) + '...' + wallet.slice(-4)
+          : 'Connect Wallet'}
       </button>
 
-      
+      {/* 🎠 NFT CARD */}
       {tab === 3 && (
-  <NFTCard
-    nfts={nfts}
-    activeIndex={activeIndex}
-    setActiveIndex={setActiveIndex}
-  />
-)}
+        <NFTCard
+          nfts={nfts}
+          activeIndex={activeIndex}
+          setActiveIndex={setActiveIndex}
+        />
+      )}
 
       <style jsx global>{`
-  body, html {
-    margin:0;
-    padding:0;
-    overflow:hidden;
-    font-family:sans-serif;
-  }
 
+/* 🔒 GLOBAL LOCK */
 html, body {
-  touch-action: manipulation;
-  overscroll-behavior: none;
+  margin:0;
+  padding:0;
+  overflow:hidden;
+  touch-action:none;
+  overscroll-behavior:none;
+  font-family:sans-serif;
 }
-  .character {
-    position:absolute;
-    bottom:0;
-    left:0;
-    height:100vh;
-    z-index:3;
-    pointer-events:none;
-  }
-  .nav {
-    position:absolute;
-    top:0;
-    width:100%;
-    height:100px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:40px;
-    z-index:4;
-  }
-.nav { 
-  flex-wrap:wrap;
+
+/* 🎮 LAYOUT */
+.container {
+  position:relative;
+  width:100vw;
+  height:100vh;
+}
+
+/* 🌄 BACKGROUND */
+.background {
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  z-index:0;
+}
+
+.background img {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  transform: scale(1.02);
+}
+
+/* 🎭 CINEMATIC OVERLAY */
+.background::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background: radial-gradient(circle at center, transparent 60%, rgba(0,0,0,0.5));
+}
+
+/* 🎮 CHARACTER */
+.character {
+  position:absolute;
+  bottom:0;
+  left:0;
+  height:100vh;
+  z-index:3;
+  pointer-events:none;
+}
+
+/* 🧭 NAV */
+.nav {
+  position:absolute;
+  top:0;
+  width:100%;
+  height:100px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
   gap:12px;
   padding:10px;
-}
-  
-body {
-  -webkit-user-select:none;
-  user-select:none;
+  z-index:4;
+  flex-wrap:wrap;
 }
 
-.traits {
-  max-height:150px;
-  overflow-y:auto;
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  margin-top:5px;
-
-  animation: fadeIn 0.25s ease;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity:0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity:1;
-    transform: translateY(0);
-  }
-}
-
+/* 🔘 TAB */
 .tab {
-  cursor:pointer;
   padding:12px 18px;
-  font-size:14px;
-  min-width:80px;
-  text-align:center;
-  background:rgba(255,255,255,0.15);
   border-radius:12px;
+  background:rgba(255,255,255,0.15);
   backdrop-filter:blur(10px);
-}
-
-.tab {
   cursor:pointer;
-  padding:12px 18px;
-  border-radius:12px;
-  background:rgba(255,255,255,0.15);
   transition: all 0.15s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
-/* 👇 press effect */
 .tab:active {
   transform: scale(0.92);
 }
 
-/* 👇 selected tab */
 .tab.active {
   background:rgba(255,255,255,0.35);
   transform: scale(1.05);
 }
 
-  .wallet {
-    position:absolute;
-    top:20px;
-    right:20px;
-    z-index:5;
-    background:rgba(0,0,0,0.6);
-    color:white;
-    padding:10px;
-  }
+/* 🔗 WALLET */
+.wallet {
+  position:absolute;
+  top:20px;
+  right:20px;
+  z-index:5;
+  padding:10px 14px;
+  border-radius:10px;
+  background:rgba(0,0,0,0.6);
+  color:white;
+}
 
+/* 🎠 CARD */
 .card {
   position:absolute;
   bottom:120px;
@@ -195,8 +203,8 @@ body {
   width:260px;
   max-width:80vw;
   padding:16px;
-  background:rgba(0,0,0,0.75);
   border-radius:16px;
+  background:rgba(0,0,0,0.75);
   color:white;
   z-index:2;
 
@@ -204,50 +212,44 @@ body {
   flex-direction:column;
   gap:10px;
 
-  animation: pop 0.4s ease;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
-.card {
-  transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
-}
-
+/* 🖼 NFT IMAGE */
 .nft-img {
   width:100%;
   border-radius:10px;
   object-fit:cover;
 }
 
+/* 🔽 DROPDOWN */
 .dropdown {
-  width:100%;
   padding:8px;
   border:none;
   border-radius:8px;
   background:rgba(255,255,255,0.1);
   color:white;
-  cursor:pointer;
 }
 
+/* 🧬 TRAITS */
 .traits {
   max-height:150px;
   overflow-y:auto;
   display:flex;
   flex-direction:column;
   gap:6px;
-  margin-top:5px;
+  animation: fadeIn 0.25s ease;
 }
 
 .trait {
   display:flex;
   justify-content:space-between;
   font-size:12px;
-  opacity:0.9;
 }
 
-  .card.show {
-    opacity:1;
-    transform:translateY(0) scale(1);
-  }
-  .dots {
+/* 🎠 DOTS */
+.dots {
   display:flex;
   justify-content:center;
   gap:6px;
@@ -263,51 +265,13 @@ body {
 .dot.active {
   background:white;
 }
-.background {
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  object-position:center;
-  z-index:0;
-  pointer-events:none;
+
+@keyframes fadeIn {
+  from { opacity:0; transform:translateY(10px); }
+  to { opacity:1; transform:translateY(0); }
 }
 
-.background img {
-  transform: scale(1.02);
-}
-
-.background::after {
-  content:'';
-  position:absolute;
-  inset:0;
-  background: radial-gradient(circle at center, transparent 60%, rgba(0,0,0,0.4));
-}
-
-.background { z-index:0; }
-.card { z-index:2; }
-.character { z-index:3; }
-.nav { z-index:4; }
-.wallet { z-index:5; }
-
-.card {
-  backdrop-filter: blur(12px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-}
-
-.tab {
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-
-.viewport::after {
-  content:'';
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  background: radial-gradient(circle at center, transparent 60%, rgba(0,0,0,0.5));
-}
-`}</style>
+      `}</style>
     </div>
   );
 }
