@@ -8,7 +8,9 @@ export default function Navigation({ setTab, tabsRef }) {
       {["Home","Games","Marketplace","Profile"].map((t,i)=>(
         <div
           key={i}
-          ref={el => tabsRef.current[i] = el}
+          ref={(el) => {
+      if (el) tabsRef.current[i] = el;
+    }}
           className="tab"
           onClick={()=>setTab(i)}
         >
