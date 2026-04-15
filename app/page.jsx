@@ -11,21 +11,24 @@ export default function Page() {
   const tabsRef = useRef([]);
   const [tab, setTab] = useState(0);
   const [wallet, setWallet] = useState(null);
-  const [nft, setNft] = useState(null);
+  const [nfts, setNfts] = useState([]);
+  const [activeIndex, setActiveIndex] = useState(0);
 
 
-  //useEffect(() => {
-  //tabsRef.current = [];
-//}, []);
-
-  useEffect(() => {
+useEffect(() => {
   if (tab === 3 && wallet) {
-    fetchNFT(wallet).then(data => {
-      console.log("NFT:", data);
-      setNft(data);
-    });
+    fetchNFTs(wallet).then(setNfts);
   }
 }, [tab, wallet]);
+  
+  //useEffect(() => {
+  //if (tab === 3 && wallet) {
+    //fetchNFT(wallet).then(data => {
+    //  console.log("NFT:", data);
+     // setNft(data);
+    //});
+ // }
+//}, [tab, wallet]);
 
   return (
     <div className="container">
@@ -38,7 +41,14 @@ export default function Page() {
         {wallet ? wallet.slice(0,6) + '...' : 'Connect Wallet'}
       </button>
 
-      {tab === 3 && nft && <NFTCard nft={nft} />}
+      
+      {tab === 3 && (
+  <NFTCard
+    nfts={nfts}
+    activeIndex={activeIndex}
+    setActiveIndex={setActiveIndex}
+  />
+)}
 
       <style jsx global>{`
   body, html {
