@@ -1,17 +1,14 @@
 'use client';
-import { useRef, useEffect } from 'react';
 
-export default function Navigation({ setTab, tabsRef }) {
+export default function Navigation({ setTab, tabsRef, activeTab }) {
 
   return (
     <div className="nav">
       {["Home","Games","Marketplace","Profile"].map((t,i)=>(
         <div
           key={i}
-          ref={(el) => {
-      if (el) tabsRef.current[i] = el;
-    }}
-          className="tab"
+          ref={el => tabsRef.current[i] = el}
+          className={`tab ${activeTab === i ? 'active' : ''}`}
           onClick={()=>setTab(i)}
         >
           {t}
