@@ -25,7 +25,30 @@ useEffect(() => {
     fetchNFTs(wallet).then(setNfts);
   }
 }, [tab, wallet]);
-  
+  import { useEffect, useRef } from 'react';
+
+const stageRef = useRef(null);
+
+useEffect(() => {
+  function scaleStage() {
+    const baseWidth = 315;
+    const baseHeight = 1084;
+
+    const scale = Math.min(
+      window.innerWidth / baseWidth,
+      window.innerHeight / baseHeight
+    );
+
+    if (stageRef.current) {
+      stageRef.current.style.transform = `scale(${scale})`;
+    }
+  }
+
+  scaleStage();
+  window.addEventListener('resize', scaleStage);
+
+  return () => window.removeEventListener('resize', scaleStage);
+}, []);
   //useEffect(() => {
   //if (tab === 3 && wallet) {
     //fetchNFT(wallet).then(data => {
@@ -36,6 +59,9 @@ useEffect(() => {
 //}, [tab, wallet]);
 
   return (
+        <div className="viewport">
+  <div className="stage">
+    {/* EVERYTHING goes here */
     <div className="container">
       <img src="https://ipfs.io/ipfs/bafybeihkhckfk72hi77yrr3sf7leby5agmsq5cpdvel65vw43cb6bx2zb4" className="bg" />
 
@@ -191,5 +217,8 @@ html, body {
 }
 `}</style>
     </div>
+    }
+  </div>
+</div>
   );
 }
