@@ -15,12 +15,22 @@ export default function Character({ currentTab, tabsRef }) {
   const prevTab = useRef(0);
   const walkInterval = useRef(null);
 
+  // 🎯 OFFSET SYSTEM (custom positioning)
+  const offsets = {
+    0: -120, // HOME ←
+    1: 0,
+    2: 0,
+    3: 120  // PROFILE →
+  };
+
   function getTabX(index) {
     const el = tabsRef.current[index];
     if (!el || !characterRef.current) return 0;
 
     const rect = el.getBoundingClientRect();
-    return rect.left + rect.width / 2 - characterRef.current.offsetWidth / 2;
+    const baseX = rect.left + rect.width / 2 - characterRef.current.offsetWidth / 2;
+
+    return baseX + (offsets[index] || 0);
   }
 
   useEffect(() => {
@@ -45,10 +55,12 @@ export default function Character({ currentTab, tabsRef }) {
     walkInterval.current = setInterval(() => {
       char.src = walkFrames[frame % 2];
       frame++;
-    }, 180);
+    }, 140); // ⚡ slightly faster animation
 
     const distance = Math.abs(to - from);
-    const duration = 1200 + distance * 400;
+
+    // ⚡ FASTER MOVEMENT
+    const duration = 900 + distance * 300;
 
     char.style.transition = `transform ${duration}ms linear`;
     char.style.transform = `translateX(${getTabX(to)}px)`;
@@ -70,7 +82,7 @@ export default function Character({ currentTab, tabsRef }) {
         }
 
         prevTab.current = to;
-      }, 250);
+      }, 220);
 
     }, duration);
 
