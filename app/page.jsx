@@ -87,20 +87,56 @@ export default function Page() {
     padding:10px;
   }
 
-  .card {
-    position:absolute;
-    bottom:120px;
-    left:60px;
-    width:320px;
-    padding:20px;
-    background:rgba(0,0,0,0.7);
-    border-radius:16px;
-    color:white;
-    opacity:0;
-    transform:translateY(40px) scale(0.95);
-    transition:all 0.5s cubic-bezier(0.22,1,0.36,1);
-    z-index:2;
-  }
+.card {
+  position:absolute;
+  bottom:120px;
+  left:20px;
+  width:260px;
+  max-width:80vw;
+  padding:16px;
+  background:rgba(0,0,0,0.75);
+  border-radius:16px;
+  color:white;
+  z-index:2;
+
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+
+  animation: pop 0.4s ease;
+}
+
+.nft-img {
+  width:100%;
+  border-radius:10px;
+  object-fit:cover;
+}
+
+.dropdown {
+  width:100%;
+  padding:8px;
+  border:none;
+  border-radius:8px;
+  background:rgba(255,255,255,0.1);
+  color:white;
+  cursor:pointer;
+}
+
+.traits {
+  max-height:150px;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  margin-top:5px;
+}
+
+.trait {
+  display:flex;
+  justify-content:space-between;
+  font-size:12px;
+  opacity:0.9;
+}
 
   .card.show {
     opacity:1;
