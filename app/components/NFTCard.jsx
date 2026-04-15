@@ -1,7 +1,8 @@
 'use client';
-import { useRef } from 'react';
+import { useState, useRef } from 'react';
 
 export default function NFTCard({ nfts, activeIndex, setActiveIndex }) {
+  const [open, setOpen] = useState(false);
   const startX = useRef(0);
   const startTime = useRef(0);
 
@@ -22,7 +23,7 @@ export default function NFTCard({ nfts, activeIndex, setActiveIndex }) {
 
     const velocity = dx / dt;
 
-    // 🎯 inertia logic
+    // 👉 swipe navigation
     if (dx > 50 || velocity > 0.5) {
       if (activeIndex > 0) setActiveIndex(activeIndex - 1);
     } else if (dx < -50 || velocity < -0.5) {
@@ -40,15 +41,32 @@ export default function NFTCard({ nfts, activeIndex, setActiveIndex }) {
 
       <h3>{nft.name}</h3>
 
+      {/* dots */}
       <div className="dots">
         {nfts.map((_, i) => (
           <span key={i} className={i === activeIndex ? 'dot active' : 'dot'} />
         ))}
       </div>
 
-      <button className="dropdown">
-        Swipe to browse →
+      {/* ✅ FIXED DROPDOWN */}
+      <button
+        className="dropdown"
+        onClick={() => setOpen(!open)}
+      >
+        {open ? 'Hide Traits ▲' : 'Show Traits ▼'}
       </button>
+
+      {/* ✅ TRAITS PANEL */}
+      {open && (
+        <div className="traits">
+          {nft.attributes?.map((a, i) => (
+            <div key={i} className="trait">
+              <span>{a.trait_type}</span>
+              <span>{a.value}</span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
