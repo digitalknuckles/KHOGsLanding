@@ -49,13 +49,13 @@ function getTabX(index) {
       if (!running) return;
       setSprite(walkFrames[frame % 2]);
       frame++;
-      setTimeout(() => requestAnimationFrame(walkLoop), 100);
+      setTimeout(() => requestAnimationFrame(walkLoop), 120);
     }
 
     walkLoop();
 
     const targetX = getTabX(currentTab);
-    const duration = 1000;
+    const duration = 1400;
 
     characterRef.current.style.transition = `transform ${duration}ms cubic-bezier(0.22,1,0.36,1)`;
     characterRef.current.style.transform = `translateX(${targetX}px)`;
