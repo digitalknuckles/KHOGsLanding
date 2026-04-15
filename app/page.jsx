@@ -32,11 +32,73 @@ export default function Page() {
 
       {tab === 3 && nft && <NFTCard nft={nft} />}
 
-      <style jsx>{`
-        .container { width:100vw; height:100vh; position:relative; overflow:hidden; }
-        .bg { position:absolute; width:100%; height:100%; object-fit:cover; }
-        .wallet { position:absolute; top:20px; right:20px; z-index:10; }
-      `}</style>
+      <style jsx global>{`
+  body, html {
+    margin:0;
+    padding:0;
+    overflow:hidden;
+    font-family:sans-serif;
+  }
+
+  .character {
+    position:absolute;
+    bottom:0;
+    left:0;
+    height:100vh;
+    z-index:3;
+    pointer-events:none;
+  }
+
+  .nav {
+    position:absolute;
+    top:0;
+    width:100%;
+    height:100px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:40px;
+    z-index:4;
+  }
+
+  .tab {
+    cursor:pointer;
+    padding:10px 20px;
+    background:rgba(255,255,255,0.1);
+    border-radius:10px;
+    backdrop-filter:blur(10px);
+  }
+
+  .wallet {
+    position:absolute;
+    top:20px;
+    right:20px;
+    z-index:5;
+    background:rgba(0,0,0,0.6);
+    color:white;
+    padding:10px;
+  }
+
+  .card {
+    position:absolute;
+    bottom:120px;
+    left:60px;
+    width:320px;
+    padding:20px;
+    background:rgba(0,0,0,0.7);
+    border-radius:16px;
+    color:white;
+    opacity:0;
+    transform:translateY(40px) scale(0.95);
+    transition:all 0.5s cubic-bezier(0.22,1,0.36,1);
+    z-index:2;
+  }
+
+  .card.show {
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+`}</style>
     </div>
   );
 }
