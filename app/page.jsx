@@ -152,6 +152,22 @@ useEffect(() => {
     opacity:1;
     transform:translateY(0) scale(1);
   }
+  .dots {
+  display:flex;
+  justify-content:center;
+  gap:6px;
+}
+
+.dot {
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.3);
+}
+
+.dot.active {
+  background:white;
+}
 `}</style>
     </div>
   );
