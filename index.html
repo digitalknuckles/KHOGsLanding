@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Animated Navigation Flow</title>
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.7.0/dist/ethers.umd.min.js"></script>
 <style>
   body, html {
     margin: 0;
@@ -29,12 +30,9 @@
   .character {
     position: absolute;
     bottom: 0;
-    height: 100vh; /* scale relative to viewport height */
+    height: 100vh;
     width: auto;
-    max-width: none;
-    object-fit: contain;
     transform-origin: bottom center;
-    transition: transform 1.6s cubic-bezier(0.22, 1, 0.36, 1); /* even slower */
     z-index: 2;
     will-change: transform;
   }
@@ -58,13 +56,27 @@
     border-radius: 10px;
     backdrop-filter: blur(10px);
   }
+
+  .wallet {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 4;
+    padding: 10px 16px;
+    border-radius: 10px;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    cursor: pointer;
+  }
 </style>
 </head>
 <body>
 <div class="container">
   <img src="https://ipfs.io/ipfs/bafybeihkhckfk72hi77yrr3sf7leby5agmsq5cpdvel65vw43cb6bx2zb4" class="background" />
 
-  <img id="character" class="character" src="https://ipfs.io/ipfs/bafkreiheo32ehfntwpmxcars2ta4mq3hqhoheqzsr6ygyuyccbvjwpie7e" />
+  <img id="character" class="character" />
+
+  <div class="wallet" id="walletBtn">Connect Wallet</div>
 
   <div class="nav">
     <div class="tab" data-index="0">Home</div>
@@ -77,9 +89,9 @@
 <script>
 const character = document.getElementById('character');
 const tabs = document.querySelectorAll('.tab');
+const walletBtn = document.getElementById('walletBtn');
 
 let currentIndex = 0;
-const tabPositions = [200, 500, 800, 1100];
 
 const assets = {
   left1: "https://ipfs.io/ipfs/bafkreiheo32ehfntwpmxcars2ta4mq3hqhoheqzsr6ygyuyccbvjwpie7e",
@@ -89,15 +101,23 @@ const assets = {
   flip: "https://ipfs.io/ipfs/bafkreic6iy37nlapsjm2tgvfzb72fkop47lgwwthjaomyg7sl63pp7lcgy"
 };
 
+// Start at HOME facing RIGHT
+character.src = assets.left1; // swapped asset
+
+function getTabX(index) {
+  const tab = tabs[index];
+  const rect = tab.getBoundingClientRect();
+  return rect.left + rect.width / 2 - character.offsetWidth / 2;
+}
+
 function animateCharacter(targetIndex) {
   if (targetIndex === currentIndex) return;
 
   const goingRight = targetIndex > currentIndex;
 
-  // NOTE: assets were mislabeled, so we intentionally swap logic
   const walkFrames = goingRight
-    ? [assets.right1, assets.right2]  // actually moving RIGHT
-    : [assets.left1, assets.left2];   // actually moving LEFT
+    ? [assets.right1, assets.right2]
+    : [assets.left1, assets.left2];
 
   let frame = 0;
   let running = true;
@@ -106,27 +126,26 @@ function animateCharacter(targetIndex) {
     if (!running) return;
     character.src = walkFrames[frame % 2];
     frame++;
-    setTimeout(() => requestAnimationFrame(walkLoop), 160); // slower frame swap
+    setTimeout(() => requestAnimationFrame(walkLoop), 140);
   }
 
   walkLoop();
 
   const distance = Math.abs(targetIndex - currentIndex);
-  const duration = 800 + distance * 400; // slower travel
+  const duration = 1000 + distance * 500;
 
-  character.style.transition = `transform ${duration}ms cubic-bezier(0.22,1,0.36,1)`;
-  character.style.transform = `translateX(${tabPositions[targetIndex]}px)`;
+  character.style.transition = `transform ${duration}ms linear`;
+  character.style.transform = `translateX(${getTabX(targetIndex)}px)`;
 
   setTimeout(() => {
     running = false;
-
     character.src = assets.flip;
 
     setTimeout(() => {
       if (targetIndex === 0) {
-        character.src = assets.right1; // HOME idle should face LEFT visually (swapped asset)
+        character.src = assets.left1;
       } else {
-        character.src = assets.left1; // other tabs face RIGHT visually (swapped asset)
+        character.src = assets.right1;
       }
       currentIndex = targetIndex;
     }, 250);
@@ -139,6 +158,16 @@ tabs.forEach(tab => {
     const index = parseInt(tab.dataset.index);
     animateCharacter(index);
   });
+});
+
+// Wallet Connect
+walletBtn.addEventListener('click', async () => {
+  if (!window.ethereum) return alert('Install MetaMask');
+  const provider = new ethers.BrowserProvider(window.ethereum);
+  await provider.send("eth_requestAccounts", []);
+  const signer = await provider.getSigner();
+  const address = await signer.getAddress();
+  walletBtn.innerText = address.slice(0,6) + '...' + address.slice(-4);
 });
 </script>
 </body>
