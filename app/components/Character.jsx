@@ -14,14 +14,24 @@ export default function Character({ currentTab, tabsRef }) {
   const [sprite, setSprite] = useState(assets.right1);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  function getTabX(index) {
-    const tab = tabsRef?.current?.[index];
-    if (!tab || !characterRef.current) return 0;
+function getTabX(index) {
+  const tab = tabsRef.current[index];
+  if (!tab || !characterRef.current) return 0;
 
-    const rect = tab.getBoundingClientRect();
-    return rect.left + rect.width / 2 - characterRef.current.offsetWidth / 2;
-  }
+  const rect = tab.getBoundingClientRect();
 
+  let baseX = rect.left + rect.width / 2 - characterRef.current.offsetWidth / 2;
+
+  // 🎯 OFFSET SYSTEM (tweak these values)
+  const offsets = {
+    0: -120, // HOME → move LEFT
+    1: 0,
+    2: 0,
+    3: 120  // PROFILE → move RIGHT
+  };
+
+  return baseX + (offsets[index] || 0);
+}
   useEffect(() => {
     if (!tabsRef?.current?.length) return;
     if (currentTab === currentIndex) return;
@@ -47,7 +57,7 @@ export default function Character({ currentTab, tabsRef }) {
     const targetX = getTabX(currentTab);
     const duration = 1200;
 
-    characterRef.current.style.transition = `transform ${duration}ms linear`;
+    characterRef.current.style.transition = `transform ${duration}ms cubic-bezier(0.22,1,0.36,1)`;
     characterRef.current.style.transform = `translateX(${targetX}px)`;
 
     setTimeout(() => {
