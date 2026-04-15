@@ -6,73 +6,91 @@
 <title>Animated Navigation Flow</title>
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.7.0/dist/ethers.umd.min.js"></script>
 <style>
-  body, html {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    font-family: sans-serif;
-  }
+  body, html { margin:0; padding:0; overflow:hidden; font-family:sans-serif; }
 
-  .container {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-  }
+  .container { position:relative; width:100vw; height:100vh; }
 
-  .background {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 0;
-  }
+  .background { position:absolute; width:100%; height:100%; object-fit:cover; z-index:0; }
 
   .character {
-    position: absolute;
-    bottom: 0;
-    height: 100vh;
-    width: auto;
-    transform-origin: bottom center;
-    z-index: 2;
-    will-change: transform;
+    position:absolute;
+    bottom:0;
+    height:100vh;
+    width:auto;
+    transform-origin:bottom center;
+    z-index:3; /* ABOVE card */
+    will-change:transform;
   }
 
   .nav {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 40px;
-    z-index: 3;
+    position:absolute;
+    top:0;
+    width:100%;
+    height:100px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:40px;
+    z-index:4;
   }
 
   .tab {
-    cursor: pointer;
-    padding: 10px 20px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 10px;
-    backdrop-filter: blur(10px);
+    cursor:pointer;
+    padding:10px 20px;
+    background:rgba(255,255,255,0.1);
+    border-radius:10px;
+    backdrop-filter:blur(10px);
   }
 
   .wallet {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 4;
-    padding: 10px 16px;
-    border-radius: 10px;
-    background: rgba(0,0,0,0.6);
-    color: white;
-    cursor: pointer;
+    position:absolute;
+    top:20px;
+    right:20px;
+    z-index:5;
+    padding:10px 16px;
+    border-radius:10px;
+    background:rgba(0,0,0,0.6);
+    color:white;
+    cursor:pointer;
   }
+
+  /* CHARACTER CARD */
+  .card {
+    position:absolute;
+    bottom:120px;
+    left:60px;
+    width:320px;
+    padding:20px;
+    background:rgba(0,0,0,0.7);
+    border-radius:16px;
+    color:white;
+    opacity:0;
+    transform:translateY(40px) scale(0.95);
+    transition:all 0.5s cubic-bezier(0.22,1,0.36,1);
+    z-index:2;
+  }
+
+  .card.show {
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+
+  .card img {
+    width:100%;
+    border-radius:10px;
+    margin-bottom:10px;
+  }
+
 </style>
 </head>
 <body>
 <div class="container">
   <img src="https://ipfs.io/ipfs/bafybeihkhckfk72hi77yrr3sf7leby5agmsq5cpdvel65vw43cb6bx2zb4" class="background" />
+
+  <div class="card" id="nftCard">
+    <img id="nftImage" />
+    <div id="nftMeta">No NFT Loaded</div>
+  </div>
 
   <img id="character" class="character" />
 
@@ -90,8 +108,12 @@
 const character = document.getElementById('character');
 const tabs = document.querySelectorAll('.tab');
 const walletBtn = document.getElementById('walletBtn');
+const card = document.getElementById('nftCard');
+const nftImage = document.getElementById('nftImage');
+const nftMeta = document.getElementById('nftMeta');
 
 let currentIndex = 0;
+let walletAddress = null;
 
 const assets = {
   left1: "https://ipfs.io/ipfs/bafkreiheo32ehfntwpmxcars2ta4mq3hqhoheqzsr6ygyuyccbvjwpie7e",
@@ -101,8 +123,8 @@ const assets = {
   flip: "https://ipfs.io/ipfs/bafkreic6iy37nlapsjm2tgvfzb72fkop47lgwwthjaomyg7sl63pp7lcgy"
 };
 
-// Start at HOME facing RIGHT
-character.src = assets.left1; // swapped asset
+// START STATE: HOME facing RIGHT
+character.src = assets.right1;
 
 function getTabX(index) {
   const tab = tabs[index];
@@ -110,8 +132,14 @@ function getTabX(index) {
   return rect.left + rect.width / 2 - character.offsetWidth / 2;
 }
 
+window.addEventListener('load', () => {
+  character.style.transform = `translateX(${getTabX(0)}px)`;
+});
+
 function animateCharacter(targetIndex) {
   if (targetIndex === currentIndex) return;
+
+  card.classList.remove('show');
 
   const goingRight = targetIndex > currentIndex;
 
@@ -139,18 +167,39 @@ function animateCharacter(targetIndex) {
 
   setTimeout(() => {
     running = false;
+
     character.src = assets.flip;
 
     setTimeout(() => {
+      // FIXED ORIENTATION LOGIC
       if (targetIndex === 0) {
-        character.src = assets.left1;
+        character.src = assets.left1; // HOME faces LEFT
+      } else if (targetIndex === 3) {
+        character.src = assets.left1; // PROFILE faces LEFT toward card
+        showProfileCard();
       } else {
         character.src = assets.right1;
       }
+
       currentIndex = targetIndex;
     }, 250);
 
   }, duration);
+}
+
+function showProfileCard() {
+  if (!walletAddress) return;
+
+  fetch(`/api/opensea?address=${walletAddress}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.length > 0) {
+        const nft = data[0];
+        nftImage.src = nft.image_url;
+        nftMeta.innerText = nft.name || 'NFT';
+      }
+      setTimeout(() => card.classList.add('show'), 200);
+    });
 }
 
 tabs.forEach(tab => {
@@ -166,9 +215,10 @@ walletBtn.addEventListener('click', async () => {
   const provider = new ethers.BrowserProvider(window.ethereum);
   await provider.send("eth_requestAccounts", []);
   const signer = await provider.getSigner();
-  const address = await signer.getAddress();
-  walletBtn.innerText = address.slice(0,6) + '...' + address.slice(-4);
+  walletAddress = await signer.getAddress();
+  walletBtn.innerText = walletAddress.slice(0,6) + '...' + walletAddress.slice(-4);
 });
 </script>
 </body>
 </html>
+
