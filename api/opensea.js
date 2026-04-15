@@ -1,4 +1,7 @@
 // /api/opensea.js
+// simple in-memory cache (persists across invocations on warm server)
+let cache = {};
+
 export default async function handler(req, res) {
   try {
     const { address } = req.query;
@@ -20,6 +23,11 @@ export default async function handler(req, res) {
     );
 
     const data = await response.json();
+
+    // return cached if exists
+    if (cache[address]) {
+      return res.status(200).json(cache[address]);
+    }
 
     console.log("OS RAW:", data);
 
@@ -48,20 +56,4 @@ export default async function handler(req, res) {
           attributes:
             n.traits ||
             metadata.attributes ||
-            []
-        };
-      })
-      .filter(n => n.image);
-
-    console.log("FILTERED NFTs:", nfts.length);
-
-    return res.status(200).json({ nfts });
-
-  } catch (err) {
-    console.error("API ERROR:", err);
-    return res.status(500).json({
-      error: "Internal Server Error",
-      details: err.message
-    });
-  }
 }
