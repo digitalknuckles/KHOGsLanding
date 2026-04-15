@@ -1,18 +1,22 @@
-export const metadata = {
-  title: 'Your App',
-  description: 'Animated Navigation App',
-};
+'use client';
 
-export default function RootLayout({ children }) {
+export default function Navigation({ setTab, tabsRef, activeTab }) {
+  const tabs = ["Home", "Games", "Marketplace", "Profile"];
+
   return (
-    <html lang="en">
-      <head>
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
-        />
-      </head>
-      <body>{children}</body>
-    </html>
+    <div className="nav">
+      {tabs.map((label, i) => (
+        <div
+          key={i}
+          ref={(el) => {
+            if (el) tabsRef.current[i] = el;
+          }}
+          className={`tab ${activeTab === i ? 'active' : ''}`}
+          onClick={() => setTab(i)}
+        >
+          {label}
+        </div>
+      ))}
+    </div>
   );
 }
