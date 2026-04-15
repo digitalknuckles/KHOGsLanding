@@ -1,22 +1,18 @@
-'use client';
-import { useRef, useEffect } from 'react';
+export const metadata = {
+  title: 'Your App',
+  description: 'Animated Navigation App',
+};
 
-export default function Navigation({ setTab, tabsRef }) {
-
+export default function RootLayout({ children }) {
   return (
-    <div className="nav">
-      {["Home","Games","Marketplace","Profile"].map((t,i)=>(
-        <div
-          key={i}
-          ref={(el) => {
-      if (el) tabsRef.current[i] = el;
-    }}
-          className="tab"
-          onClick={()=>setTab(i)}
-        >
-          {t}
-        </div>
-      ))}
-    </div>
+    <html lang="en">
+      <head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+        />
+      </head>
+      <body>{children}</body>
+    </html>
   );
 }
