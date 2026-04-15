@@ -12,16 +12,14 @@ const assets = {
 
 export default function Character({ currentTab, tabsRef }) {
   const characterRef = useRef(null);
-  const prevTab = useRef(0);
-  const walkInterval = useRef(null);
+  const [sprite, setSprite] = useState(assets.right1);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  function getTabX(index) {
-    const el = tabsRef.current[index];
-    if (!el || !characterRef.current) return 0;
+function getTabX(index) {
+  const tab = tabsRef.current[index];
+  if (!tab || !characterRef.current) return 0;
 
-    const rect = el.getBoundingClientRect();
-    return rect.left + rect.width / 2 - characterRef.current.offsetWidth / 2;
-  }
+  const rect = tab.getBoundingClientRect();
 
   let baseX = rect.left + rect.width / 2 - characterRef.current.offsetWidth / 2;
 
@@ -35,7 +33,6 @@ export default function Character({ currentTab, tabsRef }) {
 
   return baseX + (offsets[index] || 0);
 }
-  
   
   useEffect(() => {
     const char = characterRef.current;
