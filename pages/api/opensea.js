@@ -25,27 +25,33 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
+    console.log("RAW:", data);
+
     const nfts = (data.nfts || [])
       .filter(n => {
-        const addr = n.contract || n.contract_address || n.collection?.contract_address;
-        return addr?.toLowerCase() === CONTRACT;
+        const addr =
+          n.contract ||
+          n.contract_address ||
+          n.collection?.contract_address;
+
+        return addr && addr.toLowerCase() === CONTRACT;
       })
       .map(n => ({
+        attributes: n.traits || n.metadata?.attributes || [],
         image: n.display_image_url || n.image_url || n.image,
         name: n.name || 'NFT'
       }))
       .filter(n => n.image);
 
-    attributes:
-  n.traits ||
-  n.metadata?.attributes ||
-  []
+    console.log("FILTERED:", nfts);
+
     const result = { nfts };
     cache[address] = result;
 
     return res.status(200).json(result);
 
   } catch (err) {
+    console.error("API ERROR:", err);
     return res.status(500).json({ error: err.message });
   }
 }
