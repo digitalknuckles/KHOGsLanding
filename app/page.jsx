@@ -68,18 +68,9 @@ html, body {
     z-index:3;
     pointer-events:none;
   }
-  .nav {
-    position:absolute;
-    top:0;
-    width:100%;
-    height:100px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:40px;
-    z-index:4;
-  }
-.nav {
+
+.nav { 
+  z-index:4;
   flex-wrap:wrap;
   gap:12px;
   padding:10px;
