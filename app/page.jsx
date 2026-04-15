@@ -13,11 +13,15 @@ export default function Page() {
   const [wallet, setWallet] = useState(null);
   const [nft, setNft] = useState(null);
 
+
   useEffect(() => {
-    if (tab === 3 && wallet) {
-      fetchNFT(wallet).then(setNft);
-    }
-  }, [tab, wallet]);
+  tabsRef.current = [];
+}, []);
+ // useEffect(() => {
+    //if (tab === 3 && wallet) {
+    //  fetchNFT(wallet).then(setNft);
+  //  }
+//  }, [tab, wallet]);
 
   return (
     <div className="container">
