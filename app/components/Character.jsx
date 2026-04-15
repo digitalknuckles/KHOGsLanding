@@ -15,53 +15,67 @@ export default function Character({ currentTab, tabsRef }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   function getTabX(index) {
-    const tab = tabsRef.current[index];
+    const tab = tabsRef?.current?.[index];
+    if (!tab || !characterRef.current) return 0;
+
     const rect = tab.getBoundingClientRect();
     return rect.left + rect.width / 2 - characterRef.current.offsetWidth / 2;
   }
 
   useEffect(() => {
-    if (!characterRef.current || !tabsRef.current) return;
-
+    if (!tabsRef?.current?.length) return;
     if (currentTab === currentIndex) return;
 
     const goingRight = currentTab > currentIndex;
-    const frames = goingRight
+
+    const walkFrames = goingRight
       ? [assets.right1, assets.right2]
       : [assets.left1, assets.left2];
 
     let frame = 0;
     let running = true;
 
-    function loop() {
+    function walkLoop() {
       if (!running) return;
-      setSprite(frames[frame % 2]);
+      setSprite(walkFrames[frame % 2]);
       frame++;
-      setTimeout(() => requestAnimationFrame(loop), 120);
+      setTimeout(() => requestAnimationFrame(walkLoop), 120);
     }
 
-    loop();
+    walkLoop();
 
     const targetX = getTabX(currentTab);
+    const duration = 1200;
 
-    characterRef.current.style.transition = "transform 1.2s linear";
+    characterRef.current.style.transition = `transform ${duration}ms linear`;
     characterRef.current.style.transform = `translateX(${targetX}px)`;
 
     setTimeout(() => {
       running = false;
 
-      // 🔥 FLIP RESTORED
-      setSprite(assets.flip);
+      // 🎯 DETERMINE FINAL ORIENTATION
+      let finalDirection;
 
-      setTimeout(() => {
-        if (currentTab === 0) setSprite(assets.left1);
-        else if (currentTab === 3) setSprite(assets.left1);
-        else setSprite(assets.right1);
+      if (currentTab === 0) finalDirection = 'right';     // HOME
+      else if (currentTab === 3) finalDirection = 'left'; // PROFILE
+      else finalDirection = goingRight ? 'right' : 'left';
 
+      const currentFacing = sprite.includes('right') ? 'right' : 'left';
+
+      // 🔥 Only flip if needed
+      if (currentFacing !== finalDirection) {
+        setSprite(assets.flip);
+
+        setTimeout(() => {
+          setSprite(finalDirection === 'right' ? assets.right1 : assets.left1);
+          setCurrentIndex(currentTab);
+        }, 250);
+      } else {
+        setSprite(finalDirection === 'right' ? assets.right1 : assets.left1);
         setCurrentIndex(currentTab);
-      }, 250);
+      }
 
-    }, 1200);
+    }, duration);
 
   }, [currentTab]);
 
