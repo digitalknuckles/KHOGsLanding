@@ -25,21 +25,25 @@ export default function Page() {
   }, [tab, wallet]);
 
   // 🔒 HARD LOCK mobile gestures (pinch/zoom/scroll)
-  useEffect(() => {
-    const prevent = (e) => e.preventDefault();
+ useEffect(() => {
+  const preventZoom = (e) => {
+    if (e.scale !== 1) e.preventDefault();
+  };
 
-    document.addEventListener('gesturestart', prevent);
-    document.addEventListener('gesturechange', prevent);
-    document.addEventListener('gestureend', prevent);
-    document.addEventListener('touchmove', prevent, { passive: false });
+  const preventScroll = (e) => {
+    if (e.touches.length > 1) e.preventDefault(); // only block multi-touch
+  };
 
-    return () => {
-      document.removeEventListener('gesturestart', prevent);
-      document.removeEventListener('gesturechange', prevent);
-      document.removeEventListener('gestureend', prevent);
-      document.removeEventListener('touchmove', prevent);
-    };
-  }, []);
+  document.addEventListener('gesturestart', preventZoom);
+  document.addEventListener('gesturechange', preventZoom);
+  document.addEventListener('touchmove', preventScroll, { passive: false });
+
+  return () => {
+    document.removeEventListener('gesturestart', preventZoom);
+    document.removeEventListener('gesturechange', preventZoom);
+    document.removeEventListener('touchmove', preventScroll);
+  };
+}, []);
 
   return (
     <div className="container">
