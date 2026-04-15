@@ -7,6 +7,7 @@ import NFTCard from './components/NFTCard';
 import { connectWallet } from './lib/wallet';
 import { fetchNFTs } from './lib/opensea';
 
+
 export default function Page() {
   const tabsRef = useRef([]);
   const stageRef = useRef(null);
