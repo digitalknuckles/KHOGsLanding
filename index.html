@@ -202,6 +202,8 @@ function animateCharacter(targetIndex) {
 function showProfileCard() {
   if (!walletAddress) return;
 
+  nftMeta.innerText = "Loading...";
+
   fetch(`/api/opensea?address=${walletAddress}`)
     .then(res => res.json())
     .then(data => {
@@ -211,6 +213,17 @@ function showProfileCard() {
         nftMeta.innerText = "No NFT Found";
         return;
       }
+
+      nftImage.src = nft.image;
+      nftMeta.innerText = nft.name;
+
+      setTimeout(() => card.classList.add('show'), 200);
+    })
+    .catch(err => {
+      console.error("NFT LOAD ERROR", err);
+      nftMeta.innerText = "Error loading NFT";
+    });
+}
 
       nftImage.src = nft.image;
       nftMeta.innerText = nft.name;
@@ -252,3 +265,4 @@ walletBtn.addEventListener('click', async () => {
 </script>
 </body>
 </html>
+
