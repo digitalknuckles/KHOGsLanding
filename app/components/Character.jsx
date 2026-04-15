@@ -105,7 +105,7 @@ export default function Character({ currentTab, tabsRef }) {
 
       setTimeout(() => {
         if (wandering.current) startWander();
-      }, 250);
+      }, 120);
 
     }, duration);
   }
@@ -138,7 +138,7 @@ export default function Character({ currentTab, tabsRef }) {
     walkInterval.current = setInterval(() => {
       char.src = frames[frame % 2];
       frame++;
-    }, 160);
+    }, 140);
 
     const duration = 800 + Math.abs(to - from) * 300;
 
