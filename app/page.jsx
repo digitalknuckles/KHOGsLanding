@@ -14,61 +14,61 @@ export default function Page() {
   const [nfts, setNfts] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  // 🎯 Fetch NFTs when Profile tab active
+  // 🎯 NFT FETCH
   useEffect(() => {
-    if (tab === 3 && wallet) {
+    if (tab === 3 && wallet && nfts.length === 0) {
       fetchNFTs(wallet).then((data) => {
         setNfts(data || []);
-        setActiveIndex(0); // reset carousel
+        setActiveIndex(0);
       });
     }
   }, [tab, wallet]);
 
-  // 🔒 HARD LOCK mobile gestures (pinch/zoom/scroll)
- useEffect(() => {
-  const preventZoom = (e) => {
-    if (e.scale !== 1) e.preventDefault();
-  };
+  // 🔒 SAFE gesture control (DO NOT BLOCK TAPS)
+  useEffect(() => {
+    const preventZoom = (e) => {
+      if (e.scale !== 1) e.preventDefault();
+    };
 
-  const preventScroll = (e) => {
-    if (e.touches.length > 1) e.preventDefault(); // only block multi-touch
-  };
+    const preventMultiTouch = (e) => {
+      if (e.touches.length > 1) e.preventDefault();
+    };
 
-  document.addEventListener('gesturestart', preventZoom);
-  document.addEventListener('gesturechange', preventZoom);
-  document.addEventListener('touchmove', preventScroll, { passive: false });
+    document.addEventListener('gesturestart', preventZoom);
+    document.addEventListener('gesturechange', preventZoom);
+    document.addEventListener('touchmove', preventMultiTouch, { passive: false });
 
-  return () => {
-    document.removeEventListener('gesturestart', preventZoom);
-    document.removeEventListener('gesturechange', preventZoom);
-    document.removeEventListener('touchmove', preventScroll);
-  };
-}, []);
+    return () => {
+      document.removeEventListener('gesturestart', preventZoom);
+      document.removeEventListener('gesturechange', preventZoom);
+      document.removeEventListener('touchmove', preventMultiTouch, { passive: false });
+    };
+  }, []);
 
   return (
     <div className="container">
 
-      {/* 🌄 RESPONSIVE BACKGROUND */}
-<div className="background">
-  <picture>
-    <source
-      media="(min-width: 1400px)"
-      srcSet="https://ipfs.io/ipfs/bafybeigxprm4pptl6cg2lysvocw6ocfnv66ygn7evtxjuadqayevzvun2m"
-    />
-    <source
-      media="(min-width: 768px)"
-      srcSet="https://ipfs.io/ipfs/bafybeihkhckfk72hi77yrr3sf7leby5agmsq5cpdvel65vw43cb6bx2zb4"
-    />
-    <source
-      media="(min-width: 480px)"
-      srcSet="https://ipfs.io/ipfs/bafkreif6hlgr73cqxolmjh2mir4flvpi26apl2mvt53ra4gtav57ewltby"
-    />
-    <img
-      src="https://ipfs.io/ipfs/bafkreiclut5bpexxx7bcjoe3fomtw2yqoys3ltt2tm3d4ldsfw2tn24lmm"
-      alt="background"
-    />
-  </picture>
-</div>
+      {/* 🌄 BACKGROUND */}
+      <div className="background">
+        <picture>
+          <source
+            media="(min-width: 1400px)"
+            srcSet="https://ipfs.io/ipfs/bafybeigxprm4pptl6cg2lysvocw6ocfnv66ygn7evtxjuadqayevzvun2m"
+          />
+          <source
+            media="(min-width: 768px)"
+            srcSet="https://ipfs.io/ipfs/bafybeihkhckfk72hi77yrr3sf7leby5agmsq5cpdvel65vw43cb6bx2zb4"
+          />
+          <source
+            media="(min-width: 480px)"
+            srcSet="https://ipfs.io/ipfs/bafkreif6hlgr73cqxolmjh2mir4flvpi26apl2mvt53ra4gtav57ewltby"
+          />
+          <img
+            src="https://ipfs.io/ipfs/bafkreiclut5bpexxx7bcjoe3fomtw2yqoys3ltt2tm3d4ldsfw2tn24lmm"
+            alt="background"
+          />
+        </picture>
+      </div>
 
       {/* 🎮 CHARACTER */}
       <Character currentTab={tab} tabsRef={tabsRef} />
@@ -91,7 +91,7 @@ export default function Page() {
       </button>
 
       {/* 🎠 NFT CARD */}
-      {tab === 3 && (
+      {tab === 3 && nfts.length > 0 && (
         <NFTCard
           nfts={nfts}
           activeIndex={activeIndex}
@@ -101,23 +101,24 @@ export default function Page() {
 
       <style jsx global>{`
 
-/* 🔒 GLOBAL LOCK */
+/* 🔒 GLOBAL */
 html, body {
   margin:0;
   padding:0;
   overflow:hidden;
-  touch-action:none;
+  touch-action: manipulation; /* ✅ FIXED */
   overscroll-behavior:none;
   font-family:sans-serif;
 }
 
-/* 🎮 LAYOUT */
+/* 🎮 CONTAINER */
 .container {
   position:relative;
   width:100vw;
   height:100vh;
 }
 
+/* 🌄 BACKGROUND */
 .background {
   position:absolute;
   inset:0;
@@ -136,7 +137,6 @@ html, body {
   transform: scale(1.02);
 }
 
-/* ✅ overlay now works properly */
 .background::after {
   content:'';
   position:absolute;
@@ -166,7 +166,7 @@ html, body {
   align-items:center;
   gap:12px;
   padding:10px;
-  z-index:4;
+  z-index:10; /* 🔥 BOOSTED */
   flex-wrap:wrap;
 }
 
@@ -174,11 +174,11 @@ html, body {
 .tab {
   padding:12px 18px;
   border-radius:12px;
-  background:rgba(255,255,255,0.15);
-  backdrop-filter:blur(10px);
+  background:rgba(255,255,255,0.2); /* 🔥 brighter */
+  backdrop-filter:blur(12px);
   cursor:pointer;
   transition: all 0.15s ease;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
 }
 
 .tab:active {
@@ -186,7 +186,7 @@ html, body {
 }
 
 .tab.active {
-  background:rgba(255,255,255,0.35);
+  background:rgba(255,255,255,0.5);
   transform: scale(1.05);
 }
 
@@ -195,10 +195,10 @@ html, body {
   position:absolute;
   top:20px;
   right:20px;
-  z-index:5;
+  z-index:20;
   padding:10px 14px;
   border-radius:10px;
-  background:rgba(0,0,0,0.6);
+  background:rgba(0,0,0,0.7);
   color:white;
 }
 
@@ -213,7 +213,7 @@ html, body {
   border-radius:16px;
   background:rgba(0,0,0,0.75);
   color:white;
-  z-index:2;
+  z-index:5;
 
   display:flex;
   flex-direction:column;
@@ -228,15 +228,6 @@ html, body {
   width:100%;
   border-radius:10px;
   object-fit:cover;
-}
-
-/* 🔽 DROPDOWN */
-.dropdown {
-  padding:8px;
-  border:none;
-  border-radius:8px;
-  background:rgba(255,255,255,0.1);
-  color:white;
 }
 
 /* 🧬 TRAITS */
