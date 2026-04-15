@@ -234,34 +234,7 @@ function showProfileCard() {
       console.error("NFT LOAD ERROR", err);
       nftMeta.innerText = "Error loading NFT";
     });
-}`)
-    .then(res => res.json())
-    .then(data => {
-      if (data.length > 0) {
-        const nft = data[0];
-        nftImage.src = nft.image_url;
-        nftMeta.innerText = nft.name || 'NFT';
-      }
-      setTimeout(() => card.classList.add('show'), 200);
-    });
 }
-
-tabs.forEach(tab => {
-  tab.addEventListener('click', () => {
-    const index = parseInt(tab.dataset.index);
-    animateCharacter(index);
-  });
-});
-
-// Wallet Connect
-walletBtn.addEventListener('click', async () => {
-  if (!window.ethereum) return alert('Install MetaMask');
-  const provider = new ethers.BrowserProvider(window.ethereum);
-  await provider.send("eth_requestAccounts", []);
-  const signer = await provider.getSigner();
-  walletAddress = await signer.getAddress();
-  walletBtn.innerText = walletAddress.slice(0,6) + '...' + walletAddress.slice(-4);
-});
 </script>
 </body>
 </html>
