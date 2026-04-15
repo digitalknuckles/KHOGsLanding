@@ -3,11 +3,22 @@
 import { useEffect, useRef } from 'react';
 
 const assets = {
+  // NAV WALK
   left1: "https://ipfs.io/ipfs/bafkreiheo32ehfntwpmxcars2ta4mq3hqhoheqzsr6ygyuyccbvjwpie7e",
   left2: "https://ipfs.io/ipfs/bafkreifcpvhdaydz64st2ozhwh4ltgzo6dschjd4ehxtmwiqeuphlcfsby",
   right1: "https://ipfs.io/ipfs/bafkreifdy25dy7oywuhwauo2y7jacny3lghk2vficddvbwx2rpy6f4zxqu",
   right2: "https://ipfs.io/ipfs/bafkreic7tlur3ycl2r3zjuuxbghhfihucexc3biucb753j2576ltrogptq",
-  flip: "https://ipfs.io/ipfs/bafkreic6iy37nlapsjm2tgvfzb72fkop47lgwwthjaomyg7sl63pp7lcgy"
+  flip: "https://ipfs.io/ipfs/bafkreic6iy37nlapsjm2tgvfzb72fkop47lgwwthjaomyg7sl63pp7lcgy",
+
+  // 🧠 WANDER LEFT
+  leftWanderStart: "https://ipfs.io/ipfs/bafkreibpxtm3yhlnddcf4r52qzy3fvawyi5zy4ziirbzi7w7wxmpzuocbe",
+  leftWander1: "https://ipfs.io/ipfs/bafkreidr7hgt52zfhbyjhr6u5btsm3twfeptg5gheyjourcmahbhkbvg4u",
+  leftWander2: "https://ipfs.io/ipfs/bafkreidza6pnuwtpxuo2huoz2zqhbev7nnzypz5yuquxfwm674bmkfi2de",
+
+  // 🧠 WANDER RIGHT
+  rightWanderStart: "https://ipfs.io/ipfs/bafkreieqyh3yga2ndghygu75627nel245jq4ejaanszt2awbxdxdvfrive",
+  rightWander1: "https://ipfs.io/ipfs/bafybeidgpv2iy5xgga2xkj7rf5qticbtjbsvvyjcnrxszqcttdngtas7rm",
+  rightWander2: "https://ipfs.io/ipfs/bafybeibedqqftre75xtlyjse6qrgc3kwvfxckqmkva3opv5s3ocixsiaya"
 };
 
 export default function Character({ currentTab, tabsRef }) {
@@ -17,7 +28,6 @@ export default function Character({ currentTab, tabsRef }) {
   const idleTimer = useRef(null);
   const wandering = useRef(false);
 
-  // 🎯 OFFSET SYSTEM
   const offsets = {
     0: -120,
     1: 0,
@@ -31,24 +41,22 @@ export default function Character({ currentTab, tabsRef }) {
 
     const rect = el.getBoundingClientRect();
     const baseX =
-      rect.left +
-      rect.width / 2 -
-      characterRef.current.offsetWidth / 2;
+      rect.left + rect.width / 2 - characterRef.current.offsetWidth / 2;
 
     return baseX + (offsets[index] || 0);
   }
 
-  // 🧠 RESET IDLE TIMER
+  // 🧠 IDLE TIMER
   function resetIdleTimer() {
     clearTimeout(idleTimer.current);
     wandering.current = false;
 
     idleTimer.current = setTimeout(() => {
       startWandering();
-    }, 30000); // ⏱️ 30s idle
+    }, 30000);
   }
 
-  // 🎲 RANDOM WANDER
+  // 🎲 WANDER SYSTEM
   function startWandering() {
     const char = characterRef.current;
     if (!char) return;
@@ -56,47 +64,60 @@ export default function Character({ currentTab, tabsRef }) {
     wandering.current = true;
 
     const screenWidth = window.innerWidth;
-    const randomX = Math.random() * (screenWidth - 150);
+    const targetX = Math.random() * (screenWidth - 150);
+    const currentX = char.getBoundingClientRect().left;
 
-    const currentX =
-      char.getBoundingClientRect().left;
+    const goingRight = targetX > currentX;
 
-    const goingRight = randomX > currentX;
+    // 🎬 START FRAME
+    char.src = goingRight
+      ? assets.rightWanderStart
+      : assets.leftWanderStart;
 
-    const walkFrames = goingRight
-      ? [assets.right1, assets.right2]
-      : [assets.left1, assets.left2];
+    setTimeout(() => {
+      // 🔁 LOOP FRAMES
+      let frame = 0;
 
-    let frame = 0;
-
-    clearInterval(walkInterval.current);
-    walkInterval.current = setInterval(() => {
-      char.src = walkFrames[frame % 2];
-      frame++;
+      clearInterval(walkInterval.current);
+      walkInterval.current = setInterval(() => {
+        if (goingRight) {
+          char.src =
+            frame % 2 === 0
+              ? assets.rightWander1
+              : assets.rightWander2;
+        } else {
+          char.src =
+            frame % 2 === 0
+              ? assets.leftWander1
+              : assets.leftWander2;
+        }
+        frame++;
+      }, 200);
     }, 180);
 
-    const distance = Math.abs(randomX - currentX);
+    const distance = Math.abs(targetX - currentX);
     const duration = 1500 + distance * 1.2;
 
     char.style.transition = `transform ${duration}ms linear`;
-    char.style.transform = `translateX(${randomX}px)`;
+    char.style.transform = `translateX(${targetX}px)`;
 
     setTimeout(() => {
       clearInterval(walkInterval.current);
 
+      // 🔄 FLIP TRANSITION
       char.src = assets.flip;
 
       setTimeout(() => {
         char.src = goingRight ? assets.right1 : assets.left1;
+
         if (wandering.current) {
-          // 🔁 continue wandering loop
-          startWandering();
+          startWandering(); // 🔁 LOOP wander
         }
       }, 250);
     }, duration);
   }
 
-  // 🚶 TAB NAVIGATION
+  // 🚶 TAB NAV (UNCHANGED CORE, JUST CLEANER)
   useEffect(() => {
     const char = characterRef.current;
     if (!char) return;
@@ -104,7 +125,6 @@ export default function Character({ currentTab, tabsRef }) {
     const from = prevTab.current;
     const to = currentTab;
 
-    // 🛑 stop wandering immediately
     wandering.current = false;
     clearInterval(walkInterval.current);
 
@@ -115,21 +135,16 @@ export default function Character({ currentTab, tabsRef }) {
 
     const goingRight = to > from;
 
-    const walkFrames = goingRight
-      ? [assets.right1, assets.right2]
-      : [assets.left1, assets.left2];
-
     let frame = 0;
 
     walkInterval.current = setInterval(() => {
-      char.src = walkFrames[frame % 2];
+      char.src = goingRight
+        ? frame % 2 === 0 ? assets.right1 : assets.right2
+        : frame % 2 === 0 ? assets.left1 : assets.left2;
       frame++;
-    }, 160); // ⚡ slightly faster animation
+    }, 160);
 
-    const distance = Math.abs(to - from);
-
-    // ⚡ faster movement than before
-    const duration = 800 + distance * 300;
+    const duration = 800 + Math.abs(to - from) * 300;
 
     char.style.transition = `transform ${duration}ms linear`;
     char.style.transform = `translateX(${getTabX(to)}px)`;
@@ -140,17 +155,12 @@ export default function Character({ currentTab, tabsRef }) {
       char.src = assets.flip;
 
       setTimeout(() => {
-        if (to === 0) {
-          char.src = assets.right1;
-        } else if (to === 3) {
-          char.src = assets.left1;
-        } else {
-          char.src = goingRight ? assets.right1 : assets.left1;
-        }
+        if (to === 0) char.src = assets.right1;
+        else if (to === 3) char.src = assets.left1;
+        else char.src = goingRight ? assets.right1 : assets.left1;
 
         prevTab.current = to;
-
-        resetIdleTimer(); // 🧠 restart idle timer
+        resetIdleTimer();
       }, 250);
     }, duration);
 
@@ -160,22 +170,19 @@ export default function Character({ currentTab, tabsRef }) {
     };
   }, [currentTab]);
 
-  // 🟢 INITIAL POSITION
+  // 🟢 INITIAL
   useEffect(() => {
     const char = characterRef.current;
     if (!char) return;
 
-    const setStart = () => {
+    const init = () => {
       char.style.transform = `translateX(${getTabX(0)}px)`;
       char.src = assets.right1;
       resetIdleTimer();
     };
 
-    if (char.complete) {
-      setStart();
-    } else {
-      char.onload = setStart;
-    }
+    if (char.complete) init();
+    else char.onload = init;
   }, []);
 
   return (
