@@ -40,7 +40,12 @@ useEffect(() => {
       <img src="https://ipfs.io/ipfs/bafybeihkhckfk72hi77yrr3sf7leby5agmsq5cpdvel65vw43cb6bx2zb4" className="bg" />
 
       <Character currentTab={tab} tabsRef={tabsRef} />
-      <Navigation setTab={setTab} tabsRef={tabsRef} />
+
+      <Navigation
+        setTab={setTab}
+        tabsRef={tabsRef}
+        activeTab={tab}
+      />
 
       <button className="wallet" onClick={() => connectWallet(setWallet)}>
         {wallet ? wallet.slice(0,6) + '...' : 'Connect Wallet'}
@@ -106,6 +111,25 @@ html, body {
   background:rgba(255,255,255,0.15);
   border-radius:12px;
   backdrop-filter:blur(10px);
+}
+
+.tab {
+  cursor:pointer;
+  padding:12px 18px;
+  border-radius:12px;
+  background:rgba(255,255,255,0.15);
+  transition: all 0.15s ease;
+}
+
+/* 👇 press effect */
+.tab:active {
+  transform: scale(0.92);
+}
+
+/* 👇 selected tab */
+.tab.active {
+  background:rgba(255,255,255,0.35);
+  transform: scale(1.05);
 }
 
   .wallet {
