@@ -193,6 +193,25 @@ function showProfileCard() {
   fetch(`/api/opensea?address=${walletAddress}`)
     .then(res => res.json())
     .then(data => {
+      const nft = data.nfts?.[0];
+
+      if (!nft) {
+        nftMeta.innerText = "No NFT Found";
+        return;
+      }
+
+      nftImage.src = nft.image;
+      nftMeta.innerText = nft.name;
+
+      setTimeout(() => card.classList.add('show'), 200);
+    })
+    .catch(err => {
+      console.error("NFT LOAD ERROR", err);
+      nftMeta.innerText = "Error loading NFT";
+    });
+}`)
+    .then(res => res.json())
+    .then(data => {
       if (data.length > 0) {
         const nft = data[0];
         nftImage.src = nft.image_url;
