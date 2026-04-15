@@ -42,20 +42,23 @@ function getTabX(index) {
       ? [assets.right1, assets.right2]
       : [assets.left1, assets.left2];
 
-    let frame = 0;
-    let running = true;
+let frame = 0;
+let walkTimer;
 
-    function walkLoop() {
-      if (!running) return;
-      setSprite(walkFrames[frame % 2]);
-      frame++;
-      setTimeout(() => requestAnimationFrame(walkLoop), 100);
-    }
+function walkLoop() {
+  setSprite(walkFrames[frame % 2]);
+  frame++;
 
+  walkTimer = setTimeout(() => {
+    requestAnimationFrame(walkLoop);
+  }, 140);
+}
     walkLoop();
 
     const targetX = getTabX(currentTab);
-    const duration = 1000;
+    
+    const distance = Math.abs(targetIndex - currentIndex);
+    const duration = 1400 + distance * 600;
 
     characterRef.current.style.transition = `transform ${duration}ms cubic-bezier(0.22,1,0.36,1)`;
     characterRef.current.style.transform = `translateX(${targetX}px)`;
@@ -77,6 +80,7 @@ function getTabX(index) {
         setSprite(assets.flip);
 
         setTimeout(() => {
+          clearTimeout(walkTimer);
           setSprite(finalDirection === 'right' ? assets.right1 : assets.left1);
           setCurrentIndex(currentTab);
         }, 250);
