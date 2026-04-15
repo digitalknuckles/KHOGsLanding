@@ -1,5 +1,5 @@
-export async function fetchNFT(address) {
+export async function fetchNFTs(address) {
   const res = await fetch(`/api/opensea?address=${address}`);
   const data = await res.json();
-  return data.nfts?.[0];
+  return data.nfts || [];
 }
