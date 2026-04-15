@@ -56,4 +56,25 @@ export default async function handler(req, res) {
           attributes:
             n.traits ||
             metadata.attributes ||
+            []
+        };
+      })
+      .filter(n => n.image);
+
+    console.log("FILTERED NFTs:", nfts.length);
+
+    const result = { nfts };
+
+    // store in cache
+    cache[address] = result;
+
+    return res.status(200).json(result);
+
+  } catch (err) {
+    console.error("API ERROR:", err);
+    return res.status(500).json({
+      error: "Internal Server Error",
+      details: err.message
+    });
+  }
 }
