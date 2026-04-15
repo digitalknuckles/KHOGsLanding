@@ -36,6 +36,10 @@ export default async function handler(req, res) {
       }))
       .filter(n => n.image);
 
+    attributes:
+  n.traits ||
+  n.metadata?.attributes ||
+  []
     const result = { nfts };
     cache[address] = result;
 
