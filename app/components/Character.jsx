@@ -23,6 +23,20 @@ export default function Character({ currentTab, tabsRef }) {
     return rect.left + rect.width / 2 - characterRef.current.offsetWidth / 2;
   }
 
+  let baseX = rect.left + rect.width / 2 - characterRef.current.offsetWidth / 2;
+
+  // 🎯 OFFSET SYSTEM (tweak these values)
+  const offsets = {
+    0: -120, // HOME → move LEFT
+    1: 0,
+    2: 0,
+    3: 120  // PROFILE → move RIGHT
+  };
+
+  return baseX + (offsets[index] || 0);
+}
+  
+  
   useEffect(() => {
     const char = characterRef.current;
     if (!char) return;
