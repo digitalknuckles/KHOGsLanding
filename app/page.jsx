@@ -56,6 +56,13 @@ useEffect(() => {
 )}
 
       <style jsx global>{`
+  body, html {
+    margin:0;
+    padding:0;
+    overflow:hidden;
+    font-family:sans-serif;
+  }
+
 html, body {
   touch-action: manipulation;
   overscroll-behavior: none;
