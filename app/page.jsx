@@ -8,6 +8,7 @@ import { connectWallet } from './lib/wallet';
 import { fetchNFT } from './lib/opensea';
 
 export default function Page() {
+  const tabsRef = useRef([]);
   const [tab, setTab] = useState(0);
   const [wallet, setWallet] = useState(null);
   const [nft, setNft] = useState(null);
@@ -22,9 +23,8 @@ export default function Page() {
     <div className="container">
       <img src="https://ipfs.io/ipfs/bafybeihkhckfk72hi77yrr3sf7leby5agmsq5cpdvel65vw43cb6bx2zb4" className="bg" />
 
-      <Character currentTab={tab} />
-
-      <Navigation setTab={setTab} />
+      <Character currentTab={tab} tabsRef={tabsRef} />
+      <Navigation setTab={setTab} tabsRef={tabsRef} />
 
       <button className="wallet" onClick={() => connectWallet(setWallet)}>
         {wallet ? wallet.slice(0,6) + '...' : 'Connect Wallet'}
