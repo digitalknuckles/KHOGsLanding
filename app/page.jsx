@@ -137,6 +137,10 @@ html, body {
   animation: pop 0.4s ease;
 }
 
+.card {
+  transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
+}
+
 .nft-img {
   width:100%;
   border-radius:10px;
@@ -188,6 +192,29 @@ html, body {
 
 .dot.active {
   background:white;
+}
+
+.background { z-index:0; }
+.card { z-index:2; }
+.character { z-index:3; }
+.nav { z-index:4; }
+.wallet { z-index:5; }
+
+.card {
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.tab {
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.viewport::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background: radial-gradient(circle at center, transparent 60%, rgba(0,0,0,0.5));
 }
 `}</style>
     </div>
