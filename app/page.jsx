@@ -14,14 +14,18 @@ export default function Page() {
   const [nft, setNft] = useState(null);
 
 
+  //useEffect(() => {
+  //tabsRef.current = [];
+//}, []);
+
   useEffect(() => {
-  tabsRef.current = [];
-}, []);
- // useEffect(() => {
-    //if (tab === 3 && wallet) {
-    //  fetchNFT(wallet).then(setNft);
-  //  }
-//  }, [tab, wallet]);
+  if (tab === 3 && wallet) {
+    fetchNFT(wallet).then(data => {
+      console.log("NFT:", data);
+      setNft(data);
+    });
+  }
+}, [tab, wallet]);
 
   return (
     <div className="container">
