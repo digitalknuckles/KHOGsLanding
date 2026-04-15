@@ -45,24 +45,26 @@ export default function Page() {
     <div className="container">
 
       {/* 🌄 RESPONSIVE BACKGROUND */}
-      <picture className="background">
-        <source
-          media="(min-width: 1400px)"
-          srcSet="https://ipfs.io/ipfs/bafybeigxprm4pptl6cg2lysvocw6ocfnv66ygn7evtxjuadqayevzvun2m"
-        />
-        <source
-          media="(min-width: 768px)"
-          srcSet="https://ipfs.io/ipfs/bafybeihkhckfk72hi77yrr3sf7leby5agmsq5cpdvel65vw43cb6bx2zb4"
-        />
-        <source
-          media="(min-width: 480px)"
-          srcSet="https://ipfs.io/ipfs/bafkreif6hlgr73cqxolmjh2mir4flvpi26apl2mvt53ra4gtav57ewltby"
-        />
-        <img
-          src="https://ipfs.io/ipfs/bafkreiclut5bpexxx7bcjoe3fomtw2yqoys3ltt2tm3d4ldsfw2tn24lmm"
-          alt="background"
-        />
-      </picture>
+<div className="background">
+  <picture>
+    <source
+      media="(min-width: 1400px)"
+      srcSet="https://ipfs.io/ipfs/bafybeigxprm4pptl6cg2lysvocw6ocfnv66ygn7evtxjuadqayevzvun2m"
+    />
+    <source
+      media="(min-width: 768px)"
+      srcSet="https://ipfs.io/ipfs/bafybeihkhckfk72hi77yrr3sf7leby5agmsq5cpdvel65vw43cb6bx2zb4"
+    />
+    <source
+      media="(min-width: 480px)"
+      srcSet="https://ipfs.io/ipfs/bafkreif6hlgr73cqxolmjh2mir4flvpi26apl2mvt53ra4gtav57ewltby"
+    />
+    <img
+      src="https://ipfs.io/ipfs/bafkreiclut5bpexxx7bcjoe3fomtw2yqoys3ltt2tm3d4ldsfw2tn24lmm"
+      alt="background"
+    />
+  </picture>
+</div>
 
       {/* 🎮 CHARACTER */}
       <Character currentTab={tab} tabsRef={tabsRef} />
@@ -112,24 +114,25 @@ html, body {
   height:100vh;
 }
 
-/* 🌄 BACKGROUND */
 .background {
   position:absolute;
   inset:0;
-  width:100%;
-  height:100%;
   z-index:0;
 }
 
+.background picture,
 .background img {
   width:100%;
   height:100%;
+  display:block;
+}
+
+.background img {
   object-fit:cover;
-  object-position:center;
   transform: scale(1.02);
 }
 
-/* 🎭 CINEMATIC OVERLAY */
+/* ✅ overlay now works properly */
 .background::after {
   content:'';
   position:absolute;
