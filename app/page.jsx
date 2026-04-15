@@ -51,13 +51,10 @@ useEffect(() => {
 )}
 
       <style jsx global>{`
-  body, html {
-    margin:0;
-    padding:0;
-    overflow:hidden;
-    font-family:sans-serif;
-  }
-
+html, body {
+  touch-action: manipulation;
+  overscroll-behavior: none;
+}
   .character {
     position:absolute;
     bottom:0;
@@ -67,25 +64,27 @@ useEffect(() => {
     pointer-events:none;
   }
 
-  .nav {
-    position:absolute;
-    top:0;
-    width:100%;
-    height:100px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:40px;
-    z-index:4;
-  }
+.nav {
+  flex-wrap:wrap;
+  gap:12px;
+  padding:10px;
+}
+  
+* {
+  -webkit-user-select:none;
+  user-select:none;
+}
 
-  .tab {
-    cursor:pointer;
-    padding:10px 20px;
-    background:rgba(255,255,255,0.1);
-    border-radius:10px;
-    backdrop-filter:blur(10px);
-  }
+.tab {
+  cursor:pointer;
+  padding:12px 18px;
+  font-size:14px;
+  min-width:80px;
+  text-align:center;
+  background:rgba(255,255,255,0.15);
+  border-radius:12px;
+  backdrop-filter:blur(10px);
+}
 
   .wallet {
     position:absolute;
