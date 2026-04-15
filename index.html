@@ -15,11 +15,13 @@
   .character {
     position:absolute;
     bottom:0;
+    left:0; /* ensure visible anchor */
     height:100vh;
     width:auto;
     transform-origin:bottom center;
-    z-index:3; /* ABOVE card */
+    z-index:3;
     will-change:transform;
+    display:block;
   }
 
   .nav {
@@ -92,7 +94,7 @@
     <div id="nftMeta">No NFT Loaded</div>
   </div>
 
-  <img id="character" class="character" />
+  <img id="character" class="character" src="https://ipfs.io/ipfs/bafkreifdy25dy7oywuhwauo2y7jacny3lghk2vficddvbwx2rpy6f4zxqu" />
 
   <div class="wallet" id="walletBtn">Connect Wallet</div>
 
@@ -133,7 +135,17 @@ function getTabX(index) {
 }
 
 window.addEventListener('load', () => {
-  character.style.transform = `translateX(${getTabX(0)}px)`;
+  // ensure image is loaded before positioning
+  const setInitialPosition = () => {
+    const x = getTabX(0);
+    character.style.transform = `translateX(${x}px)`;
+  };
+
+  if (character.complete) {
+    setInitialPosition();
+  } else {
+    character.onload = setInitialPosition;
+  }
 });
 
 function animateCharacter(targetIndex) {
@@ -240,3 +252,4 @@ walletBtn.addEventListener('click', async () => {
 </script>
 </body>
 </html>
+
