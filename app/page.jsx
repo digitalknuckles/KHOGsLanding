@@ -97,9 +97,31 @@ html, body {
   padding:10px;
 }
   
-* {
+body {
   -webkit-user-select:none;
   user-select:none;
+}
+
+.traits {
+  max-height:150px;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  margin-top:5px;
+
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity:0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity:1;
+    transform: translateY(0);
+  }
 }
 
 .tab {
