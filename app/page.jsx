@@ -14,11 +14,20 @@ export default function Page() {
   const [nfts, setNfts] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
+  
   //For both single and plural fetch
 //export async function fetchNFT(address) {
  // const nfts = await fetchNFTs(address);
  // return nfts[0];
 //}
+  const [isDesktop, setIsDesktop] = useState(false);
+
+useEffect(() => {
+  const check = () => setIsDesktop(window.innerWidth > 768);
+  check();
+  window.addEventListener('resize', check);
+  return () => window.removeEventListener('resize', check);
+}, []);
   
 useEffect(() => {
   if (tab === 3 && wallet) {
@@ -62,6 +71,14 @@ useEffect(() => {
         <div className="viewport">
   <div className="stage">
     {/* EVERYTHING goes here */
+      <img
+  src={
+    isDesktop
+      ? "/desktop-bg.png"
+      : "https://ipfs.io/ipfs/bafybeihkhckfk72hi77yrr3sf7leby5agmsq5cpdvel65vw43cb6bx2zb4"
+  }
+  className="background"
+/>
     <div className="container">
       <img src="https://ipfs.io/ipfs/bafybeihkhckfk72hi77yrr3sf7leby5agmsq5cpdvel65vw43cb6bx2zb4" className="bg" />
 
@@ -93,6 +110,12 @@ html, body {
   touch-action: manipulation;
   overscroll-behavior: none;
 }
+
+body {
+  overscroll-behavior: none;
+  touch-action: manipulation;
+}
+
   .character {
     position:absolute;
     bottom:0;
@@ -214,6 +237,23 @@ html, body {
 
 .dot.active {
   background:white;
+}
+
+.viewport {
+  width:100vw;
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  background:black;
+}
+
+.stage {
+  width:315px;
+  height:1084px;
+  position:relative;
+  transform-origin: top left;
 }
 `}</style>
     </div>
