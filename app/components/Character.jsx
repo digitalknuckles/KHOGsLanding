@@ -163,7 +163,7 @@ export default function Character({ currentTab, tabsRef }) {
 
         prevTab.current = to;
         resetIdle();
-      }, 250);
+      }, 120);
 
     }, duration);
 
