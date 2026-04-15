@@ -24,10 +24,10 @@ function getTabX(index) {
 
   // 🎯 OFFSET SYSTEM (tweak these values)
   const offsets = {
-    0: -120, // HOME → move LEFT
+    0: -150, // HOME → move LEFT
     1: 0,
     2: 0,
-    3: 120  // PROFILE → move RIGHT
+    3: 150  // PROFILE → move RIGHT
   };
 
   return baseX + (offsets[index] || 0);
@@ -49,13 +49,13 @@ function getTabX(index) {
       if (!running) return;
       setSprite(walkFrames[frame % 2]);
       frame++;
-      setTimeout(() => requestAnimationFrame(walkLoop), 120);
+      setTimeout(() => requestAnimationFrame(walkLoop), 100);
     }
 
     walkLoop();
 
     const targetX = getTabX(currentTab);
-    const duration = 1200;
+    const duration = 1000;
 
     characterRef.current.style.transition = `transform ${duration}ms cubic-bezier(0.22,1,0.36,1)`;
     characterRef.current.style.transform = `translateX(${targetX}px)`;
