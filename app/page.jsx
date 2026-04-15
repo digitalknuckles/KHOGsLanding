@@ -5,7 +5,7 @@ import Character from './components/Character';
 import Navigation from './components/Navigation';
 import NFTCard from './components/NFTCard';
 import { connectWallet } from './lib/wallet';
-import { fetchNFT } from './lib/opensea';
+import { fetchNFTs } from './lib/opensea';
 
 export default function Page() {
   const tabsRef = useRef([]);
@@ -14,7 +14,12 @@ export default function Page() {
   const [nfts, setNfts] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
-
+  //For both single and plural fetch
+//export async function fetchNFT(address) {
+ // const nfts = await fetchNFTs(address);
+ // return nfts[0];
+//}
+  
 useEffect(() => {
   if (tab === 3 && wallet) {
     fetchNFTs(wallet).then(setNfts);
