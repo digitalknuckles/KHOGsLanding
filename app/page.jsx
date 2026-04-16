@@ -309,18 +309,18 @@ html, body {
 .door {
   position: absolute;
 
-  /* 🎯 POSITION relative to screen (based on 1920x1080) */
-  left: 84.1%;   /* 1615 / 1920 */
-  top: 94.2%;    /* 1018 / 1080 */
+  width: calc(140px * var(--scale));
+  max-width: 220px;
 
-  /* 🎯 RESPONSIVE SIZE */
-  width: clamp(60px, 8vw, 140px);
+  transform: translate(-50%, -50%) scale(var(--scale));
+  transform-origin: center bottom;
 
-  transform: translate(-50%, -100%);
-  transform-origin: right center; /* 🔥 hinge on RIGHT SIDE */
-
-  z-index: 6;
+  z-index: 3;
   cursor: pointer;
+
+  transition:
+    transform 0.25s ease,
+    filter 0.25s ease;
 }
 
 .door img {
@@ -330,16 +330,15 @@ html, body {
   pointer-events: none;
 }
 
-/* ✨ HOVER / ACTIVE STATE */
+/* 🚪 OPEN STATE */
 .door.open {
-  transform: translate(-50%, -100%) rotateY(-35deg) scale(1.1);
+  transform: translate(-50%, -50%) scale(calc(var(--scale) * 2.06));
   filter: brightness(1.2) drop-shadow(0 0 12px rgba(255,255,255,0.6));
-  transition: transform 0.3s ease, filter 0.3s ease;
 }
 
-/* 💥 CLICK FEEDBACK */
-.door:active {
-  transform: translate(-50%, -100%) scale(0.95);
+/* 💥 PRESS FEEDBACK */
+.door.pressed {
+  transform: translate(-50%, -50%) scale(calc(var(--scale) * 0.95));
 }
 
       `}</style>
