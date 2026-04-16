@@ -125,6 +125,29 @@ html, body {
   z-index:0;
 }
 
+    .legal-toggle {
+  margin-top: 2rem;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.legal-toggle button {
+  background: none;
+  color: #00eaff;
+  border: none;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.legal-content {
+  display: none;
+  margin-top: 1rem;
+  font-size: 0.85remf;
+  color: #ccc;
+}
+
 .background picture,
 .background img {
   width:100%;
