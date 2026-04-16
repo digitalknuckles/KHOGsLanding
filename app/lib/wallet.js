@@ -16,7 +16,7 @@ export async function connectWallet(setWallet) {
     } else {
       // 🔵 2. WALLETCONNECT FALLBACK
       const wc = await EthereumProvider.init({
-        projectId: "YOUR_WALLETCONNECT_PROJECT_ID",
+        projectId: "b4fcbd4e9afe75e48336e63ce5b33e22",
         chains: [1, 137], // ETH + Polygon
         showQrModal: true,
       });
