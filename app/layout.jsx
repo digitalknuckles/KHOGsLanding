@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 
-export const metadata = { 
-  title: 'Your App',
+export const metadata = {
+  title: 'KHOGs©',
   description: 'Animated Navigation App',
 };
 
@@ -13,7 +13,6 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <title>KHOGs©</title>
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
@@ -23,132 +22,178 @@ export default function RootLayout({ children }) {
       <body>
         {children}
 
-        {/* 🧾 LEGAL TOGGLE BUTTON */}
+        {/* 🟢 FLOATING LEGAL BUTTON */}
         <button
           className="legal-btn"
-          onClick={() => setOpen(!open)}
+          onClick={() => setOpen(true)}
         >
-          📜
+          ⚖️
         </button>
 
-        {/* 🧾 LEGAL PANEL */}
-        <div className={`legal-panel ${open ? 'open' : ''}`}>
-          <div className="legal-content">
+        {/* 📜 MODAL */}
+        {open && (
+          <div className="legal-overlay" onClick={() => setOpen(false)}>
+            <div
+              className="legal-modal"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                className="close-btn"
+                onClick={() => setOpen(false)}
+              >
+                ✕
+              </button>
 
-            <h3>Digitalknuckles Licensing & Legal Disclosures</h3>
+              {/* 📌 QUICK NAV */}
+              <div className="legal-nav">
+                <a href="#ip">IP</a>
+                <a href="#license">License</a>
+                <a href="#royalties">Royalties</a>
+                <a href="#risk">Risk</a>
+                <a href="#law">Law</a>
+              </div>
 
-            <p>
-              This website and all DigitalKnuckles NFTs are created by
-              <strong> Digitalknuckles</strong>.
-            </p>
+              {/* 📜 CONTENT */}
+              <div className="legal-content">
 
-            <h4>IP Ownership</h4>
-            <p>
-              All artwork, characters, and assets remain the property of Digitalknuckles.
-            </p>
+                <h2>Digitalknuckles Legal</h2>
 
-            <h4>Holder License</h4>
-            <p>
-              NFT holders receive a limited license for personal display only.
-              Commercial use is prohibited without written permission.
-            </p>
+                <section id="ip">
+                  <h3>1. Intellectual Property</h3>
+                  <p>
+                    All artwork, designs, characters, animations, metadata,
+                    names, logos, trademarks, and copyrights remain the
+                    exclusive property of Digitalknuckles.
+                  </p>
+                </section>
 
-            <h4>No Financial Rights</h4>
-            <p>
-              NFTs are collectibles, not investments. No profit expectation,
-              revenue share, or ownership is granted.
-            </p>
+                <section id="license">
+                  <h3>2. License</h3>
+                  <p>
+                    NFT holders receive a limited, non-exclusive,
+                    non-transferable license for personal display only.
+                  </p>
+                </section>
 
-            <h4>Risk</h4>
-            <p>
-              Use at your own risk. Smart contracts, markets, and platforms may fail.
-            </p>
+                <section id="royalties">
+                  <h3>3. Royalties</h3>
+                  <p>
+                    Royalties are enforced only where supported by marketplaces
+                    and are not guaranteed.
+                  </p>
+                </section>
 
-            <p style={{ opacity: 0.6, fontSize: '12px' }}>
-              © 2026 Digitalknuckles
-            </p>
+                <section id="risk">
+                  <h3>4. Risk</h3>
+                  <p>
+                    NFTs involve market, technical, and regulatory risks.
+                    Participation is at your own risk.
+                  </p>
+                </section>
 
+                <section id="law">
+                  <h3>5. Governing Law</h3>
+                  <p>
+                    Subject to applicable jurisdiction without conflict-of-law principles.
+                  </p>
+                </section>
+
+              </div>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* 🎨 STYLES */}
         <style jsx global>{`
 
-          /* 🔘 floating button */
+          /* 🔘 FLOAT BUTTON */
           .legal-btn {
             position: fixed;
-            bottom: 16px;
-            right: 16px;
-            z-index: 999;
-
-            width: 42px;
-            height: 42px;
+            bottom: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             border: none;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            font-size: 20px;
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            cursor: pointer;
+          }
 
-            background: rgba(0,0,0,0.6);
+          /* 🌑 OVERLAY */
+          .legal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9998;
+          }
+
+          /* 📦 MODAL */
+          .legal-modal {
+            width: 90%;
+            max-width: 420px;
+            max-height: 80vh;
+            background: rgba(20,20,20,0.95);
+            border-radius: 16px;
+            padding: 20px;
+            color: white;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+          }
+
+          /* ❌ CLOSE */
+          .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent;
+            border: none;
             color: white;
             font-size: 18px;
-
-            backdrop-filter: blur(10px);
             cursor: pointer;
-
-            transition: transform 0.2s ease;
           }
 
-          .legal-btn:active {
-            transform: scale(0.9);
+          /* 📌 NAV LINKS */
+          .legal-nav {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
           }
 
-          /* 📄 panel */
-          .legal-panel {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            max-height: 70vh;
-
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-
-            z-index: 998;
-          }
-
-          .legal-panel.open {
-            transform: translateY(0);
-          }
-
-          /* 📦 content */
-          .legal-content {
-            background: rgba(0,0,0,0.9);
+          .legal-nav a {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.1);
+            text-decoration: none;
             color: white;
-            padding: 20px;
+          }
 
+          /* 📜 SCROLL AREA */
+          .legal-content {
             overflow-y: auto;
-            max-height: 70vh;
+            font-size: 13px;
+            line-height: 1.5;
+          }
 
-            border-top-left-radius: 16px;
-            border-top-right-radius: 16px;
-
-            backdrop-filter: blur(12px);
+          .legal-content section {
+            margin-bottom: 16px;
           }
 
           .legal-content h3 {
-            margin-top: 0;
-          }
-
-          .legal-content h4 {
-            margin-top: 12px;
-            font-size: 14px;
-            opacity: 0.8;
-          }
-
-          .legal-content p {
-            font-size: 12px;
-            line-height: 1.4;
+            margin-bottom: 6px;
           }
 
         `}</style>
+
       </body>
     </html>
   );
