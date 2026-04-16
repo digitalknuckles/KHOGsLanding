@@ -334,7 +334,7 @@ html, body {
 
 /* ✨ hover / open state */
 .door.open {
-  --scale: 1.08;
+  --scale: 2.06;
   filter: brightness(1.2) drop-shadow(0 0 12px rgba(255,255,255,0.6));
 }
 
