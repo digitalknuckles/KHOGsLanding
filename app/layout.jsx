@@ -16,13 +16,7 @@ export default function RootLayout({ children }) {
       </head>
 
       <body>
-              <Door onEnter={() => {
-            console.log("🚪 ENTER ROOM");
-            // TODO: route or animate transition
-          }} />
         {children}
-
-        {/* ✅ Client component lives inside */}
         <LegalModal />
       </body>
     </html>
