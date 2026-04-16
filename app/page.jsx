@@ -58,7 +58,7 @@ useEffect(() => {
         <picture>
           <source
             media="(min-width: 1400px)"
-            srcSet="https://ipfs.io/ipfs/bafybeigxprm4pptl6cg2lysvocw6ocfnv66ygn7evtxjuadqayevzvun2m"
+            srcSet="https://ipfs.io/ipfs/bafybeihx5unhlzyxvb5q7i5h3mtreh6f5iq65yf6xfaxe2dspqmikfrjcu"
           />
           <source
             media="(min-width: 768px)"
