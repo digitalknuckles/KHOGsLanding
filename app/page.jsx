@@ -332,7 +332,7 @@ html, body {
 
 /* 🚪 OPEN STATE */
 .door.open {
-  transform: translate(-50%, -50%) scale(calc(var(--scale) * 2.15));
+  transform: translate(-50%, -50%) scale(calc(var(--scale) * 2.07));
   filter: brightness(1.2) drop-shadow(0 0 12px rgba(255,255,255,0.6));
 }
 
