@@ -318,7 +318,7 @@ html, body {
 
   transform-origin: bottom center;
 
-  width: 120px;
+  width: 125px;
   z-index: 6;
 
   cursor: pointer;
@@ -334,7 +334,7 @@ html, body {
 
 /* ✨ hover / open state */
 .door.open {
-  --scale: 2.06;
+  --scale: 2.07;
   filter: brightness(1.2) drop-shadow(0 0 12px rgba(255,255,255,0.6));
 }
 
