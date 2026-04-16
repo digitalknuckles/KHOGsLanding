@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Character from './components/Character';
 import Navigation from './components/Navigation';
 import NFTCard from './components/NFTCard';
-import { connectWallet } from './lib/wallet';
+import { connectWallet, handleMobileWalletRedirect } from './lib/wallet';
 import { fetchNFTs } from './lib/opensea';
 
 export default function Page() {
@@ -14,6 +14,13 @@ export default function Page() {
   const [nfts, setNfts] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
+  useEffect(() => {
+  const saved = localStorage.getItem("wallet");
+  if (saved) {
+    setWallet(saved);
+  }
+}, []);
+  
   // 🎯 NFT FETCH
   useEffect(() => {
     if (tab === 3 && wallet && nfts.length === 0) {
@@ -83,7 +90,10 @@ export default function Page() {
       {/* 🔗 WALLET */}
       <button
         className="wallet"
-        onClick={() => connectWallet(setWallet)}
+        onClick={() => {
+          handleMobileWalletRedirect(); // 📱 fixes mobile issue
+          connectWallet(setWallet);     // 🔐 connect + SIWE
+        }}
       >
         {wallet
           ? wallet.slice(0, 6) + '...' + wallet.slice(-4)
