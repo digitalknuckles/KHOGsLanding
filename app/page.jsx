@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Door from './components/Door';
 import Character from './components/Character';
 import Navigation from './components/Navigation';
 import NFTCard from './components/NFTCard';
