@@ -2,56 +2,64 @@
 
 import { useState, useRef } from 'react';
 
-const DOOR_ASSET =
+const CLOSED =
+  "https://ipfs.io/ipfs/bafkreicelhsdslcflfflph3hwsez3ytdle53nbnyr3i7f4yain4d5tbtqy";
+
+const OPEN =
   "https://ipfs.io/ipfs/bafkreicngryldkw3ntzgndo3dsoowfee7i7jbp5kmerrdadrjonqhzsome";
 
-export default function Door({ onEnter }) {
-  const [hovered, setHovered] = useState(false);
+export default function Door({ onEnter, scale = 1 }) {
+  const [isOpen, setIsOpen] = useState(false);
   const [pressed, setPressed] = useState(false);
   const holdRef = useRef(null);
 
-  // 🎯 POSITION (relative to 1920x1080 background)
-const doorX = 1645 / 1920; // ✅ correct
-const doorY = 500 / 1080;  // 🔥 FIX (NOT 0)
+  // 🎯 POSITION (based on your background)
+  const doorX = 1745 / 1920;
+  const doorY = 320 / 1080;
 
   return (
     <div
-      className={`door ${hovered || pressed ? 'active' : ''}`}
+      className={`door ${isOpen ? 'open' : ''} ${pressed ? 'pressed' : ''}`}
       style={{
         left: `${doorX * 100}%`,
-        top: `${doorY * 100}%`
+        top: `${doorY * 100}%`,
+        '--scale': scale
       }}
 
       // 🖱 DESKTOP
-      onMouseEnter={() => setHovered(true)}
+      onMouseEnter={() => setIsOpen(true)}
       onMouseLeave={() => {
-        setHovered(false);
+        setIsOpen(false);
         setPressed(false);
       }}
 
       // 📱 TOUCH
       onTouchStart={() => {
         setPressed(true);
+        setIsOpen(true);
 
-        // simulate hold
         holdRef.current = setTimeout(() => {
-          console.log('🚪 HOLD TRIGGER');
-        }, 300);
+          if (onEnter) onEnter();
+        }, 350);
       }}
 
       onTouchEnd={() => {
         clearTimeout(holdRef.current);
         setPressed(false);
 
-        // 🎯 CLICK ACTION (transition placeholder)
         if (onEnter) onEnter();
       }}
 
+      // 🖱 CLICK
       onClick={() => {
         if (onEnter) onEnter();
       }}
     >
-      <img src={DOOR_ASSET} alt="door" />
+      <img
+        src={isOpen ? OPEN : CLOSED}
+        alt="door"
+        draggable={false}
+      />
     </div>
   );
 }
