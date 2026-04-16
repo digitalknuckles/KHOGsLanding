@@ -11,8 +11,8 @@ export default function Door({ onEnter }) {
   const holdRef = useRef(null);
 
   // 🎯 POSITION (relative to 1920x1080 background)
-const doorX = 1745 / 1920; // ✅ correct
-const doorY = 320 / 1080;  // 🔥 FIX (NOT 0)
+const doorX = 1645 / 1920; // ✅ correct
+const doorY = 500 / 1080;  // 🔥 FIX (NOT 0)
 
   return (
     <div
