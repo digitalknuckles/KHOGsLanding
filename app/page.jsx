@@ -309,15 +309,18 @@ html, body {
 .door {
   position: absolute;
 
-  width: 18vw;
-  max-width: 180px;
+  width: calc(140px * var(--scale));
+  max-width: 220px;
 
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) scale(var(--scale));
+  transform-origin: center bottom;
+
   z-index: 3;
-
   cursor: pointer;
 
-  transition: transform 0.2s ease, filter 0.2s ease;
+  transition:
+    transform 0.25s ease,
+    filter 0.25s ease;
 }
 
 .door img {
@@ -327,15 +330,15 @@ html, body {
   pointer-events: none;
 }
 
-/* ✨ hover */
-.door.active {
-  transform: translate(-50%, -50%) scale(1.05);
-  filter: brightness(1.2) drop-shadow(0 0 10px rgba(255,255,255,0.6));
+/* 🚪 OPEN STATE */
+.door.open {
+  transform: translate(-50%, -50%) scale(calc(var(--scale) * 1.05));
+  filter: brightness(1.2) drop-shadow(0 0 12px rgba(255,255,255,0.6));
 }
 
-/* 💥 press */
-.door:active {
-  transform: translate(-50%, -50%) scale(0.95);
+/* 💥 PRESS FEEDBACK */
+.door.pressed {
+  transform: translate(-50%, -50%) scale(calc(var(--scale) * 0.95));
 }
 
       `}</style>
