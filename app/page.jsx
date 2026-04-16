@@ -311,7 +311,7 @@ html, body {
 
   /* 🎯 POSITION (your tuned values) */
   left: calc(1600 / 1920 * 100vw);
-  top: calc(1080 / 1080 * 100vh);
+  top: calc(1100 / 1100 * 100vh);
 
   /* 👇 anchor at bottom center (IMPORTANT) */
   transform: translate(-50%, -100%) scale(var(--scale, 2));
@@ -326,7 +326,7 @@ html, body {
 
 /* 🖼 image */
 .door img {
-  width: 100%;
+  width: 107%;
   height: auto;
   display: block;
   pointer-events: none;
@@ -340,7 +340,7 @@ html, body {
 
 /* 💥 press feedback */
 .door:active {
-  --scale: 0.96;
+  --scale: 2.05;
 }
 
       `}</style>
