@@ -1,62 +1,63 @@
 import { ethers } from 'ethers';
-import EthereumProvider from '@walletconnect/ethereum-provider';
-import { SiweMessage } from 'siwe';
 
-let providerCache = null;
+// ✅ Detect mobile
+export function isMobile() {
+  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
 
+// ✅ Fix mobile redirect (MetaMask deep link)
+export function handleMobileWalletRedirect() {
+  if (typeof window === 'undefined') return;
+
+  if (!window.ethereum && isMobile()) {
+    const dappUrl = window.location.href;
+    const metamaskUrl = `https://metamask.app.link/dapp/${dappUrl.replace(
+      /^https?:\/\//,
+      ''
+    )}`;
+
+    window.location.href = metamaskUrl;
+    return true; // redirected
+  }
+
+  return false;
+}
+
+// ✅ Connect wallet (MetaMask / injected)
 export async function connectWallet(setWallet) {
+  if (!window.ethereum) {
+    alert('No wallet detected');
+    return;
+  }
+
+  const provider = new ethers.BrowserProvider(window.ethereum);
+
+  // request accounts
+  await provider.send("eth_requestAccounts", []);
+
+  const signer = await provider.getSigner();
+  const address = await signer.getAddress();
+
+  setWallet(address);
+
+  // 💾 persist session
+  localStorage.setItem('wallet', address);
+}
+
+// ✅ Auto reconnect on reload
+export async function reconnectWallet(setWallet) {
+  if (!window.ethereum) return;
+
+  const saved = localStorage.getItem('wallet');
+  if (!saved) return;
+
   try {
-    let provider;
-
-    // 🟢 1. META MASK / INJECTED WALLET
-    if (typeof window !== "undefined" && window.ethereum) {
-      provider = new ethers.BrowserProvider(window.ethereum);
-
-      await provider.send("eth_requestAccounts", []);
-    } else {
-      // 🔵 2. WALLETCONNECT FALLBACK
-      const wc = await EthereumProvider.init({
-        projectId: "b4fcbd4e9afe75e48336e63ce5b33e22",
-        chains: [1, 137], // ETH + Polygon
-        showQrModal: true,
-      });
-
-      await wc.connect();
-
-      provider = new ethers.BrowserProvider(wc);
-    }
-
-    providerCache = provider;
-
+    const provider = new ethers.BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
     const address = await signer.getAddress();
 
-    // 🔐 3. SIWE SIGN-IN
-    const domain = window.location.host;
-    const origin = window.location.origin;
-
-    const message = new SiweMessage({
-      domain,
-      address,
-      statement: "Sign in to KHOGs",
-      uri: origin,
-      version: "1",
-      chainId: 1,
-    });
-
-    const signature = await signer.signMessage(message.prepareMessage());
-
-    // OPTIONAL: send to backend for verification
-    // await fetch('/api/verify', { method: 'POST', body: JSON.stringify({ message, signature }) })
-
-    // 💾 SAVE SESSION
-    localStorage.setItem("wallet", address);
-
     setWallet(address);
-
-    console.log("✅ Connected + SIWE verified:", address);
-
-  } catch (err) {
-    console.error("Wallet error:", err);
+  } catch {
+    localStorage.removeItem('wallet');
   }
 }
