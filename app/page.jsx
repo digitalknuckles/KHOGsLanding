@@ -310,16 +310,16 @@ html, body {
   position: absolute;
 
   /* 🎯 POSITION (your tuned values) */
-  left: calc(1615 / 1920 * 100vw);
-  top: calc(1018 / 1080 * 100vh);
+  left: calc(1600 / 1920 * 100vw);
+  top: calc(1079 / 1080 * 100vh);
 
   /* 👇 anchor at bottom center (IMPORTANT) */
-  transform: translate(-50%, -100%) scale(var(--scale, 1));
+  transform: translate(-50%, -100%) scale(var(--scale, 2));
 
   transform-origin: bottom center;
 
   width: 125px;
-  z-index: 6;
+  z-index: 3;
 
   cursor: pointer;
 }
@@ -334,7 +334,7 @@ html, body {
 
 /* ✨ hover / open state */
 .door.open {
-  --scale: 2.07;
+  --scale: 2.08;
   filter: brightness(1.2) drop-shadow(0 0 12px rgba(255,255,255,0.6));
 }
 
