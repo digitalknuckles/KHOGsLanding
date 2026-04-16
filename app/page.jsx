@@ -309,22 +309,20 @@ html, body {
 .door {
   position: absolute;
 
-  /* 🎯 POSITION (your tuned values) */
-  left: calc(2150 / 2560 * 100vw);
-  top: calc(1079 / 1080* 100vh);
+  width: calc(140px * var(--scale));
+  max-width: 220px;
 
-  /* 👇 anchor at bottom center (IMPORTANT) */
-  transform: translate(-50%, -100%) scale(var(--scale, 2));
+  transform: translate(-50%, -50%) scale(var(--scale));
+  transform-origin: center bottom;
 
-  transform-origin: bottom center;
-
-  width: 150px;
   z-index: 3;
-
   cursor: pointer;
+
+  transition:
+    transform 0.25s ease,
+    filter 0.25s ease;
 }
 
-/* 🖼 image */
 .door img {
   width: 100%;
   height: auto;
@@ -332,17 +330,16 @@ html, body {
   pointer-events: none;
 }
 
-/* ✨ hover / open state */
+/* 🚪 OPEN STATE */
 .door.open {
-  --scale: 2.0;
+  transform: translate(-50%, -50%) scale(calc(var(--scale) * 2.06));
   filter: brightness(1.2) drop-shadow(0 0 12px rgba(255,255,255,0.6));
 }
 
-/* 💥 press feedback */
-.door:active {
-  --scale: 1.95;
+/* 💥 PRESS FEEDBACK */
+.door.pressed {
+  transform: translate(-50%, -50%) scale(calc(var(--scale) * 2.1));
 }
-
       `}</style>
     </div>
   );
