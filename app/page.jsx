@@ -310,7 +310,7 @@ html, body {
   position: absolute;
 
   /* 🎯 POSITION (your tuned values) */
-  left: calc(2100 / 2560 * 100vw);
+  left: calc(2150 / 2560 * 100vw);
   top: calc(1439 / 1440* 100vh);
 
   /* 👇 anchor at bottom center (IMPORTANT) */
@@ -318,7 +318,7 @@ html, body {
 
   transform-origin: bottom center;
 
-  width: 125px;
+  width: 150px;
   z-index: 3;
 
   cursor: pointer;
@@ -334,13 +334,13 @@ html, body {
 
 /* ✨ hover / open state */
 .door.open {
-  --scale: 2.2;
+  --scale: 2.0;
   filter: brightness(1.2) drop-shadow(0 0 12px rgba(255,255,255,0.6));
 }
 
 /* 💥 press feedback */
 .door:active {
-  --scale: 2.15;
+  --scale: 1.95;
 }
 
       `}</style>
