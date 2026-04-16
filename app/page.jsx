@@ -308,6 +308,34 @@ html, body {
   from { opacity:0; transform:translateY(10px); }
   to { opacity:1; transform:translateY(0); }
 }
+.door {
+  position: absolute;
+  width: 18vw; /* scales nicely */
+  max-width: 200px;
+  transform: translate(-50%, 0);
+  z-index: 2;
+  cursor: pointer;
+
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.door img {
+  width: 100%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+}
+
+/* ✨ hover / active animation */
+.door.active {
+  transform: translate(-50%, 0) scale(1.05);
+  filter: brightness(1.2) drop-shadow(0 0 10px rgba(255,255,255,0.6));
+}
+
+/* 💥 press feedback */
+.door:active {
+  transform: translate(-50%, 0) scale(0.95);
+}
 
       `}</style>
     </div>
