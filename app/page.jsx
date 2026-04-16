@@ -340,7 +340,7 @@ html, body {
 
 /* 💥 press feedback */
 .door:active {
-  --scale: 2.55;
+  --scale: 2.45;
 }
 
       `}</style>
