@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Character from './components/Character';
 import Navigation from './components/Navigation';
 import NFTCard from './components/NFTCard';
-import { connectWallet, handleMobileWalletRedirect } from './lib/wallet';
+import { connectWallet, reconnectWallet, handleMobileWalletRedirect } from './lib/wallet';
 import { fetchNFTs } from './lib/opensea';
 
 export default function Page() {
@@ -14,6 +14,10 @@ export default function Page() {
   const [nfts, setNfts] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
+useEffect(() => {
+  reconnectWallet(setWallet);
+}, []);
+  
   useEffect(() => {
   const saved = localStorage.getItem("wallet");
   if (saved) {
@@ -88,17 +92,19 @@ export default function Page() {
       />
 
       {/* 🔗 WALLET */}
-      <button
-        className="wallet"
-        onClick={() => {
-          handleMobileWalletRedirect(); // 📱 fixes mobile issue
-          connectWallet(setWallet);     // 🔐 connect + SIWE
-        }}
-      >
-        {wallet
-          ? wallet.slice(0, 6) + '...' + wallet.slice(-4)
-          : 'Connect Wallet'}
-      </button>
+<button
+  className="wallet"
+  onClick={() => {
+    const redirected = handleMobileWalletRedirect();
+    if (!redirected) {
+      connectWallet(setWallet);
+    }
+  }}
+>
+  {wallet
+    ? wallet.slice(0, 6) + '...' + wallet.slice(-4)
+    : 'Connect Wallet'}
+</button>
 
       {/* 🎠 NFT CARD */}
       {tab === 3 && nfts.length > 0 && (
