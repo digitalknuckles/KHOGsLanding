@@ -19,13 +19,6 @@ useEffect(() => {
   reconnectWallet(setWallet);
 }, []);
   
-  useEffect(() => {
-  const saved = localStorage.getItem("wallet");
-  if (saved) {
-    setWallet(saved);
-  }
-}, []);
-  
   // 🎯 NFT FETCH
   useEffect(() => {
     if (tab === 3 && wallet && nfts.length === 0) {
@@ -316,16 +309,15 @@ html, body {
 .door {
   position: absolute;
 
-  /* 👇 TEMP DEBUG (center it first) */
-  left: 50%;
-  top: 40%;
-
-  width: 120px;
+  width: 18vw;
+  max-width: 180px;
 
   transform: translate(-50%, -50%);
   z-index: 3;
 
-  outline: 2px solid red; /* 🔴 DEBUG REMOVE LATER */
+  cursor: pointer;
+
+  transition: transform 0.2s ease, filter 0.2s ease;
 }
 
 .door img {
@@ -335,15 +327,15 @@ html, body {
   pointer-events: none;
 }
 
-/* ✨ hover / active animation */
+/* ✨ hover */
 .door.active {
-  transform: translate(-50%, 0) scale(1.05);
+  transform: translate(-50%, -50%) scale(1.05);
   filter: brightness(1.2) drop-shadow(0 0 10px rgba(255,255,255,0.6));
 }
 
-/* 💥 press feedback */
+/* 💥 press */
 .door:active {
-  transform: translate(-50%, 0) scale(0.95);
+  transform: translate(-50%, -50%) scale(0.95);
 }
 
       `}</style>
