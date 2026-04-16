@@ -1,13 +1,31 @@
 import { ethers } from 'ethers';
 
 export async function connectWallet(setWallet) {
-  if (!window.ethereum) return alert('Install MetaMask');
+  try {
+    if (!window.ethereum) {
+      alert('Install MetaMask');
+      return;
+    }
 
-  const provider = new ethers.BrowserProvider(window.ethereum);
-  await provider.send("eth_requestAccounts", []);
+    const provider = new ethers.BrowserProvider(window.ethereum);
 
-  const signer = await provider.getSigner();
-  const address = await signer.getAddress();
+    // 🔗 CONNECT (opens MetaMask)
+    await provider.send("eth_requestAccounts", []);
 
-  setWallet(address);
+    const signer = await provider.getSigner();
+    const address = await signer.getAddress();
+
+    // ✍️ SIGN IMMEDIATELY (CRITICAL FOR MOBILE)
+    const message = "Verify wallet ownership";
+
+    await signer.signMessage(message);
+
+    // ✅ ONLY set wallet AFTER successful sign
+    setWallet(address);
+
+    console.log("✅ Connected + Signed:", address);
+
+  } catch (err) {
+    console.error("Wallet error:", err);
+  }
 }
