@@ -319,8 +319,8 @@ html, body {
   cursor: pointer;
 
   transition:
-    transform 0.25s ease,
-    filter 0.25s ease;
+    transform 0.5s ease,
+    filter 0.5s ease;
 }
 
 .door img {
