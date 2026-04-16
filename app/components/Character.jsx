@@ -138,7 +138,7 @@ export default function Character({ currentTab, tabsRef }) {
     walkInterval.current = setInterval(() => {
       char.src = frames[frame % 2];
       frame++;
-    }, 140);
+    }, 100);
 
     const duration = 800 + Math.abs(to - from) * 300;
 
