@@ -81,7 +81,12 @@ useEffect(() => {
           />
         </picture>
       </div>
-
+    
+      {/* 🚪 DOOR (correct layer) */}
+      <Door onEnter={() => {
+        console.log("🚪 ENTER ROOM");
+      }} />
+      
       {/* 🎮 CHARACTER */}
       <Character currentTab={tab} tabsRef={tabsRef} />
 
@@ -310,13 +315,17 @@ html, body {
 }
 .door {
   position: absolute;
-  width: 18vw; /* scales nicely */
-  max-width: 200px;
-  transform: translate(-50%, 0);
-  z-index: 2;
-  cursor: pointer;
 
-  transition: transform 0.2s ease, filter 0.2s ease;
+  /* 👇 TEMP DEBUG (center it first) */
+  left: 50%;
+  top: 40%;
+
+  width: 120px;
+
+  transform: translate(-50%, -50%);
+  z-index: 3;
+
+  outline: 2px solid red; /* 🔴 DEBUG REMOVE LATER */
 }
 
 .door img {
