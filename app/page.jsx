@@ -311,7 +311,7 @@ html, body {
 
   /* 🎯 POSITION (your tuned values) */
   left: calc(2150 / 2560 * 100vw);
-  top: calc(1439 / 1500* 100vh);
+  top: calc(1079 / 1080* 100vh);
 
   /* 👇 anchor at bottom center (IMPORTANT) */
   transform: translate(-50%, -100%) scale(var(--scale, 2));
