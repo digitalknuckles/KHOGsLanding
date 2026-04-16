@@ -1,158 +1,155 @@
-export const metadata = {
+'use client';
+
+import { useState } from 'react';
+
+export const metadata = { 
   title: 'Your App',
   description: 'Animated Navigation App',
 };
 
 export default function RootLayout({ children }) {
+  const [open, setOpen] = useState(false);
+
   return (
     <html lang="en">
       <head>
-        <title>KHOGs&copy;</title>
+        <title>KHOGs©</title>
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
         />
       </head>
-      <body>{children}</body>
-      <footer>
-  <p>&copy; 2026 Digitalknuckles. All rights reserved.</p>
 
-  <div class="legal-toggle">
-    <button onclick="toggleLegal()">📜 Legal & Disclosures</button>
-    <div id="legalContent" class="legal-content">
-       <div id="legalContent" class="legal-content">
+      <body>
+        {children}
 
-  <h3>Digitalknuckles Licensing & Legal Disclosures</h3>
+        {/* 🧾 LEGAL TOGGLE BUTTON */}
+        <button
+          className="legal-btn"
+          onClick={() => setOpen(!open)}
+        >
+          📜
+        </button>
 
-  <p>
-    This website, all associated smart contracts, and all DigitalKnuckles NFTs
-    are created and published by <strong>Digitalknuckles</strong> (“Creator”, “Designer”).
-    By minting, purchasing, holding, or transferring a DigitalKnuckles NFT, you
-    agree to the following terms.
-  </p>
+        {/* 🧾 LEGAL PANEL */}
+        <div className={`legal-panel ${open ? 'open' : ''}`}>
+          <div className="legal-content">
 
-  <h3>1. Intellectual Property Ownership</h3>
-  <p>
-    All artwork, designs, characters, animations, metadata, names, logos,
-    trademarks, copyrights, and associated intellectual property remain the
-    exclusive property of Digitalknuckles.
-  </p>
-  <p>
-    No ownership of intellectual property is transferred through the sale or
-    transfer of an NFT.
-  </p>
+            <h3>Digitalknuckles Licensing & Legal Disclosures</h3>
 
-  <h3>2. License Granted to NFT Holders</h3>
-  <p>
-    Subject to continued ownership of a valid DigitalKnuckles NFT, holders are
-    granted a <strong>limited, non-exclusive, non-transferable, revocable license</strong>
-    to display the associated artwork for:
-  </p>
-  <ul>
-    <li>Personal, non-commercial use</li>
-    <li>Display in virtual galleries, wallets, or social media</li>
-    <li>Resale or transfer of the NFT itself</li>
-  </ul>
+            <p>
+              This website and all DigitalKnuckles NFTs are created by
+              <strong> Digitalknuckles</strong>.
+            </p>
 
-  <p>
-    Commercial use, sublicensing, merchandising, reproduction, modification,
-    or derivative works are strictly prohibited unless explicitly licensed in writing.
-  </p>
+            <h4>IP Ownership</h4>
+            <p>
+              All artwork, characters, and assets remain the property of Digitalknuckles.
+            </p>
 
-  <h3>3. NFT Secondary Sales & Creator Royalties</h3>
-  <p>
-    Certain DigitalKnuckles NFTs include on-chain royalty logic implemented
-    through ERC-compatible smart contracts (e.g., ERC-2981 or marketplace-level enforcement).
-  </p>
-  <p>
-    Any creator royalty is a <strong>technical feature of the smart contract</strong>,
-    not a legal entitlement, revenue share, investment return, or security interest.
-    Royalties are only applied if and when supported by the executing marketplace
-    or protocol.
-  </p>
+            <h4>Holder License</h4>
+            <p>
+              NFT holders receive a limited license for personal display only.
+              Commercial use is prohibited without written permission.
+            </p>
 
-  <p>
-    Digitalknuckles makes no representations or guarantees regarding:
-  </p>
-  <ul>
-    <li>Royalty enforcement on secondary markets</li>
-    <li>Marketplace compliance</li>
-    <li>Future royalty standards or implementations</li>
-  </ul>
+            <h4>No Financial Rights</h4>
+            <p>
+              NFTs are collectibles, not investments. No profit expectation,
+              revenue share, or ownership is granted.
+            </p>
 
-  <h3>4. First Sale Doctrine & NFTs</h3>
-  <p>
-    The First Sale Doctrine may permit resale of the NFT token itself.
-    However, it <strong>does not transfer copyright, trademark, or commercial
-    exploitation rights</strong> in the underlying artwork.
-  </p>
-  <p>
-    NFT transfers convey ownership of the blockchain token only, not the
-    associated intellectual property.
-  </p>
+            <h4>Risk</h4>
+            <p>
+              Use at your own risk. Smart contracts, markets, and platforms may fail.
+            </p>
 
-  <h3>5. No Financial Rights or Investment Intent</h3>
-  <p>
-    DigitalKnuckles NFTs are <strong>digital collectibles</strong> intended for
-    creative, artistic, entertainment, and access purposes only.
-  </p>
-  <p>
-    NFTs do not represent:
-  </p>
-  <ul>
-    <li>Equity or ownership in Digitalknuckles</li>
-    <li>Profit-sharing or revenue participation</li>
-    <li>Dividends, yield, or passive income</li>
-    <li>Voting rights or governance rights</li>
-  </ul>
+            <p style={{ opacity: 0.6, fontSize: '12px' }}>
+              © 2026 Digitalknuckles
+            </p>
 
-  <p>
-    No expectation of profit is promoted or implied from the efforts of
-    Digitalknuckles or any third party.
-  </p>
+          </div>
+        </div>
 
-  <h3>6. Regulatory Disclosures (SEC / MiCA)</h3>
-  <p>
-    DigitalKnuckles NFTs are not securities, financial instruments, or investment
-    products under U.S. securities laws, including the Howey Test, nor under the
-    EU Markets in Crypto-Assets Regulation (MiCA).
-  </p>
-  <p>
-    NFTs are not marketed as investments, are not pooled, and do not rely on
-    managerial efforts to generate financial returns.
-  </p>
+        {/* 🎨 STYLES */}
+        <style jsx global>{`
 
-  <h3>7. No Guarantees or Roadmap Commitments</h3>
-  <p>
-    Any references to future features, utilities, experiences, games, or
-    integrations are aspirational and non-binding.
-  </p>
-  <p>
-    Digitalknuckles reserves the right to modify, pause, or discontinue any
-    aspect of the project at any time.
-  </p>
+          /* 🔘 floating button */
+          .legal-btn {
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            z-index: 999;
 
-  <h3>8. Assumption of Risk</h3>
-  <p>
-    NFTs involve technological, regulatory, and market risks, including but not
-    limited to smart contract vulnerabilities, platform failure, and market volatility.
-  </p>
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: none;
 
-  <p>
-    By interacting with this website or associated smart contracts, you assume
-    all risks and agree that Digitalknuckles shall not be liable for any losses.
-  </p>
+            background: rgba(0,0,0,0.6);
+            color: white;
+            font-size: 18px;
 
-  <h3>9. Governing Law</h3>
-  <p>
-    These terms are governed by applicable laws without regard to conflict of
-    law principles.
-  </p>
+            backdrop-filter: blur(10px);
+            cursor: pointer;
 
-</div>
-    </div>
-  </div>
-</footer>
+            transition: transform 0.2s ease;
+          }
+
+          .legal-btn:active {
+            transform: scale(0.9);
+          }
+
+          /* 📄 panel */
+          .legal-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            max-height: 70vh;
+
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+
+            z-index: 998;
+          }
+
+          .legal-panel.open {
+            transform: translateY(0);
+          }
+
+          /* 📦 content */
+          .legal-content {
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 20px;
+
+            overflow-y: auto;
+            max-height: 70vh;
+
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+
+            backdrop-filter: blur(12px);
+          }
+
+          .legal-content h3 {
+            margin-top: 0;
+          }
+
+          .legal-content h4 {
+            margin-top: 12px;
+            font-size: 14px;
+            opacity: 0.8;
+          }
+
+          .legal-content p {
+            font-size: 12px;
+            line-height: 1.4;
+          }
+
+        `}</style>
+      </body>
     </html>
   );
 }
