@@ -334,13 +334,13 @@ html, body {
 
 /* ✨ hover / open state */
 .door.open {
-  --scale: 2.55;
+  --scale: 1.25;
   filter: brightness(1.2) drop-shadow(0 0 12px rgba(255,255,255,0.6));
 }
 
 /* 💥 press feedback */
 .door:active {
-  --scale: 2.45;
+  --scale: 1.15;
 }
 
       `}</style>
