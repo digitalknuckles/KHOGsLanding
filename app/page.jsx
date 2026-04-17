@@ -161,9 +161,9 @@ useEffect(() => {
     <div className="modal" onClick={(e) => e.stopPropagation()}>
       
       <div className="modal-text">
-        Hold On, Knucklehead — We're Closed For Renovations.
+        "Hold On, Knucklehead — We're Closed For Renovations!
         <br />
-        Check back later...
+        Come back later..."
       </div>
 
       <div className="modal-sub">
