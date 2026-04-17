@@ -52,7 +52,7 @@ function getTabX(index) {
   const worldX =
     (rect.left + rect.width / 2) / scale;
 
-  return worldX - char.offsetWidth / 2;
+return worldX;
 }
 
   function resetIdle() {
@@ -71,16 +71,23 @@ function getTabX(index) {
     wandering.current = true;
 
 const WORLD_WIDTH = 2560;
+const charWidth = char.offsetWidth;
 
-const targetX = Math.random() * (WORLD_WIDTH - 200);
+const minX = charWidth / 2;
+const maxX = WORLD_WIDTH - charWidth / 2;
+
+const targetX = Math.random() * (maxX - minX) + minX;
+    
     const scale =
   parseFloat(
     getComputedStyle(document.documentElement)
       .getPropertyValue('--scene-scale')
   ) || 1;
 
+const rect = char.getBoundingClientRect();
+
 const currentX =
-  char.getBoundingClientRect().left / scale;
+  (rect.left + rect.width / 2) / scale;
 
     const goingRight = targetX > currentX;
     facing.current = goingRight ? "right" : "left";
