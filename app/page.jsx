@@ -15,8 +15,9 @@ export default function Page() {
   const [nfts, setNfts] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  // 🎥 VIEW MODE
   const [widescreen, setWidescreen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isLandscape, setIsLandscape] = useState(false);
 
   // 🔌 Auto reconnect wallet
   useEffect(() => {
@@ -33,19 +34,37 @@ export default function Page() {
     }
   }, [tab, wallet]);
 
-  // 🎮 SCALE ENGINE (FULL + CORRECT)
+  // 📱 DEVICE DETECTION
+  useEffect(() => {
+    function detect() {
+      const ua = navigator.userAgent;
+      const mobile = /iPhone|iPad|Android/i.test(ua);
+
+      setIsMobile(mobile);
+      setIsLandscape(window.innerWidth > window.innerHeight);
+    }
+
+    detect();
+    window.addEventListener('resize', detect);
+
+    return () => window.removeEventListener('resize', detect);
+  }, []);
+
+  // 🎮 SCALE ENGINE (CORRECTED)
   useEffect(() => {
     function updateScale() {
       const vw = window.innerWidth;
       const vh = window.innerHeight;
 
+      const isMobileWide = isMobile && isLandscape;
+
       let scale;
 
-      if (widescreen) {
-        // 🎬 LOCKED (letterbox)
+      if (isMobileWide && widescreen) {
+        // 🎬 MOBILE WIDESCREEN MODE ONLY
         scale = Math.min(vw / 2560, vh / 1440);
       } else {
-        // 📱 AUTO (fill width)
+        // 🔥 DEFAULT: ALWAYS FILL WIDTH (desktop + mobile portrait)
         scale = vw / 2560;
       }
 
@@ -63,10 +82,8 @@ export default function Page() {
     updateScale();
     window.addEventListener('resize', updateScale);
 
-    return () => {
-      window.removeEventListener('resize', updateScale);
-    };
-  }, [widescreen]);
+    return () => window.removeEventListener('resize', updateScale);
+  }, [widescreen, isMobile, isLandscape]);
 
   // 🔒 Gesture control
   useEffect(() => {
@@ -92,21 +109,18 @@ export default function Page() {
   return (
     <div className="viewport">
 
-      {/* 🎬 WRAPPER */}
+      {/* 🌍 SCENE */}
       <div className="scene-wrapper">
         <div className="scene">
 
-          {/* 🌄 BACKGROUND */}
           <img
             className="bg"
             src="https://ipfs.io/ipfs/bafybeih56xgsgacrqmx7mgh5zwd5f72ptngrr4xgrbyl4ghvh54ooomlby"
             alt="background"
           />
 
-          {/* 🚪 DOOR */}
           <Door onEnter={() => console.log("🚪 ENTER ROOM")} />
 
-          {/* 🎮 CHARACTER */}
           <Character currentTab={tab} tabsRef={tabsRef} />
 
         </div>
@@ -132,13 +146,15 @@ export default function Page() {
           : 'Connect Wallet'}
       </button>
 
-      {/* 🎥 TOGGLE */}
-      <button
-        className="widescreen-toggle"
-        onClick={() => setWidescreen(v => !v)}
-      >
-        {widescreen ? 'Auto View' : 'Widescreen'}
-      </button>
+      {/* 🎥 WIDESCREEN (ONLY SHOW ON MOBILE LANDSCAPE) */}
+      {isMobile && isLandscape && (
+        <button
+          className="widescreen-toggle"
+          onClick={() => setWidescreen(v => !v)}
+        >
+          {widescreen ? 'Fill Screen' : 'Widescreen'}
+        </button>
+      )}
 
       {/* 🎠 NFT CARD */}
       {tab === 3 && nfts.length > 0 && (
@@ -151,14 +167,10 @@ export default function Page() {
 
       <style jsx global>{`
 
-/* 🔒 GLOBAL */
 html, body {
   margin:0;
   padding:0;
   overflow:hidden;
-  touch-action: manipulation;
-  overscroll-behavior:none;
-  font-family:sans-serif;
   background:black;
 }
 
@@ -174,8 +186,8 @@ html, body {
 .scene-wrapper {
   position:absolute;
   inset:0;
-  overflow:hidden;
   background:black;
+  overflow:hidden;
 }
 
 /* 🌍 SCENE */
@@ -183,10 +195,8 @@ html, body {
   position:absolute;
   width:2560px;
   height:1440px;
-
   left:50%;
   top:50%;
-
   transform-origin:top left;
 }
 
@@ -205,86 +215,41 @@ html, body {
   bottom:0;
   left:0;
   height:100%;
-  transform:translateX(0) translateX(-50%);
-  transform-origin:bottom center;
-  z-index:5;
-  pointer-events:none;
+  transform:translateX(-50%);
 }
 
-/* 🚪 DOOR */
-.door {
-  position:absolute;
-  transform-origin:bottom center;
-  z-index:3;
-  cursor:pointer;
-  transition: transform 0.1s ease, filter 0.1s ease;
-}
-
-.door img {
-  width:140px;
-  height:auto;
-  display:block;
-  pointer-events:none;
-}
-
-.door.open img {
-  transform: scale(3.35);
-  filter: brightness(1.2) drop-shadow(0 0 12px rgba(255,255,255,0.6));
-}
-
-.door.pressed img {
-  transform: scale(3.30);
-}
-
-/* 🧭 NAV */
+/* 🧭 NAV (FIXED NO STACK) */
 .nav {
   position:absolute;
   top:0;
   width:100%;
-  height:90px;
+  height:80px;
   display:flex;
   justify-content:center;
   align-items:center;
   z-index:20;
 }
 
-/* 🔥 CRITICAL FIX: NEVER STACK */
 .tabs {
   display:flex;
-  flex-wrap:nowrap;
-  justify-content:space-between;
   width:100%;
-  max-width:640px;
-  padding:0 12px;
+  max-width:600px;
+  justify-content:space-between;
+  flex-wrap:nowrap;
 }
 
 .tab {
   flex:1;
   text-align:center;
-  padding:10px;
-  border-radius:12px;
   margin:0 4px;
-
-  background:rgba(255,255,255,0.2);
-  backdrop-filter:blur(12px);
-
-  transition: all 0.15s ease;
-}
-
-.tab.active {
-  background:rgba(255,255,255,0.5);
 }
 
 /* 🔗 WALLET */
 .wallet {
   position:absolute;
-  top:20px;
-  right:20px;
+  top:15px;
+  right:15px;
   z-index:30;
-  padding:10px 14px;
-  border-radius:10px;
-  background:rgba(0,0,0,0.7);
-  color:white;
 }
 
 /* 🎥 TOGGLE */
@@ -293,30 +258,6 @@ html, body {
   bottom:20px;
   right:20px;
   z-index:30;
-  padding:10px 14px;
-  border-radius:10px;
-  background:rgba(0,0,0,0.7);
-  color:white;
-}
-
-/* 🎠 CARD */
-.card {
-  position:absolute;
-  bottom:120px;
-  left:20px;
-  width:260px;
-  max-width:80vw;
-  padding:16px;
-  border-radius:16px;
-  background:rgba(0,0,0,0.75);
-  color:white;
-  z-index:25;
-
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-
-  backdrop-filter: blur(12px);
 }
 
       `}</style>
