@@ -183,7 +183,7 @@ html, body {
   
   transform-origin: bottom center;
 
-  z-index:2;
+  z-index:3;
 
   cursor:pointer;
 
