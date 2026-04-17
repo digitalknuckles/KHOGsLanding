@@ -200,13 +200,13 @@ html, body {
 
 /* 🚪 OPEN STATE */
 .door.open img {
-  transform: scale(3.05);
+  transform: scale(3.25);
   filter: brightness(1.2) drop-shadow(0 0 12px rgba(255,255,255,0.6));
 }
 
 /* 💥 PRESS FEEDBACK */
 .door.pressed img {
-  transform: scale(3.0);
+  transform: scale(3.20);
 }
 
 /* 🧭 NAV (UI SPACE) */
