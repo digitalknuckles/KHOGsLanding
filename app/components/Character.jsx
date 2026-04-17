@@ -28,6 +28,8 @@ export default function Character({ currentTab, tabsRef }) {
   const facing = useRef("right");
 
   const WORLD_WIDTH = 2560;
+  
+  const targetX = getTabX(to);
 
   const offsets = {
   0: -180,   // home (strong anchor)
@@ -140,8 +142,6 @@ if (from === to && to !== 0) {
   resetIdle();
   return;
 }
-
-  const targetX = getTabX(to);
   
   function getTabX(index) {
   const el = tabsRef.current[index];
