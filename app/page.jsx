@@ -15,10 +15,11 @@ export default function Page() {
   const [nfts, setNfts] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
-useEffect(() => {
-  reconnectWallet(setWallet);
-}, []);
-  
+  // 🔌 Auto reconnect wallet
+  useEffect(() => {
+    reconnectWallet(setWallet);
+  }, []);
+
   // 🎯 NFT FETCH
   useEffect(() => {
     if (tab === 3 && wallet && nfts.length === 0) {
@@ -29,7 +30,7 @@ useEffect(() => {
     }
   }, [tab, wallet]);
 
-  // 🔒 SAFE gesture control (DO NOT BLOCK TAPS)
+  // 🔒 Gesture control (safe)
   useEffect(() => {
     const preventZoom = (e) => {
       if (e.scale !== 1) e.preventDefault();
@@ -46,44 +47,52 @@ useEffect(() => {
     return () => {
       document.removeEventListener('gesturestart', preventZoom);
       document.removeEventListener('gesturechange', preventZoom);
-      document.removeEventListener('touchmove', preventMultiTouch, { passive: false });
+      document.removeEventListener('touchmove', preventMultiTouch);
     };
   }, []);
 
+  // 🎮 SCENE SCALE ENGINE (2560x1440 world)
+  useEffect(() => {
+    const updateScale = () => {
+      const scale = Math.min(
+        window.innerWidth / 2560,
+        window.innerHeight / 1440
+      );
+      document.documentElement.style.setProperty('--scene-scale', scale);
+    };
+
+    updateScale();
+    window.addEventListener('resize', updateScale);
+
+    return () => window.removeEventListener('resize', updateScale);
+  }, []);
+
   return (
-    <div className="container">
+    <div className="viewport">
 
-      {/* 🌄 BACKGROUND */}
-      <div className="background">
-        <picture>
-          <source
-            media="(min-width: 1400px)"
-            srcSet="https://ipfs.io/ipfs/bafybeihx5unhlzyxvb5q7i5h3mtreh6f5iq65yf6xfaxe2dspqmikfrjcu"
-          />
-          <source
-            media="(min-width: 768px)"
-            srcSet="https://ipfs.io/ipfs/bafybeihkhckfk72hi77yrr3sf7leby5agmsq5cpdvel65vw43cb6bx2zb4"
-          />
-          <source
-            media="(min-width: 480px)"
-            srcSet="https://ipfs.io/ipfs/bafkreif6hlgr73cqxolmjh2mir4flvpi26apl2mvt53ra4gtav57ewltby"
-          />
-          <img
-            src="https://ipfs.io/ipfs/bafybeih56xgsgacrqmx7mgh5zwd5f72ptngrr4xgrbyl4ghvh54ooomlby"
-            alt="background"
-          />
-        </picture>
+      {/* 🌍 SCENE (WORLD SPACE) */}
+      <div className="scene">
+
+        {/* 🌄 BACKGROUND (FIXED WORLD) */}
+        <img
+          className="bg"
+          src="https://ipfs.io/ipfs/bafybeih56xgsgacrqmx7mgh5zwd5f72ptngrr4xgrbyl4ghvh54ooomlby"
+          alt="background"
+        />
+
+        {/* 🚪 DOOR */}
+        <Door
+          onEnter={() => {
+            console.log("🚪 ENTER ROOM");
+          }}
+        />
+
+        {/* 🎮 CHARACTER */}
+        <Character currentTab={tab} tabsRef={tabsRef} />
+
       </div>
-    
-      {/* 🚪 DOOR (correct layer) */}
-      <Door onEnter={() => {
-        console.log("🚪 ENTER ROOM");
-      }} />
-      
-      {/* 🎮 CHARACTER */}
-      <Character currentTab={tab} tabsRef={tabsRef} />
 
-      {/* 🧭 NAV */}
+      {/* 🧭 UI LAYER (SCREEN SPACE) */}
       <Navigation
         setTab={setTab}
         tabsRef={tabsRef}
@@ -91,19 +100,19 @@ useEffect(() => {
       />
 
       {/* 🔗 WALLET */}
-<button
-  className="wallet"
-  onClick={() => {
-    const redirected = handleMobileWalletRedirect();
-    if (!redirected) {
-      connectWallet(setWallet);
-    }
-  }}
->
-  {wallet
-    ? wallet.slice(0, 6) + '...' + wallet.slice(-4)
-    : 'Connect Wallet'}
-</button>
+      <button
+        className="wallet"
+        onClick={() => {
+          const redirected = handleMobileWalletRedirect();
+          if (!redirected) {
+            connectWallet(setWallet);
+          }
+        }}
+      >
+        {wallet
+          ? wallet.slice(0, 6) + '...' + wallet.slice(-4)
+          : 'Connect Wallet'}
+      </button>
 
       {/* 🎠 NFT CARD */}
       {tab === 3 && nfts.length > 0 && (
@@ -121,66 +130,41 @@ html, body {
   margin:0;
   padding:0;
   overflow:hidden;
-  touch-action: manipulation; /* ✅ FIXED */
+  touch-action: manipulation;
   overscroll-behavior:none;
   font-family:sans-serif;
 }
 
-/* 🎮 CONTAINER */
-.container {
+/* 🎥 VIEWPORT */
+.viewport {
   position:relative;
   width:100vw;
   height:100vh;
+  overflow:hidden;
+}
+
+/* 🌍 SCENE (2560x1440 WORLD) */
+.scene {
+  position:absolute;
+  top:50%;
+  left:50%;
+
+  width:2560px;
+  height:1440px;
+
+  transform: translate(-50%, -50%) scale(var(--scene-scale));
+  transform-origin:center;
+
+  will-change: transform;
 }
 
 /* 🌄 BACKGROUND */
-.background {
+.bg {
   position:absolute;
   inset:0;
-  z-index:0;
-}
-
-    .legal-toggle {
-  margin-top: 2rem;
-  background: #1a1a1a;
-  border: 1px solid #333;
-  border-radius: 12px;
-  padding: 1rem;
-}
-
-.legal-toggle button {
-  background: none;
-  color: #00eaff;
-  border: none;
-  font-size: 0.95rem;
-  cursor: pointer;
-}
-
-.legal-content {
-  display: none;
-  margin-top: 1rem;
-  font-size: 0.85remf;
-  color: #ccc;
-}
-
-.background picture,
-.background img {
   width:100%;
   height:100%;
-  display:block;
-}
-
-.background img {
   object-fit:cover;
-  transform: scale(1.02);
-}
-
-.background::after {
-  content:'';
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  background: radial-gradient(circle at center, transparent 60%, rgba(0,0,0,0.5));
 }
 
 /* 🎮 CHARACTER */
@@ -188,12 +172,43 @@ html, body {
   position:absolute;
   bottom:0;
   left:0;
-  height:100vh;
+  height:100%;
   z-index:3;
   pointer-events:none;
 }
 
-/* 🧭 NAV */
+/* 🚪 DOOR (WORLD POSITIONED) */
+.door {
+  position:absolute;
+
+  transform: translate(-50%, -100%) scale(var(--scale));
+  transform-origin: bottom center;
+
+  width:140px;
+  z-index:4;
+
+  cursor:pointer;
+
+  transition: transform 0.1s ease, filter 0.1s ease;
+}
+
+.door img {
+  width:100%;
+  height:auto;
+  display:block;
+  pointer-events:none;
+}
+
+.door.open {
+  transform: translate(-50%, -100%) scale(calc(var(--scale) * 1.08));
+  filter: brightness(1.2) drop-shadow(0 0 12px rgba(255,255,255,0.6));
+}
+
+.door.pressed {
+  transform: translate(-50%, -100%) scale(calc(var(--scale) * 0.96));
+}
+
+/* 🧭 NAV (UI SPACE) */
 .nav {
   position:absolute;
   top:0;
@@ -204,15 +219,14 @@ html, body {
   align-items:center;
   gap:12px;
   padding:10px;
-  z-index:10; /* 🔥 BOOSTED */
+  z-index:20;
   flex-wrap:wrap;
 }
 
-/* 🔘 TAB */
 .tab {
   padding:12px 18px;
   border-radius:12px;
-  background:rgba(255,255,255,0.2); /* 🔥 brighter */
+  background:rgba(255,255,255,0.2);
   backdrop-filter:blur(12px);
   cursor:pointer;
   transition: all 0.15s ease;
@@ -233,7 +247,7 @@ html, body {
   position:absolute;
   top:20px;
   right:20px;
-  z-index:20;
+  z-index:30;
   padding:10px 14px;
   border-radius:10px;
   background:rgba(0,0,0,0.7);
@@ -251,7 +265,7 @@ html, body {
   border-radius:16px;
   background:rgba(0,0,0,0.75);
   color:white;
-  z-index:5;
+  z-index:25;
 
   display:flex;
   flex-direction:column;
@@ -306,40 +320,7 @@ html, body {
   from { opacity:0; transform:translateY(10px); }
   to { opacity:1; transform:translateY(0); }
 }
-.door {
-  position: absolute;
 
-  width: calc(140px * var(--scale));
-  max-width: 220px;
-
-  transform: translate(-50%, -50%) scale(var(--scale));
-  transform-origin: center bottom;
-
-  z-index: 3;
-  cursor: pointer;
-
-  transition:
-    transform 0.01s ease,
-    filter 0.01s ease;
-}
-
-.door img {
-  width: 100%;
-  height: auto;
-  display: block;
-  pointer-events: none;
-}
-
-/* 🚪 OPEN STATE */
-.door.open {
-  transform: translate(-50%, -50%) scale(calc(var(--scale) * 2.05));
-  filter: brightness(1.2) drop-shadow(0 0 12px rgba(255,255,255,0.6));
-}
-
-/* 💥 PRESS FEEDBACK */
-.door.pressed {
-  transform: translate(-50%, -50%) scale(calc(var(--scale) * 2.1));
-}
       `}</style>
     </div>
   );
