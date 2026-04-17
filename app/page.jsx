@@ -15,7 +15,18 @@ export default function Page() {
   const [nfts, setNfts] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 900;
+  const [isMobile, setIsMobile] = useState(false);
+
+useEffect(() => {
+  const updateDevice = () => {
+    setIsMobile(window.innerWidth < 900);
+  };
+
+  updateDevice();
+  window.addEventListener('resize', updateDevice);
+  return () => window.removeEventListener('resize', updateDevice);
+}, []);
+  
   const [showDoorModal, setShowDoorModal] = useState(false);
 
   // 🎥 VIEW MODE
@@ -37,20 +48,20 @@ export default function Page() {
   }, [tab, wallet]);
 
   // 🎮 SCALE ENGINE (FULL + CORRECT)
- useEffect(() => {
+useEffect(() => {
   function updateScale() {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
 
-    const isMobile = vw < 900;
+    const mobile = vw < 900;
 
     let scale;
 
-    if (isMobile && widescreen) {
-      // 📱 Mobile widescreen (letterbox)
+    if (mobile && widescreen) {
+      // 📱 WIDESCREEN (letterbox)
       scale = Math.min(vw / 2560, vh / 1440);
     } else {
-      // 🖥 Default behavior (fills width cleanly)
+      // 🖥 DESKTOP + MOBILE DEFAULT
       scale = vw / 2560;
     }
 
@@ -59,7 +70,6 @@ export default function Page() {
 
   updateScale();
   window.addEventListener('resize', updateScale);
-
   return () => window.removeEventListener('resize', updateScale);
 }, [widescreen]);
 
