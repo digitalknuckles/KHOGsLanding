@@ -17,6 +17,10 @@ export default function Door({ onEnter }) {
   const doorX = 2127;
   const doorY = 1153;
 
+  const triggerEnter = () => {
+  if (onEnter) onEnter();
+};
+
   return (
     <div
       className={`door ${isOpen ? 'open' : ''} ${pressed ? 'pressed' : ''}`}
@@ -44,20 +48,19 @@ export default function Door({ onEnter }) {
         }, 300);
       }}
 
-      onTouchEnd={() => {
-        clearTimeout(holdRef.current);
-        setPressed(false);
+onClick={() => {
+  setPressed(true);
+  setTimeout(() => {
+    triggerEnter();
+    setPressed(false);
+  }, 120);
+}}
 
-        onEnter?.();
-      }}
-
-      onClick={() => {
-        setPressed(true);
-        setTimeout(() => {
-          onEnter?.();
-          setPressed(false);
-        }, 120);
-      }}
+onTouchEnd={(e) => {
+  e.preventDefault();
+  triggerEnter();
+  setPressed(false);
+}}
     > {/* ✅ THIS WAS MISSING */}
 
       <img
