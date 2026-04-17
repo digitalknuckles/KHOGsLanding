@@ -13,37 +13,35 @@ export default function Door({ onEnter }) {
   const [pressed, setPressed] = useState(false);
   const holdRef = useRef(null);
 
-  // 🎯 SCENE COORDINATES (1920x1080 SPACE — SAME AS PAGE)
-  const doorX = 1607; // px in scene
-  const doorY = 1000; // px in scene
+  // 🎯 NOW MATCHES YOUR TRUE SCENE (2560x1440)
+  const doorX = 2143; // ← convert from your placement
+  const doorY = 1352;
 
   return (
     <div
       className={`door ${isOpen ? 'open' : ''} ${pressed ? 'pressed' : ''}`}
       style={{
         position: 'absolute',
-        left: `${(doorX / 1920) * 100}%`,
-        top: `${(doorY / 1080) * 100}%`,
-        transform: 'translate(-50%, -100%)', // anchor bottom center
+        left: `${(doorX / 2560) * 100}%`,
+        top: `${(doorY / 1440) * 100}%`,
+        transform: 'translate(-50%, -100%)',
         zIndex: 5,
         cursor: 'pointer'
       }}
 
-      // 🖱 DESKTOP
       onMouseEnter={() => setIsOpen(true)}
       onMouseLeave={() => {
         setIsOpen(false);
         setPressed(false);
       }}
 
-      // 📱 TOUCH
       onTouchStart={() => {
         setPressed(true);
         setIsOpen(true);
 
         holdRef.current = setTimeout(() => {
           if (onEnter) onEnter();
-        }, 300); // slightly faster feel
+        }, 300);
       }}
 
       onTouchEnd={() => {
@@ -53,7 +51,6 @@ export default function Door({ onEnter }) {
         if (onEnter) onEnter();
       }}
 
-      // 🖱 CLICK
       onClick={() => {
         if (onEnter) onEnter();
       }}
@@ -62,13 +59,6 @@ export default function Door({ onEnter }) {
         src={isOpen ? OPEN : CLOSED}
         alt="door"
         draggable={false}
-        style={{
-          width: '240px',   // 👈 BASE SIZE (scales with scene automatically)
-          height: 'auto',
-          display: 'block',
-          pointerEvents: 'none',
-          transition: 'transform 0.15s ease, filter 0.15s ease'
-        }}
       />
     </div>
   );
