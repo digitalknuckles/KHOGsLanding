@@ -118,62 +118,74 @@ export default function Character({ currentTab, tabsRef }) {
   }
 
   // 🚶 TAB NAV
-  useEffect(() => {
-    const char = ref.current;
-    if (!char) return;
+useEffect(() => {
+  const char = ref.current;
+  if (!char) return;
 
-    const from = prevTab.current;
-    const to = currentTab;
+  const from = prevTab.current;
+  const to = currentTab;
 
-    wandering.current = false;
+  wandering.current = false;
+  clearInterval(walkInterval.current);
+
+  if (from === to) {
+    resetIdle();
+    return;
+  }
+
+  const targetX = getTabX(to);
+
+  // ✅ ALWAYS face direction of travel while moving
+  const movingRight = to > from;
+  const moveDirection = movingRight ? "right" : "left";
+
+  instantFlip(moveDirection);
+
+  const frames =
+    moveDirection === "right"
+      ? [assets.right1, assets.right2]
+      : [assets.left1, assets.left2];
+
+  startWalkLoop(frames, 140);
+
+  const duration = 800 + Math.abs(to - from) * 300;
+
+  char.style.transition = `transform ${duration}ms linear`;
+  char.style.transform = `translateX(${targetX}px) translateX(-50%)`;
+
+  const timeout = setTimeout(() => {
     clearInterval(walkInterval.current);
 
-    if (from === to) {
-      resetIdle();
-      return;
-    }
+    // 🎯 AFTER ARRIVAL → apply idle facing rules
+    let idleDirection;
 
-    const targetX = getTabX(to);
+    if (to === 0) idleDirection = "right";      // HOME
+    else if (to === 3) idleDirection = "left";  // PROFILE
+    else idleDirection = moveDirection;
 
-    // 🎯 DIRECTION RULES
-    let direction;
+    // ⚡ instant flip to idle direction
+char.src = assets.flip;
+setTimeout(() => {
+  char.src = idleDirection === "right"
+    ? assets.right1
+    : assets.left1;
+}, 60); // tiny snap
 
-    if (to === 0) direction = "right";        // HOME
-    else if (to === 3) direction = "left";    // PROFILE
-    else direction = to > from ? "right" : "left";
-
-    // ⚡ instant flip BEFORE movement
-    instantFlip(direction);
-
-    const frames =
-      direction === "right"
-        ? [assets.right1, assets.right2]
-        : [assets.left1, assets.left2];
-
-    startWalkLoop(frames, 140);
-
-    const duration = 800 + Math.abs(to - from) * 300;
-
-    char.style.transition = `transform ${duration}ms linear`;
-    char.style.transform = `translateX(${targetX}px) translateX(-50%)`;
-
-    const timeout = setTimeout(() => {
-      clearInterval(walkInterval.current);
-
-      // settle frame (no flip delay)
-      char.src = direction === "right"
+    // settle frame
+    char.src =
+      idleDirection === "right"
         ? assets.right1
         : assets.left1;
 
-      prevTab.current = to;
-      resetIdle();
-    }, duration);
+    prevTab.current = to;
+    resetIdle();
+  }, duration);
 
-    return () => {
-      clearInterval(walkInterval.current);
-      clearTimeout(timeout);
-    };
-  }, [currentTab]);
+  return () => {
+    clearInterval(walkInterval.current);
+    clearTimeout(timeout);
+  };
+}, [currentTab]);
 
   // 🟢 INIT
   useEffect(() => {
