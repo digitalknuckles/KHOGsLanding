@@ -15,10 +15,8 @@ export default function Page() {
   const [nfts, setNfts] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  // ✅ NEW (non-breaking)
+  // 🎥 VIEW MODE
   const [widescreen, setWidescreen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const [isLandscape, setIsLandscape] = useState(false);
 
   // 🔌 Auto reconnect wallet
   useEffect(() => {
@@ -35,41 +33,7 @@ export default function Page() {
     }
   }, [tab, wallet]);
 
-  // ✅ DEVICE DETECTION (added only)
-  useEffect(() => {
-    const detect = () => {
-      const mobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
-      setIsMobile(mobile);
-      setIsLandscape(window.innerWidth > window.innerHeight);
-    };
-
-    detect();
-    window.addEventListener('resize', detect);
-    return () => window.removeEventListener('resize', detect);
-  }, []);
-
-  // 🔒 Gesture control (UNCHANGED)
-  useEffect(() => {
-    const preventZoom = (e) => {
-      if (e.scale !== 1) e.preventDefault();
-    };
-
-    const preventMultiTouch = (e) => {
-      if (e.touches.length > 1) e.preventDefault();
-    };
-
-    document.addEventListener('gesturestart', preventZoom);
-    document.addEventListener('gesturechange', preventZoom);
-    document.addEventListener('touchmove', preventMultiTouch, { passive: false });
-
-    return () => {
-      document.removeEventListener('gesturestart', preventZoom);
-      document.removeEventListener('gesturechange', preventZoom);
-      document.removeEventListener('touchmove', preventMultiTouch);
-    };
-  }, []);
-
-  // 🎮 SCALE ENGINE (FIXED VERSION of yours)
+  // 🎮 SCALE ENGINE (FULL + CORRECT)
   useEffect(() => {
     function updateScale() {
       const vw = window.innerWidth;
@@ -77,11 +41,11 @@ export default function Page() {
 
       let scale;
 
-      // ✅ ONLY allow widescreen on mobile landscape
-      if (isMobile && isLandscape && widescreen) {
+      if (widescreen) {
+        // 🎬 LOCKED (letterbox)
         scale = Math.min(vw / 2560, vh / 1440);
       } else {
-        // ✅ ALWAYS fill width (fixes desktop whitespace)
+        // 📱 AUTO (fill width)
         scale = vw / 2560;
       }
 
@@ -102,12 +66,33 @@ export default function Page() {
     return () => {
       window.removeEventListener('resize', updateScale);
     };
-  }, [widescreen, isMobile, isLandscape]);
+  }, [widescreen]);
+
+  // 🔒 Gesture control
+  useEffect(() => {
+    const preventZoom = (e) => {
+      if (e.scale !== 1) e.preventDefault();
+    };
+
+    const preventMultiTouch = (e) => {
+      if (e.touches.length > 1) e.preventDefault();
+    };
+
+    document.addEventListener('gesturestart', preventZoom);
+    document.addEventListener('gesturechange', preventZoom);
+    document.addEventListener('touchmove', preventMultiTouch, { passive: false });
+
+    return () => {
+      document.removeEventListener('gesturestart', preventZoom);
+      document.removeEventListener('gesturechange', preventZoom);
+      document.removeEventListener('touchmove', preventMultiTouch);
+    };
+  }, []);
 
   return (
     <div className="viewport">
 
-      {/* 🌍 SCENE (UNCHANGED STRUCTURE) */}
+      {/* 🎬 WRAPPER */}
       <div className="scene-wrapper">
         <div className="scene">
 
@@ -119,11 +104,7 @@ export default function Page() {
           />
 
           {/* 🚪 DOOR */}
-          <Door
-            onEnter={() => {
-              console.log("🚪 ENTER ROOM");
-            }}
-          />
+          <Door onEnter={() => console.log("🚪 ENTER ROOM")} />
 
           {/* 🎮 CHARACTER */}
           <Character currentTab={tab} tabsRef={tabsRef} />
@@ -131,21 +112,19 @@ export default function Page() {
         </div>
       </div>
 
-      {/* 🧭 NAV (UNCHANGED) */}
+      {/* 🧭 NAV */}
       <Navigation
         setTab={setTab}
         tabsRef={tabsRef}
         activeTab={tab}
       />
 
-      {/* 🔗 WALLET (UNCHANGED) */}
+      {/* 🔗 WALLET */}
       <button
         className="wallet"
         onClick={() => {
           const redirected = handleMobileWalletRedirect();
-          if (!redirected) {
-            connectWallet(setWallet);
-          }
+          if (!redirected) connectWallet(setWallet);
         }}
       >
         {wallet
@@ -153,17 +132,15 @@ export default function Page() {
           : 'Connect Wallet'}
       </button>
 
-      {/* ✅ WIDESCREEN BUTTON (MOBILE ONLY) */}
-      {isMobile && isLandscape && (
-        <button
-          className="widescreen-toggle"
-          onClick={() => setWidescreen(v => !v)}
-        >
-          {widescreen ? 'Fill' : 'Wide'}
-        </button>
-      )}
+      {/* 🎥 TOGGLE */}
+      <button
+        className="widescreen-toggle"
+        onClick={() => setWidescreen(v => !v)}
+      >
+        {widescreen ? 'Auto View' : 'Widescreen'}
+      </button>
 
-      {/* 🎠 NFT CARD (UNCHANGED) */}
+      {/* 🎠 NFT CARD */}
       {tab === 3 && nfts.length > 0 && (
         <NFTCard
           nfts={nfts}
@@ -179,6 +156,9 @@ html, body {
   margin:0;
   padding:0;
   overflow:hidden;
+  touch-action: manipulation;
+  overscroll-behavior:none;
+  font-family:sans-serif;
   background:black;
 }
 
@@ -190,7 +170,7 @@ html, body {
   overflow:hidden;
 }
 
-/* ✅ WRAPPER (added, non-breaking) */
+/* 🎬 WRAPPER */
 .scene-wrapper {
   position:absolute;
   inset:0;
@@ -203,8 +183,10 @@ html, body {
   position:absolute;
   width:2560px;
   height:1440px;
+
   left:50%;
   top:50%;
+
   transform-origin:top left;
 }
 
@@ -223,7 +205,10 @@ html, body {
   bottom:0;
   left:0;
   height:100%;
-  transform: translateX(-50%);
+  transform:translateX(0) translateX(-50%);
+  transform-origin:bottom center;
+  z-index:5;
+  pointer-events:none;
 }
 
 /* 🚪 DOOR */
@@ -231,6 +216,24 @@ html, body {
   position:absolute;
   transform-origin:bottom center;
   z-index:3;
+  cursor:pointer;
+  transition: transform 0.1s ease, filter 0.1s ease;
+}
+
+.door img {
+  width:140px;
+  height:auto;
+  display:block;
+  pointer-events:none;
+}
+
+.door.open img {
+  transform: scale(3.35);
+  filter: brightness(1.2) drop-shadow(0 0 12px rgba(255,255,255,0.6));
+}
+
+.door.pressed img {
+  transform: scale(3.30);
 }
 
 /* 🧭 NAV */
@@ -238,20 +241,38 @@ html, body {
   position:absolute;
   top:0;
   width:100%;
-  height:100px;
+  height:90px;
   display:flex;
   justify-content:center;
   align-items:center;
-  gap:12px;
   z-index:20;
 }
 
-/* ✅ CRITICAL FIX (prevents stacking bug) */
+/* 🔥 CRITICAL FIX: NEVER STACK */
 .tabs {
   display:flex;
   flex-wrap:nowrap;
   justify-content:space-between;
   width:100%;
+  max-width:640px;
+  padding:0 12px;
+}
+
+.tab {
+  flex:1;
+  text-align:center;
+  padding:10px;
+  border-radius:12px;
+  margin:0 4px;
+
+  background:rgba(255,255,255,0.2);
+  backdrop-filter:blur(12px);
+
+  transition: all 0.15s ease;
+}
+
+.tab.active {
+  background:rgba(255,255,255,0.5);
 }
 
 /* 🔗 WALLET */
@@ -260,6 +281,10 @@ html, body {
   top:20px;
   right:20px;
   z-index:30;
+  padding:10px 14px;
+  border-radius:10px;
+  background:rgba(0,0,0,0.7);
+  color:white;
 }
 
 /* 🎥 TOGGLE */
@@ -268,6 +293,30 @@ html, body {
   bottom:20px;
   right:20px;
   z-index:30;
+  padding:10px 14px;
+  border-radius:10px;
+  background:rgba(0,0,0,0.7);
+  color:white;
+}
+
+/* 🎠 CARD */
+.card {
+  position:absolute;
+  bottom:120px;
+  left:20px;
+  width:260px;
+  max-width:80vw;
+  padding:16px;
+  border-radius:16px;
+  background:rgba(0,0,0,0.75);
+  color:white;
+  z-index:25;
+
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+
+  backdrop-filter: blur(12px);
 }
 
       `}</style>
