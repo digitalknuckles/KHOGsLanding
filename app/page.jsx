@@ -195,18 +195,18 @@ html, body {
   height: auto;
   display: block;
   pointer-events: none;
-  transition: transform 0.15s ease, filter 0.15s ease;
+  transition: transform 0.01s ease, filter 0.01s ease;
 }
 
 /* 🚪 OPEN STATE */
 .door.open img {
-  transform: scale(2.06);
+  transform: scale(3.06);
   filter: brightness(1.2) drop-shadow(0 0 12px rgba(255,255,255,0.6));
 }
 
 /* 💥 PRESS FEEDBACK */
 .door.pressed img {
-  transform: scale(2.02);
+  transform: scale(3.02);
 }
 
 /* 🧭 NAV (UI SPACE) */
