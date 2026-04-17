@@ -32,7 +32,7 @@ export default function Character({ currentTab, tabsRef }) {
   const hasStartedWander = useRef(false);
   const facing = useRef("right"); // track orientation
 
-  const offsets = { 0: -120, 3: 120 };
+  const offsets = { 0: -180, 3: 180 };
 
 function getTabX(index) {
   const el = tabsRef.current[index];
