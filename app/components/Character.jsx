@@ -29,6 +29,13 @@ export default function Character({ currentTab, tabsRef }) {
 
   const WORLD_WIDTH = 2560;
 
+  const offsets = {
+  0: -180,   // home (strong anchor)
+  1: -40,    // game (loose)
+  2: 40,     // market
+  3: 180     // profile (strong anchor)
+};
+
   const getScale = () =>
     parseFloat(
       getComputedStyle(document.documentElement)
@@ -133,7 +140,20 @@ useEffect(() => {
     return;
   }
 
-  const targetX = getTabX(to);
+                                //const targetX = getTabX(to);
+  function getTabX(index) {
+  const el = tabsRef.current[index];
+  const char = ref.current;
+  if (!el || !char) return 0;
+
+  const rect = el.getBoundingClientRect();
+  const scale = getScale();
+
+  const worldX = (rect.left + rect.width / 2) / scale;
+
+  // 🎯 apply offset
+  return worldX + (offsets[index] || 0);
+}
 
   // ✅ ALWAYS face direction of travel while moving
   const movingRight = to > from;
