@@ -15,6 +15,8 @@ export default function Page() {
   const [nfts, setNfts] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 900;
+
   // 🎥 VIEW MODE
   const [widescreen, setWidescreen] = useState(false);
 
@@ -34,39 +36,31 @@ export default function Page() {
   }, [tab, wallet]);
 
   // 🎮 SCALE ENGINE (FULL + CORRECT)
-  useEffect(() => {
-    function updateScale() {
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
+ useEffect(() => {
+  function updateScale() {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
 
-      let scale;
+    const isMobile = vw < 900;
 
-      if (widescreen) {
-        // 🎬 LOCKED (letterbox)
-        scale = Math.min(vw / 2560, vh / 1440);
-      } else {
-        // 📱 AUTO (fill width)
-        scale = vw / 2560;
-      }
+    let scale;
 
-      document.documentElement.style.setProperty('--scene-scale', scale);
-
-      const scene = document.querySelector('.scene');
-
-      if (scene) {
-        scene.style.transform = `
-          translate(-50%, -50%) scale(${scale})
-        `;
-      }
+    if (isMobile && widescreen) {
+      // 📱 Mobile widescreen (letterbox)
+      scale = Math.min(vw / 2560, vh / 1440);
+    } else {
+      // 🖥 Default behavior (fills width cleanly)
+      scale = vw / 2560;
     }
 
-    updateScale();
-    window.addEventListener('resize', updateScale);
+    document.documentElement.style.setProperty('--scene-scale', scale);
+  }
 
-    return () => {
-      window.removeEventListener('resize', updateScale);
-    };
-  }, [widescreen]);
+  updateScale();
+  window.addEventListener('resize', updateScale);
+
+  return () => window.removeEventListener('resize', updateScale);
+}, [widescreen]);
 
   // 🔒 Gesture control
   useEffect(() => {
@@ -133,12 +127,14 @@ export default function Page() {
       </button>
 
       {/* 🎥 TOGGLE */}
-      <button
-        className="widescreen-toggle"
-        onClick={() => setWidescreen(v => !v)}
-      >
-        {widescreen ? 'Auto View' : 'Widescreen'}
-      </button>
+{isMobile && (
+  <button
+    className="widescreen-toggle"
+    onClick={() => setWidescreen(v => !v)}
+  >
+    {widescreen ? 'Auto View' : 'Widescreen'}
+  </button>
+)}
 
       {/* 🎠 NFT CARD */}
       {tab === 3 && nfts.length > 0 && (
@@ -174,6 +170,11 @@ html, body {
 .scene-wrapper {
   position:absolute;
   inset:0;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
   overflow:hidden;
   background:black;
 }
@@ -187,7 +188,9 @@ html, body {
   left:50%;
   top:50%;
 
-  transform-origin:top left;
+  transform: translate(-50%, -50%) scale(var(--scene-scale));
+
+  transform-origin: center center; /* 🔥 FIX */
 }
 
 /* 🌄 BACKGROUND */
