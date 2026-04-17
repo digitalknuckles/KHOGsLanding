@@ -50,15 +50,15 @@ export default function Door({ onEnter }) {
 
         if (onEnter) onEnter();
       }}
-
-onClick={() => {
-  setPressed(true);
-  setTimeout(() => {
-    onEnter(); // triggers modal
-    setPressed(false);
-  }, 120);
-}}
       
+      onClick={() => {
+        setPressed(true);
+        setTimeout(() => {
+          onEnter(); // triggers modal
+          setPressed(false);
+        }, 120);
+      }}
+            
       <img
         src={isOpen ? OPEN : CLOSED}
         alt="door"
