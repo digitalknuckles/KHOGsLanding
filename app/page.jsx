@@ -169,12 +169,17 @@ html, body {
 
 /* 🎮 CHARACTER */
 .character {
-  position:absolute;
-  bottom:0;
-  left:0;
-  height:100%;
-  z-index:3;
-  pointer-events:none;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+
+  height: 100%;
+
+  transform: translateX(0) translateX(-50%);
+  transform-origin: bottom center;
+
+  z-index: 5;
+  pointer-events: none;
 }
 
 /* 🚪 DOOR (WORLD POSITIONED) */
