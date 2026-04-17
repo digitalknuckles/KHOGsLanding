@@ -30,30 +30,48 @@ export default function Character({ currentTab, tabsRef }) {
   const idleTimer = useRef(null);
   const wandering = useRef(false);
   const hasStartedWander = useRef(false);
-  const facing = useRef("right"); // track orientation
 
-  const offsets = { 0: -180, 3: 180 };
+  const WORLD_WIDTH = 2560;
 
-function getTabX(index) {
-  const el = tabsRef.current[index];
-  const char = ref.current;
+  // 🎯 Convert UI tab → WORLD X
+  function getTabX(index) {
+    const el = tabsRef.current[index];
+    const char = ref.current;
 
-  if (!el || !char) return 0;
+    if (!el || !char) return WORLD_WIDTH / 2;
 
-  const rect = el.getBoundingClientRect();
+    const rect = el.getBoundingClientRect();
 
-  const scale =
-    parseFloat(
-      getComputedStyle(document.documentElement)
-        .getPropertyValue('--scene-scale')
-    ) || 1;
+    const scale =
+      parseFloat(
+        getComputedStyle(document.documentElement)
+          .getPropertyValue('--scene-scale')
+      ) || 1;
 
-  // ✅ Convert screen → world coordinates
-  const worldX =
-    (rect.left + rect.width / 2) / scale;
+    return (rect.left + rect.width / 2) / scale;
+  }
 
-return worldX;
-}
+  function setX(x) {
+    const char = ref.current;
+    if (!char) return;
+
+    char.style.transform = `translateX(${x}px) translateX(-50%)`;
+  }
+
+  function getCurrentX() {
+    const char = ref.current;
+    if (!char) return 0;
+
+    const rect = char.getBoundingClientRect();
+
+    const scale =
+      parseFloat(
+        getComputedStyle(document.documentElement)
+          .getPropertyValue('--scene-scale')
+      ) || 1;
+
+    return (rect.left + rect.width / 2) / scale;
+  }
 
   function resetIdle() {
     clearTimeout(idleTimer.current);
@@ -63,36 +81,23 @@ return worldX;
     idleTimer.current = setTimeout(startWander, 30000);
   }
 
-  // 🎲 WANDER SYSTEM
+  // 🎲 WANDER SYSTEM (WORLD SPACE)
   function startWander() {
     const char = ref.current;
     if (!char) return;
 
     wandering.current = true;
 
-const WORLD_WIDTH = 2560;
-const charWidth = char.offsetWidth;
+    const charWidth = char.offsetWidth;
 
-const minX = charWidth / 2;
-const maxX = WORLD_WIDTH - charWidth / 2;
+    const minX = charWidth / 2;
+    const maxX = WORLD_WIDTH - charWidth / 2;
 
-const targetX = Math.random() * (maxX - minX) + minX;
-    
-    const scale =
-  parseFloat(
-    getComputedStyle(document.documentElement)
-      .getPropertyValue('--scene-scale')
-  ) || 1;
-
-const rect = char.getBoundingClientRect();
-
-const currentX =
-  (rect.left + rect.width / 2) / scale;
+    const targetX = Math.random() * (maxX - minX) + minX;
+    const currentX = getCurrentX();
 
     const goingRight = targetX > currentX;
-    facing.current = goingRight ? "right" : "left";
 
-    // 🎬 START ANIMATION (ONLY ONCE)
     if (!hasStartedWander.current) {
       char.src = goingRight
         ? assets.rightWanderStart
@@ -101,7 +106,6 @@ const currentX =
       hasStartedWander.current = true;
     }
 
-    // 🎞 LOOP FRAMES
     const frames = goingRight
       ? [assets.rightWander1, assets.rightWander2]
       : [assets.leftWander1, assets.leftWander2];
@@ -116,25 +120,21 @@ const currentX =
 
     const distance = Math.abs(targetX - currentX);
     const duration = 1400 + distance * 1.1;
-     const targetX = getTabX(to);
-    
+
     char.style.transition = `transform ${duration}ms linear`;
-    char.style.transform = `translateX(${targetX}px) translateX(-50%)`;
+    setX(targetX);
 
     setTimeout(() => {
       clearInterval(walkInterval.current);
-
-      // 🔄 FLIP BETWEEN SEGMENTS
       char.src = assets.flip;
 
       setTimeout(() => {
         if (wandering.current) startWander();
       }, 120);
-
     }, duration);
   }
 
-  // 🚶 TAB NAV
+  // 🚶 TAB NAVIGATION
   useEffect(() => {
     const char = ref.current;
     if (!char) return;
@@ -151,7 +151,6 @@ const currentX =
     }
 
     const goingRight = to > from;
-    facing.current = goingRight ? "right" : "left";
 
     const frames = goingRight
       ? [assets.right1, assets.right2]
@@ -164,10 +163,14 @@ const currentX =
       frame++;
     }, 140);
 
-    const duration = 800 + Math.abs(to - from) * 300;
+    const targetX = getTabX(to); // ✅ FIXED
+    const currentX = getCurrentX();
+
+    const distance = Math.abs(targetX - currentX);
+    const duration = 800 + distance * 0.4;
 
     char.style.transition = `transform ${duration}ms linear`;
-    char.style.transform = `translateX(${targetX}px) translateX(-50%)`;
+    setX(targetX);
 
     const timeout = setTimeout(() => {
       clearInterval(walkInterval.current);
@@ -175,20 +178,10 @@ const currentX =
       char.src = assets.flip;
 
       setTimeout(() => {
-        if (to === 0) {
-          char.src = assets.right1;
-          facing.current = "right";
-        } else if (to === 3) {
-          char.src = assets.left1;
-          facing.current = "left";
-        } else {
-          char.src = goingRight ? assets.right1 : assets.left1;
-        }
-
+        char.src = goingRight ? assets.right1 : assets.left1;
         prevTab.current = to;
         resetIdle();
       }, 120);
-
     }, duration);
 
     return () => {
@@ -203,9 +196,9 @@ const currentX =
     if (!char) return;
 
     const start = () => {
-      char.style.transform = `translateX(${targetX}px) translateX(-50%)`;
+      const startX = getTabX(0);
+      setX(startX);
       char.src = assets.right1;
-      facing.current = "right";
       resetIdle();
     };
 
