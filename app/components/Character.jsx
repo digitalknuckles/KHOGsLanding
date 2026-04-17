@@ -111,7 +111,7 @@ const currentX =
     const duration = 1400 + distance * 1.1;
 
     char.style.transition = `transform ${duration}ms linear`;
-    char.style.transform = `translateX(${targetX}px)`;
+    char.style.transform = `translateX(${targetX}px) translateX(-50%)`;
 
     setTimeout(() => {
       clearInterval(walkInterval.current);
@@ -159,7 +159,7 @@ const currentX =
     const duration = 800 + Math.abs(to - from) * 300;
 
     char.style.transition = `transform ${duration}ms linear`;
-    char.style.transform = `translateX(${getTabX(to)}px)`;
+    char.style.transform = `translateX(${targetX}px) translateX(-50%)`;
 
     const timeout = setTimeout(() => {
       clearInterval(walkInterval.current);
