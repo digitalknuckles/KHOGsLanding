@@ -30,47 +30,31 @@ export default function Character({ currentTab, tabsRef }) {
   const idleTimer = useRef(null);
   const wandering = useRef(false);
   const hasStartedWander = useRef(false);
+  const facing = useRef("right");
 
   const WORLD_WIDTH = 2560;
 
-  // 🎯 Convert UI tab → WORLD X
+  function getScale() {
+    return (
+      parseFloat(
+        getComputedStyle(document.documentElement)
+          .getPropertyValue('--scene-scale')
+      ) || 1
+    );
+  }
+
+  // 🎯 TAB POSITION (SCREEN ➜ WORLD)
   function getTabX(index) {
     const el = tabsRef.current[index];
     const char = ref.current;
-
-    if (!el || !char) return WORLD_WIDTH / 2;
+    if (!el || !char) return 0;
 
     const rect = el.getBoundingClientRect();
+    const scale = getScale();
 
-    const scale =
-      parseFloat(
-        getComputedStyle(document.documentElement)
-          .getPropertyValue('--scene-scale')
-      ) || 1;
+    const worldX = (rect.left + rect.width / 2) / scale;
 
-    return (rect.left + rect.width / 2) / scale;
-  }
-
-  function setX(x) {
-    const char = ref.current;
-    if (!char) return;
-
-    char.style.transform = `translateX(${x}px) translateX(-50%)`;
-  }
-
-  function getCurrentX() {
-    const char = ref.current;
-    if (!char) return 0;
-
-    const rect = char.getBoundingClientRect();
-
-    const scale =
-      parseFloat(
-        getComputedStyle(document.documentElement)
-          .getPropertyValue('--scene-scale')
-      ) || 1;
-
-    return (rect.left + rect.width / 2) / scale;
+    return worldX;
   }
 
   function resetIdle() {
@@ -94,10 +78,17 @@ export default function Character({ currentTab, tabsRef }) {
     const maxX = WORLD_WIDTH - charWidth / 2;
 
     const targetX = Math.random() * (maxX - minX) + minX;
-    const currentX = getCurrentX();
+
+    const scale = getScale();
+    const rect = char.getBoundingClientRect();
+
+    const currentX =
+      (rect.left + rect.width / 2) / scale;
 
     const goingRight = targetX > currentX;
+    facing.current = goingRight ? "right" : "left";
 
+    // 🎬 START
     if (!hasStartedWander.current) {
       char.src = goingRight
         ? assets.rightWanderStart
@@ -106,6 +97,7 @@ export default function Character({ currentTab, tabsRef }) {
       hasStartedWander.current = true;
     }
 
+    // 🎞 LOOP
     const frames = goingRight
       ? [assets.rightWander1, assets.rightWander2]
       : [assets.leftWander1, assets.leftWander2];
@@ -122,7 +114,7 @@ export default function Character({ currentTab, tabsRef }) {
     const duration = 1400 + distance * 1.1;
 
     char.style.transition = `transform ${duration}ms linear`;
-    setX(targetX);
+    char.style.transform = `translateX(${targetX}px) translateX(-50%)`;
 
     setTimeout(() => {
       clearInterval(walkInterval.current);
@@ -134,7 +126,7 @@ export default function Character({ currentTab, tabsRef }) {
     }, duration);
   }
 
-  // 🚶 TAB NAVIGATION
+  // 🚶 TAB NAV
   useEffect(() => {
     const char = ref.current;
     if (!char) return;
@@ -150,7 +142,10 @@ export default function Character({ currentTab, tabsRef }) {
       return;
     }
 
+    const targetX = getTabX(to);
+
     const goingRight = to > from;
+    facing.current = goingRight ? "right" : "left";
 
     const frames = goingRight
       ? [assets.right1, assets.right2]
@@ -163,18 +158,13 @@ export default function Character({ currentTab, tabsRef }) {
       frame++;
     }, 140);
 
-    const targetX = getTabX(to); // ✅ FIXED
-    const currentX = getCurrentX();
-
-    const distance = Math.abs(targetX - currentX);
-    const duration = 800 + distance * 0.4;
+    const duration = 800 + Math.abs(to - from) * 300;
 
     char.style.transition = `transform ${duration}ms linear`;
-    setX(targetX);
+    char.style.transform = `translateX(${targetX}px) translateX(-50%)`;
 
     const timeout = setTimeout(() => {
       clearInterval(walkInterval.current);
-
       char.src = assets.flip;
 
       setTimeout(() => {
@@ -197,8 +187,9 @@ export default function Character({ currentTab, tabsRef }) {
 
     const start = () => {
       const startX = getTabX(0);
-      setX(startX);
+      char.style.transform = `translateX(${startX}px) translateX(-50%)`;
       char.src = assets.right1;
+      facing.current = "right";
       resetIdle();
     };
 
