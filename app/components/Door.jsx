@@ -14,8 +14,8 @@ export default function Door({ onEnter }) {
   const holdRef = useRef(null);
 
   // 🎯 NOW MATCHES YOUR TRUE SCENE (2560x1440)
-  const doorX = 2134; // ← convert from your placement
-  const doorY = 1227;
+  const doorX = 2127; // ← convert from your placement
+  const doorY = 1153;
 
   return (
     <div
