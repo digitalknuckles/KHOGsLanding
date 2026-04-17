@@ -25,11 +25,6 @@ useEffect(() => {
 
   return () => window.removeEventListener('resize', update);
 }, []);
-
-  updateDevice();
-  window.addEventListener('resize', updateDevice);
-  return () => window.removeEventListener('resize', updateDevice);
-}, []);
   
   const [showDoorModal, setShowDoorModal] = useState(false);
 
