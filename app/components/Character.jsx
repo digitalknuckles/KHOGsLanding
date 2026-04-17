@@ -116,13 +116,13 @@ export default function Character({ currentTab, tabsRef }) {
     char.style.transition = `transform ${duration}ms linear`;
     char.style.transform = `translateX(${targetX}px) translateX(-50%)`;
 
-setTimeout(() => {
-  clearInterval(walkInterval.current);
+    setTimeout(() => {
+      clearInterval(walkInterval.current);
 
-  if (wandering.current) {
-    setTimeout(startWander, 150 + Math.random() * 250);
+      // ⚡ immediate redirect (no delay feel)
+      if (wandering.current) startWander();
+    }, duration);
   }
-}, duration);
 
   // 🚶 TAB NAV
 useEffect(() => {
@@ -233,8 +233,6 @@ setTimeout(() => {
       className="character"
       src={assets.right1}
       alt="character"
-      draggable={false}
     />
   );
-  }
 }
