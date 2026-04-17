@@ -163,7 +163,6 @@ useEffect(() => {
 
 {showDoorModal && (
   <div className="modal-overlay" onClick={() => setShowDoorModal(false)}>
-    
     <div className="modal" onClick={(e) => e.stopPropagation()}>
       
       <div className="modal-text">
