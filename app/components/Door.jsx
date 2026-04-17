@@ -63,7 +63,7 @@ export default function Door({ onEnter }) {
         alt="door"
         draggable={false}
         style={{
-          width: '140px',   // 👈 BASE SIZE (scales with scene automatically)
+          width: '240px',   // 👈 BASE SIZE (scales with scene automatically)
           height: 'auto',
           display: 'block',
           pointerEvents: 'none',
