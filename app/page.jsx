@@ -18,9 +18,13 @@ export default function Page() {
   const [isMobile, setIsMobile] = useState(false);
 
 useEffect(() => {
-  const updateDevice = () => {
-    setIsMobile(window.innerWidth < 900);
-  };
+  const update = () => setIsMobile(window.innerWidth < 900);
+
+  update();
+  window.addEventListener('resize', update);
+
+  return () => window.removeEventListener('resize', update);
+}, []);
 
   updateDevice();
   window.addEventListener('resize', updateDevice);
