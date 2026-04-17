@@ -233,6 +233,8 @@ setTimeout(() => {
       className="character"
       src={assets.right1}
       alt="character"
+      draggable={false}
     />
   );
+  }
 }
