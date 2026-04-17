@@ -116,7 +116,8 @@ const currentX =
 
     const distance = Math.abs(targetX - currentX);
     const duration = 1400 + distance * 1.1;
-
+     const targetX = getTabX(to);
+    
     char.style.transition = `transform ${duration}ms linear`;
     char.style.transform = `translateX(${targetX}px) translateX(-50%)`;
 
@@ -202,7 +203,7 @@ const currentX =
     if (!char) return;
 
     const start = () => {
-      char.style.transform = `translateX(${getTabX(0)}px)`;
+      char.style.transform = `translateX(${targetX}px) translateX(-50%)`;
       char.src = assets.right1;
       facing.current = "right";
       resetIdle();
