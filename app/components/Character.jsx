@@ -140,7 +140,8 @@ useEffect(() => {
     return;
   }
 
-                                //const targetX = getTabX(to);
+  const targetX = getTabX(to);
+  
   function getTabX(index) {
   const el = tabsRef.current[index];
   const char = ref.current;
