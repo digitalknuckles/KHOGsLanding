@@ -36,18 +36,19 @@ export default function Character({ currentTab, tabsRef }) {
 
 function getTabX(index) {
   const el = tabsRef.current[index];
-  const char = characterRef.current;
+  const char = ref.current;
 
   if (!el || !char) return 0;
 
   const rect = el.getBoundingClientRect();
 
-  const scale = parseFloat(
-    getComputedStyle(document.documentElement)
-      .getPropertyValue('--scene-scale')
-  ) || 1;
+  const scale =
+    parseFloat(
+      getComputedStyle(document.documentElement)
+        .getPropertyValue('--scene-scale')
+    ) || 1;
 
-  // 🔥 Convert SCREEN → WORLD coordinates
+  // ✅ Convert screen → world coordinates
   const worldX =
     (rect.left + rect.width / 2) / scale;
 
@@ -69,9 +70,17 @@ function getTabX(index) {
 
     wandering.current = true;
 
-    const screenWidth = window.innerWidth;
-    const targetX = Math.random() * (screenWidth - 150);
-    const currentX = char.getBoundingClientRect().left;
+const WORLD_WIDTH = 2560;
+
+const targetX = Math.random() * (WORLD_WIDTH - 200);
+    const scale =
+  parseFloat(
+    getComputedStyle(document.documentElement)
+      .getPropertyValue('--scene-scale')
+  ) || 1;
+
+const currentX =
+  char.getBoundingClientRect().left / scale;
 
     const goingRight = targetX > currentX;
     facing.current = goingRight ? "right" : "left";
