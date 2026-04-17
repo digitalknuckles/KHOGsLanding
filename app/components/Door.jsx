@@ -15,7 +15,7 @@ export default function Door({ onEnter }) {
 
   // 🎯 SCENE COORDINATES (1920x1080 SPACE — SAME AS PAGE)
   const doorX = 1607; // px in scene
-  const doorY = 1014; // px in scene
+  const doorY = 1000; // px in scene
 
   return (
     <div
