@@ -46,6 +46,7 @@ export default function Character({ currentTab, tabsRef }) {
     const el = tabsRef.current[index];
     const char = ref.current;
     if (!el || !char) return 0;
+    if (!rect.width) return 0; // prevents bad early calc
 
     const rect = el.getBoundingClientRect();
     const scale = getScale();
@@ -116,13 +117,13 @@ export default function Character({ currentTab, tabsRef }) {
     char.style.transition = `transform ${duration}ms linear`;
     char.style.transform = `translateX(${targetX}px) translateX(-50%)`;
 
-setTimeout(() => {
-  clearInterval(walkInterval.current);
+    setTimeout(() => {
+      clearInterval(walkInterval.current);
 
-  if (wandering.current) {
-    setTimeout(startWander, 150 + Math.random() * 250);
+      // ⚡ immediate redirect (no delay feel)
+      if (wandering.current) startWander();
+    }, duration);
   }
-}, duration);
 
   // 🚶 TAB NAV
 useEffect(() => {
@@ -135,10 +136,10 @@ useEffect(() => {
   wandering.current = false;
   clearInterval(walkInterval.current);
 
-  if (from === to) {
-    resetIdle();
-    return;
-  }
+if (from === to && to !== 0) {
+  resetIdle();
+  return;
+}
 
   const targetX = getTabX(to);
   
@@ -213,15 +214,17 @@ setTimeout(() => {
     const char = ref.current;
     if (!char) return;
 
-    const start = () => {
-      const startX = getTabX(0);
+const start = () => {
+  setTimeout(() => {
+    const startX = getTabX(0);
 
-      char.style.transform = `translateX(${startX}px) translateX(-50%)`;
-      char.src = assets.right1;
+    char.style.transform = `translateX(${startX}px) translateX(-50%)`;
+    char.src = assets.right1;
 
-      facing.current = "right";
-      resetIdle();
-    };
+    facing.current = "right";
+    resetIdle();
+  }, 50); // 🔥 gives layout time to resolve
+};
 
     if (char.complete) start();
     else char.onload = start;
@@ -233,7 +236,6 @@ setTimeout(() => {
       className="character"
       src={assets.right1}
       alt="character"
-      draggable={false}
     />
   );
   }
