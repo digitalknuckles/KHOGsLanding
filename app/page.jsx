@@ -15,6 +15,9 @@ export default function Page() {
   const [nfts, setNfts] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
+  // 🎥 VIEW MODE
+  const [widescreen, setWidescreen] = useState(false);
+
   // 🔌 Auto reconnect wallet
   useEffect(() => {
     reconnectWallet(setWallet);
@@ -30,7 +33,42 @@ export default function Page() {
     }
   }, [tab, wallet]);
 
-  // 🔒 Gesture control (safe)
+  // 🎮 SCALE ENGINE (FULL + CORRECT)
+  useEffect(() => {
+    function updateScale() {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+
+      let scale;
+
+      if (widescreen) {
+        // 🎬 LOCKED (letterbox)
+        scale = Math.min(vw / 2560, vh / 1440);
+      } else {
+        // 📱 AUTO (fill width)
+        scale = vw / 2560;
+      }
+
+      document.documentElement.style.setProperty('--scene-scale', scale);
+
+      const scene = document.querySelector('.scene');
+
+      if (scene) {
+        scene.style.transform = `
+          translate(-50%, -50%) scale(${scale})
+        `;
+      }
+    }
+
+    updateScale();
+    window.addEventListener('resize', updateScale);
+
+    return () => {
+      window.removeEventListener('resize', updateScale);
+    };
+  }, [widescreen]);
+
+  // 🔒 Gesture control
   useEffect(() => {
     const preventZoom = (e) => {
       if (e.scale !== 1) e.preventDefault();
@@ -51,48 +89,30 @@ export default function Page() {
     };
   }, []);
 
-  // 🎮 SCENE SCALE ENGINE (2560x1440 world)
-  useEffect(() => {
-    const updateScale = () => {
-      const scale = Math.min(
-        window.innerWidth / 2560,
-        window.innerHeight / 1440
-      );
-      document.documentElement.style.setProperty('--scene-scale', scale);
-    };
-
-    updateScale();
-    window.addEventListener('resize', updateScale);
-
-    return () => window.removeEventListener('resize', updateScale);
-  }, []);
-
   return (
     <div className="viewport">
 
-      {/* 🌍 SCENE (WORLD SPACE) */}
-      <div className="scene">
+      {/* 🎬 WRAPPER */}
+      <div className="scene-wrapper">
+        <div className="scene">
 
-        {/* 🌄 BACKGROUND (FIXED WORLD) */}
-        <img
-          className="bg"
-          src="https://ipfs.io/ipfs/bafybeih56xgsgacrqmx7mgh5zwd5f72ptngrr4xgrbyl4ghvh54ooomlby"
-          alt="background"
-        />
+          {/* 🌄 BACKGROUND */}
+          <img
+            className="bg"
+            src="https://ipfs.io/ipfs/bafybeih56xgsgacrqmx7mgh5zwd5f72ptngrr4xgrbyl4ghvh54ooomlby"
+            alt="background"
+          />
 
-        {/* 🚪 DOOR */}
-        <Door
-          onEnter={() => {
-            console.log("🚪 ENTER ROOM");
-          }}
-        />
+          {/* 🚪 DOOR */}
+          <Door onEnter={() => console.log("🚪 ENTER ROOM")} />
 
-        {/* 🎮 CHARACTER */}
-        <Character currentTab={tab} tabsRef={tabsRef} />
+          {/* 🎮 CHARACTER */}
+          <Character currentTab={tab} tabsRef={tabsRef} />
 
+        </div>
       </div>
 
-      {/* 🧭 UI LAYER (SCREEN SPACE) */}
+      {/* 🧭 NAV */}
       <Navigation
         setTab={setTab}
         tabsRef={tabsRef}
@@ -104,14 +124,20 @@ export default function Page() {
         className="wallet"
         onClick={() => {
           const redirected = handleMobileWalletRedirect();
-          if (!redirected) {
-            connectWallet(setWallet);
-          }
+          if (!redirected) connectWallet(setWallet);
         }}
       >
         {wallet
           ? wallet.slice(0, 6) + '...' + wallet.slice(-4)
           : 'Connect Wallet'}
+      </button>
+
+      {/* 🎥 TOGGLE */}
+      <button
+        className="widescreen-toggle"
+        onClick={() => setWidescreen(v => !v)}
+      >
+        {widescreen ? 'Auto View' : 'Widescreen'}
       </button>
 
       {/* 🎠 NFT CARD */}
@@ -133,6 +159,7 @@ html, body {
   touch-action: manipulation;
   overscroll-behavior:none;
   font-family:sans-serif;
+  background:black;
 }
 
 /* 🎥 VIEWPORT */
@@ -143,19 +170,24 @@ html, body {
   overflow:hidden;
 }
 
-/* 🌍 SCENE (2560x1440 WORLD) */
+/* 🎬 WRAPPER */
+.scene-wrapper {
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+  background:black;
+}
+
+/* 🌍 SCENE */
 .scene {
   position:absolute;
-  top:50%;
-  left:50%;
-
   width:2560px;
   height:1440px;
 
-  transform: translate(-50%, -50%) scale(var(--scene-scale));
-  transform-origin:center;
+  left:50%;
+  top:50%;
 
-  will-change: transform;
+  transform-origin:top left;
 }
 
 /* 🌄 BACKGROUND */
@@ -169,89 +201,96 @@ html, body {
 
 /* 🎮 CHARACTER */
 .character {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-
-  height: 100%;
-
-  transform: translateX(0) translateX(-50%);
-  transform-origin: bottom center;
-
-  z-index: 5;
-  pointer-events: none;
+  position:absolute;
+  bottom:0;
+  left:0;
+  height:100%;
+  transform:translateX(0) translateX(-50%);
+  transform-origin:bottom center;
+  z-index:5;
+  pointer-events:none;
 }
 
-/* 🚪 DOOR (WORLD POSITIONED) */
+/* 🚪 DOOR */
 .door {
   position:absolute;
-  
-  transform-origin: bottom center;
-
+  transform-origin:bottom center;
   z-index:3;
-
   cursor:pointer;
-
   transition: transform 0.1s ease, filter 0.1s ease;
 }
 
 .door img {
-  width: 140px;
-  height: auto;
-  display: block;
-  pointer-events: none;
-  transition: transform 0.01s ease, filter 0.01s ease;
+  width:140px;
+  height:auto;
+  display:block;
+  pointer-events:none;
 }
 
-/* 🚪 OPEN STATE */
 .door.open img {
   transform: scale(3.35);
   filter: brightness(1.2) drop-shadow(0 0 12px rgba(255,255,255,0.6));
 }
 
-/* 💥 PRESS FEEDBACK */
 .door.pressed img {
   transform: scale(3.30);
 }
 
-/* 🧭 NAV (UI SPACE) */
+/* 🧭 NAV */
 .nav {
   position:absolute;
   top:0;
   width:100%;
-  height:100px;
+  height:90px;
   display:flex;
   justify-content:center;
   align-items:center;
-  gap:12px;
-  padding:10px;
   z-index:20;
-  flex-wrap:wrap;
+}
+
+/* 🔥 CRITICAL FIX: NEVER STACK */
+.tabs {
+  display:flex;
+  flex-wrap:nowrap;
+  justify-content:space-between;
+  width:100%;
+  max-width:640px;
+  padding:0 12px;
 }
 
 .tab {
-  padding:12px 18px;
+  flex:1;
+  text-align:center;
+  padding:10px;
   border-radius:12px;
+  margin:0 4px;
+
   background:rgba(255,255,255,0.2);
   backdrop-filter:blur(12px);
-  cursor:pointer;
-  transition: all 0.15s ease;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-}
 
-.tab:active {
-  transform: scale(0.92);
+  transition: all 0.15s ease;
 }
 
 .tab.active {
   background:rgba(255,255,255,0.5);
-  transform: scale(1.05);
 }
 
 /* 🔗 WALLET */
 .wallet {
   position:absolute;
   top:20px;
+  right:20px;
+  z-index:30;
+  padding:10px 14px;
+  border-radius:10px;
+  background:rgba(0,0,0,0.7);
+  color:white;
+}
+
+/* 🎥 TOGGLE */
+.widescreen-toggle {
+  position:absolute;
+  bottom:20px;
   right:20px;
   z-index:30;
   padding:10px 14px;
@@ -278,53 +317,6 @@ html, body {
   gap:10px;
 
   backdrop-filter: blur(12px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-}
-
-/* 🖼 NFT IMAGE */
-.nft-img {
-  width:100%;
-  border-radius:10px;
-  object-fit:cover;
-}
-
-/* 🧬 TRAITS */
-.traits {
-  max-height:150px;
-  overflow-y:auto;
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  animation: fadeIn 0.25s ease;
-}
-
-.trait {
-  display:flex;
-  justify-content:space-between;
-  font-size:12px;
-}
-
-/* 🎠 DOTS */
-.dots {
-  display:flex;
-  justify-content:center;
-  gap:6px;
-}
-
-.dot {
-  width:6px;
-  height:6px;
-  border-radius:50%;
-  background:rgba(255,255,255,0.3);
-}
-
-.dot.active {
-  background:white;
-}
-
-@keyframes fadeIn {
-  from { opacity:0; transform:translateY(10px); }
-  to { opacity:1; transform:translateY(0); }
 }
 
       `}</style>
