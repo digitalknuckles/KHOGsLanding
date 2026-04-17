@@ -34,18 +34,25 @@ export default function Character({ currentTab, tabsRef }) {
 
   const offsets = { 0: -120, 3: 120 };
 
-  function getTabX(index) {
-    const el = tabsRef.current[index];
-    if (!el || !ref.current) return 0;
+function getTabX(index) {
+  const el = tabsRef.current[index];
+  const char = characterRef.current;
 
-    const rect = el.getBoundingClientRect();
-    const base =
-      rect.left +
-      rect.width / 2 -
-      ref.current.offsetWidth / 2;
+  if (!el || !char) return 0;
 
-    return base + (offsets[index] || 0);
-  }
+  const rect = el.getBoundingClientRect();
+
+  const scale = parseFloat(
+    getComputedStyle(document.documentElement)
+      .getPropertyValue('--scene-scale')
+  ) || 1;
+
+  // 🔥 Convert SCREEN → WORLD coordinates
+  const worldX =
+    (rect.left + rect.width / 2) / scale;
+
+  return worldX - char.offsetWidth / 2;
+}
 
   function resetIdle() {
     clearTimeout(idleTimer.current);
