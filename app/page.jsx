@@ -183,7 +183,7 @@ html, body {
   
   transform-origin: bottom center;
 
-  z-index:3;
+  z-index:2;
 
   cursor:pointer;
 
@@ -200,13 +200,13 @@ html, body {
 
 /* 🚪 OPEN STATE */
 .door.open img {
-  transform: scale(3.5);
+  transform: scale(3.05);
   filter: brightness(1.2) drop-shadow(0 0 12px rgba(255,255,255,0.6));
 }
 
 /* 💥 PRESS FEEDBACK */
 .door.pressed img {
-  transform: scale(3.55);
+  transform: scale(3.0);
 }
 
 /* 🧭 NAV (UI SPACE) */
