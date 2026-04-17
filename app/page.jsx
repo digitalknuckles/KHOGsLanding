@@ -16,6 +16,7 @@ export default function Page() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 900;
+  const [showDoorModal, setShowDoorModal] = useState(false);
 
   // 🎥 VIEW MODE
   const [widescreen, setWidescreen] = useState(false);
@@ -98,7 +99,8 @@ export default function Page() {
           />
 
           {/* 🚪 DOOR */}
-          <Door onEnter={() => console.log("🚪 ENTER ROOM")} />
+          {/*<Door onEnter={() => console.log("🚪 ENTER ROOM")} />*/}
+          <Door onEnter={() => setShowDoorModal(true)} />
 
           {/* 🎮 CHARACTER */}
           <Character currentTab={tab} tabsRef={tabsRef} />
@@ -145,6 +147,34 @@ export default function Page() {
         />
       )}
 
+{showDoorModal && (
+  <div className="modal-overlay" onClick={() => setShowDoorModal(false)}>
+    
+    <div className="modal" onClick={(e) => e.stopPropagation()}>
+      
+      <div className="modal-text">
+        Hold On, Knucklehead — We're Closed For Renovations.
+        <br />
+        Check back later...
+      </div>
+
+      <div className="modal-sub">
+        Visit OpenSea Market
+      </div>
+
+      <a
+        href="https://opensea.io/collection/knuckleheadogs"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="modal-btn"
+      >
+        KHOGs Collection
+      </a>
+
+    </div>
+  </div>
+)}
+      
       <style jsx global>{`
 
 /* 🔒 GLOBAL */
@@ -320,6 +350,99 @@ html, body {
   gap:10px;
 
   backdrop-filter: blur(12px);
+}
+/* 🔥 MODAL OVERLAY */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(8px);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 100;
+
+  animation: fadeIn 0.25s ease;
+}
+
+/* 📦 MODAL BOX */
+.modal {
+  width: min(420px, 90vw);
+  padding: 24px;
+
+  border-radius: 18px;
+
+  background: rgba(0,0,0,0.85);
+  color: white;
+
+  text-align: center;
+
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+
+  animation: popIn 0.25s ease;
+}
+
+/* ⚠️ MAIN TEXT (URGENT) */
+.modal-text {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+
+  margin-bottom: 16px;
+
+  animation: pulseText 1.2s infinite;
+}
+
+/* 🧾 SUBTEXT */
+.modal-sub {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-bottom: 12px;
+}
+
+/* 🔘 BUTTON */
+.modal-btn {
+  display: inline-block;
+
+  padding: 12px 18px;
+  border-radius: 12px;
+
+  background: white;
+  color: black;
+
+  font-weight: 600;
+  text-decoration: none;
+
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.modal-btn:active {
+  transform: scale(0.92);
+}
+
+/* ✨ ANIMATIONS */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0.9) translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* 🚨 PULSE EFFECT */
+@keyframes pulseText {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
 }
 
       `}</style>
