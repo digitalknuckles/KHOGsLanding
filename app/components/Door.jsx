@@ -15,7 +15,7 @@ export default function Door({ onEnter }) {
 
   // 🎯 NOW MATCHES YOUR TRUE SCENE (2560x1440)
   const doorX = 2143; // ← convert from your placement
-  const doorY = 1275;
+  const doorY = 1000;
 
   return (
     <div
@@ -24,7 +24,7 @@ export default function Door({ onEnter }) {
         position: 'absolute',
         left: `${(doorX / 2560) * 100}%`,
         top: `${(doorY / 1440) * 100}%`,
-        transform: 'translate(-50%, -50%)',
+        transform: 'translate(-50%, -100%)',
         zIndex: 5,
         cursor: 'pointer'
       }}
