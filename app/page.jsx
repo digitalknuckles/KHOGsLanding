@@ -180,12 +180,10 @@ html, body {
 /* 🚪 DOOR (WORLD POSITIONED) */
 .door {
   position:absolute;
-
-  transform: translate(-50%, -100%) scale(var(--scale));
+  
   transform-origin: bottom center;
 
-  width:140px;
-  z-index:4;
+  z-index:3;
 
   cursor:pointer;
 
@@ -193,19 +191,22 @@ html, body {
 }
 
 .door img {
-  width:100%;
-  height:auto;
-  display:block;
-  pointer-events:none;
+  width: 140px;
+  height: auto;
+  display: block;
+  pointer-events: none;
+  transition: transform 0.15s ease, filter 0.15s ease;
 }
 
-.door.open {
-  transform: translate(-50%, -100%) scale(calc(var(--scale) * 1.08));
+/* 🚪 OPEN STATE */
+.door.open img {
+  transform: scale(1.08);
   filter: brightness(1.2) drop-shadow(0 0 12px rgba(255,255,255,0.6));
 }
 
-.door.pressed {
-  transform: translate(-50%, -100%) scale(calc(var(--scale) * 0.96));
+/* 💥 PRESS FEEDBACK */
+.door.pressed img {
+  transform: scale(0.95);
 }
 
 /* 🧭 NAV (UI SPACE) */
