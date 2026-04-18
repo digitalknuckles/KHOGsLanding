@@ -46,7 +46,7 @@ export default function NPCManager() {
         return [...prev, createNPC()];
       });
 
-      const delay = 4000 + Math.random() * 5000;
+      const delay = 4500 + Math.random() * 5000;
       setTimeout(spawnLoop, delay);
     }
 
