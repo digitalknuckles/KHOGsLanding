@@ -7,6 +7,7 @@ import Navigation from './components/Navigation';
 import NFTCard from './components/NFTCard';
 import { connectWallet, reconnectWallet, handleMobileWalletRedirect } from './lib/wallet';
 import { fetchNFTs } from './lib/opensea';
+import NPCManager from './components/NPCManager';
 
 export default function Page() {
   const tabsRef = useRef([]);
@@ -467,8 +468,12 @@ html, body {
   }
 }
 @keyframes npcBounce {
-  0%, 100% { transform: translateY(0) translateX(0); }
-  50% { transform: translateY(-6px) translateX(1px); }
+  0%, 100% { transform: translateY(-50%) translateY(0); }
+  50% { transform: translateY(-50%) translateY(-6px); }
+}
+
+.npc {
+  will-change: transform;
 }
       `}</style>
     </div>
