@@ -10,7 +10,7 @@ function getRandomNPC(id) {
 
   return {
     id,
-    src: `${BASE_CID}/KnuckleheadsOG#${index}.png`,
+    src: `${BASE_CID}/KnuckleheadsOG%23${index}.png`,
     direction: Math.random() > 0.5 ? 'right' : 'left',
     duration: 4000 + Math.random() * 5000,
     y: 70 + Math.random() * 20,
