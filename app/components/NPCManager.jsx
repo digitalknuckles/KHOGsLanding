@@ -23,7 +23,7 @@ function getRandomNPC(id) {
     scale,
 
     // 🎯 REAL SIZE CONTROL (THIS FIXES VISIBILITY)
-    size: 120 + scale * 120
+    size: 320 + scale * 320
   };
 }
 
