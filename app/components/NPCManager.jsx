@@ -9,39 +9,30 @@ export default function NPCManager() {
   const [npcs, setNPCs] = useState([]);
 
   const idRef = useRef(0);
-  const indexRef = useRef(1);
   const activeRef = useRef(true);
-  const lastDirectionRef = useRef(null);
 
-  function getNextImage() {
-    const i = indexRef.current;
-    indexRef.current++;
-    if (indexRef.current > 46) indexRef.current = 1;
-
+  function getRandomImage() {
+    const i = Math.floor(Math.random() * 46) + 1;
     return `${BASE_CID}/KnuckleheadsOG%23${i}.png`;
   }
 
   function createNPC() {
-    let direction = Math.random() < 0.5 ? 'left' : 'right';
-
-    // prevent same direction spam
-    if (direction === lastDirectionRef.current) {
-      direction = direction === 'left' ? 'right' : 'left';
-    }
-
-    lastDirectionRef.current = direction;
-
-    const scale = 0.7 + Math.random() * 0.6;
+    const direction = Math.random() < 0.5 ? 'left' : 'right';
+    const depth = Math.random() < 0.5 ? 4 : 7;
 
     return {
       id: idRef.current++,
-      src: getNextImage(),
+      src: getRandomImage(),
       direction,
-      scale,
-      size: 500 + scale * 500,
+      z: depth,
 
-      // slower = larger NPC feels heavier
-      duration: (6000 + Math.random() * 4000) / scale
+      size: 500, // 🔥 fixed size
+
+      // slower variation
+      duration: 7000 + Math.random() * 4000,
+
+      // slight vertical variation (optional)
+      y: 0
     };
   }
 
@@ -52,11 +43,10 @@ export default function NPCManager() {
       setNPCs(prev => {
         if (prev.length >= 3) return prev;
 
-        const npc = createNPC();
-        return [...prev, npc];
+        return [...prev, createNPC()];
       });
 
-      const delay = 3000 + Math.random() * 5000;
+      const delay = 4000 + Math.random() * 5000;
       setTimeout(spawnLoop, delay);
     }
 
