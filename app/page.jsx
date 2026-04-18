@@ -467,13 +467,14 @@ html, body {
     transform: translateY(-6px) scale(var(--npc-scale, 1));
   }
 }
-@keyframes npcBounce {
-  0%, 100% { transform: translateY(-50%) translateY(0); }
-  50% { transform: translateY(-50%) translateY(-6px); }
+.npc {
+  animation: npcBounce 0.6s infinite ease-in-out;
 }
 
-.npc {
-  will-change: transform;
+/* ✅ ONLY vertical movement here */
+@keyframes npcBounce {
+  0%, 100% { transform: translateY(0) scaleX(var(--flip, 1)); }
+  50% { transform: translateY(-6px) scaleX(var(--flip, 1)); }
 }
       `}</style>
     </div>
