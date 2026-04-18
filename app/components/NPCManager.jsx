@@ -51,7 +51,7 @@ export default function NPCManager() {
       direction: getDirection(),
 
       scale,
-      size: 120 + scale * 120, // ✅ FIXED scale
+      size: 500 + scale * 500, // ✅ FIXED scale
 
       duration: (5000 + Math.random() * 4000) / scale
     };
