@@ -18,7 +18,7 @@ export default function NPCManager() {
 
   function createNPC() {
     const direction = Math.random() < 0.5 ? 'left' : 'right';
-    const depth = Math.random() < 0.5 ? 7 : 3;
+    const depth = Math.random() < 0.5 ? 4 : 7;
 
     return {
       id: idRef.current++,
