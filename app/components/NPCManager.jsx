@@ -9,8 +9,9 @@ export default function NPCManager() {
   const [npcs, setNPCs] = useState([]);
 
   const idRef = useRef(0);
-  const indexRef = useRef(1); // 🔥 FORCED IMAGE CYCLE
+  const indexRef = useRef(1);
   const activeRef = useRef(true);
+  const lastDirectionRef = useRef(null);
 
   function getNextImage() {
     const i = indexRef.current;
@@ -21,20 +22,37 @@ export default function NPCManager() {
     return `${BASE_CID}/KnuckleheadsOG%23${i}.png`;
   }
 
+  function getDirection() {
+    // 🎯 bias + anti-repeat COMBINED
+    let direction;
+
+    const bias = Math.random();
+
+    if (bias < 0.4) direction = 'right';
+    else if (bias < 0.8) direction = 'left';
+    else direction = Math.random() < 0.5 ? 'left' : 'right';
+
+    // 🚫 prevent same direction twice
+    if (direction === lastDirectionRef.current) {
+      direction = direction === 'left' ? 'right' : 'left';
+    }
+
+    lastDirectionRef.current = direction;
+
+    return direction;
+  }
+
   function createNPC() {
     const scale = 0.6 + Math.random() * 0.6;
 
     return {
       id: idRef.current++,
       src: getNextImage(),
-
-      // ✅ TRUE RANDOM DIRECTION
-      direction: Math.random() < 0.5 ? 'left' : 'right',
+      direction: getDirection(),
 
       scale,
-      size: 500 + scale * 500,
+      size: 120 + scale * 120, // ✅ FIXED scale
 
-      // slower + more natural pacing
       duration: (5000 + Math.random() * 4000) / scale
     };
   }
@@ -44,16 +62,13 @@ export default function NPCManager() {
       if (!activeRef.current) return;
 
       setNPCs(prev => {
-        // 🔥 HARD LIMIT
         if (prev.length >= 3) return prev;
 
         const next = createNPC();
         return [...prev, next];
       });
 
-      // 🔥 MUCH BETTER TIMING (less spam)
       const delay = 2500 + Math.random() * 5000;
-
       setTimeout(spawnLoop, delay);
     }
 
