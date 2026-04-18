@@ -466,6 +466,10 @@ html, body {
     transform: translateY(-6px) scale(var(--npc-scale, 1));
   }
 }
+@keyframes npcBounce {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-6px) translateX(1px); }
+}
       `}</style>
     </div>
   );
