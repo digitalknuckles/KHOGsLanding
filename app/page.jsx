@@ -467,19 +467,18 @@ html, body {
     transform: translateY(-6px) scale(var(--npc-scale, 1));
   }
 }
-.npc {
+.npc-bounce {
   animation: npcBounce 0.6s infinite ease-in-out;
 }
 
-/* ✅ ONLY vertical movement here */
-/* ✅ ONLY vertical movement here */
+/* 🚨 ONLY vertical movement here */
 @keyframes npcBounce {
-  0%, 100% { transform: translateY(0) scaleX(var(--flip, 1)); }
-  50% { transform: translateY(-6px) scaleX(var(--flip, 1)); }
-}
-@keyframes npcBounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
 }
       `}</style>
     </div>
