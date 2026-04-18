@@ -477,7 +477,7 @@ html, body {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-14px); /* 👈 BIGGER STEP */
+    transform: translateY(-18px); /* exaggerated walk */
   }
 }
       `}</style>
