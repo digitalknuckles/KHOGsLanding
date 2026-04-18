@@ -55,7 +55,7 @@ export default function NPC({ data, onExit }) {
         bottom: 0,
         left: 0,
         pointerEvents: 'none',
-        zIndex: data.scale > 0.9 ? 7 : 4
+        zIndex: data.scale > 0.9 ? 10 : 10
       }}
     >
       {/* 🦶 BOUNCE LAYER */}
