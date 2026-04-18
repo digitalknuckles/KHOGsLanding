@@ -12,19 +12,12 @@ export default function NPC({ data, onExit }) {
     const startX = data.direction === 'right' ? -200 : 2760;
     const endX = data.direction === 'right' ? 2760 : -200;
 
-    el.style.transform = `
-      translateX(${startX}px)
-      translateY(-50%)
-    `;
+    // 🧭 movement ONLY (no scale, no bounce)
+    el.style.transform = `translateX(${startX}px)`;
 
     requestAnimationFrame(() => {
       el.style.transition = `transform ${data.duration}ms linear`;
-
-      el.style.transform = `
-        translateX(${endX}px)
-        translateY(-50%)
-        scale(${data.scale})
-      `;
+      el.style.transform = `translateX(${endX}px)`;
     });
 
     const timeout = setTimeout(() => {
@@ -35,24 +28,33 @@ export default function NPC({ data, onExit }) {
   }, [data, onExit]);
 
   return (
-<img
-  ref={ref}
-  src={data.src}
-  className="npc"
-  style={{
-    top: `${data.y}%`,
-    position: 'absolute',
-    pointerEvents: 'none',
+    <div
+      ref={ref}
+      className="npc-wrapper"
+      style={{
+        position: 'absolute',
+        bottom: 0, // ✅ anchor to ground like character
+        left: 0,
+        zIndex: data.scale > 0.9 ? 6 : 4,
+        pointerEvents: 'none'
+      }}
+    >
+      <img
+        src={data.src}
+        alt="npc"
+        draggable={false}
+        className="npc"
+        style={{
+          width: `${data.size}px`,
+          
+          // 🎯 flip direction
+          transform: data.direction === 'left'
+            ? 'scaleX(-1)'
+            : 'scaleX(1)',
 
-    // ✅ CONTROL REAL SIZE
-    width: `${data.size}px`,
-    height: 'auto',
-
-    zIndex: data.scale > 0.9 ? 6 : 4,
-    animation: 'npcBounce 0.6s infinite ease-in-out'
-  }}
-  alt="npc"
-  draggable={false}
-/>
+          transformOrigin: 'bottom center'
+        }}
+      />
+    </div>
   );
 }
