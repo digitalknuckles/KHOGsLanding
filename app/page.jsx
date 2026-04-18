@@ -477,7 +477,7 @@ html, body {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-18px); /* exaggerated walk */
+    transform: translateY(-20px);
   }
 }
       `}</style>
