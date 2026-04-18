@@ -257,7 +257,7 @@ html, body {
 .door {
   position:absolute;
   transform-origin:bottom center;
-  z-index:2;
+  z-index:1;
   cursor:pointer;
   transition: transform 0.1s ease, filter 0.1s ease;
 }
