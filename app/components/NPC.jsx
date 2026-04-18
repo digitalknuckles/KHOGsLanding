@@ -36,19 +36,24 @@ export default function NPC({ data, onExit }) {
   }, [data, onExit]);
 
   return (
-    <img
-      ref={ref}
-      src={data.src}
-      className="npc"
-      style={{
-        top: `${data.y}%`,
-        position: 'absolute',
-        pointerEvents: 'none',
-        zIndex: data.scale > 0.9 ? 6 : 4,
-        animation: 'npcBounce 0.6s infinite ease-in-out'
-      }}
-      alt="npc"
-      draggable={false}
-    />
+<img
+  ref={ref}
+  src={data.src}
+  className="npc"
+  style={{
+    top: `${data.y}%`,
+    position: 'absolute',
+    pointerEvents: 'none',
+
+    // ✅ CONTROL REAL SIZE
+    width: `${data.size}px`,
+    height: 'auto',
+
+    zIndex: data.scale > 0.9 ? 6 : 4,
+    animation: 'npcBounce 0.6s infinite ease-in-out'
+  }}
+  alt="npc"
+  draggable={false}
+/>
   );
 }
