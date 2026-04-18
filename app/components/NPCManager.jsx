@@ -15,45 +15,33 @@ export default function NPCManager() {
 
   function getNextImage() {
     const i = indexRef.current;
-
     indexRef.current++;
     if (indexRef.current > 46) indexRef.current = 1;
 
     return `${BASE_CID}/KnuckleheadsOG%23${i}.png`;
   }
 
-  function getDirection() {
-    // 🎯 bias + anti-repeat COMBINED
-    let direction;
+  function createNPC() {
+    let direction = Math.random() < 0.5 ? 'left' : 'right';
 
-    const bias = Math.random();
-
-    if (bias < 0.4) direction = 'right';
-    else if (bias < 0.8) direction = 'left';
-    else direction = Math.random() < 0.5 ? 'left' : 'right';
-
-    // 🚫 prevent same direction twice
+    // prevent same direction spam
     if (direction === lastDirectionRef.current) {
       direction = direction === 'left' ? 'right' : 'left';
     }
 
     lastDirectionRef.current = direction;
 
-    return direction;
-  }
-
-  function createNPC() {
-    const scale = 0.6 + Math.random() * 0.6;
+    const scale = 0.7 + Math.random() * 0.6;
 
     return {
       id: idRef.current++,
       src: getNextImage(),
-      direction: getDirection(),
-
+      direction,
       scale,
-      size: 500 + scale * 500, // ✅ FIXED scale
+      size: 280 + scale * 220,
 
-      duration: (5000 + Math.random() * 4000) / scale
+      // slower = larger NPC feels heavier
+      duration: (6000 + Math.random() * 4000) / scale
     };
   }
 
@@ -64,12 +52,11 @@ export default function NPCManager() {
       setNPCs(prev => {
         if (prev.length >= 3) return prev;
 
-        const next = createNPC();
-        return [...prev, next];
+        const npc = createNPC();
+        return [...prev, npc];
       });
 
-      const delay = 4500 + Math.random() * 5000;
-      
+      const delay = 3000 + Math.random() * 5000;
       setTimeout(spawnLoop, delay);
     }
 
@@ -81,7 +68,7 @@ export default function NPCManager() {
   }, []);
 
   function removeNPC(id) {
-    setNPCs(prev => prev.filter(npc => npc.id !== id));
+    setNPCs(prev => prev.filter(n => n.id !== id));
   }
 
   return (
