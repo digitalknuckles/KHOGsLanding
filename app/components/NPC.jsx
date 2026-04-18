@@ -6,13 +6,12 @@ const WORLD_WIDTH = 2560;
 
 export default function NPC({ data, onExit }) {
   const ref = useRef(null);
-  const exitedRef = useRef(false); // 🔒 prevent double removal
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
-    const buffer = 400;
+    const buffer = 500;
 
     const startX =
       data.direction === 'right'
@@ -24,11 +23,11 @@ export default function NPC({ data, onExit }) {
         ? WORLD_WIDTH + buffer
         : -buffer;
 
-    // 🧼 reset
+    // RESET POSITION (NO TRANSITION)
     el.style.transition = 'none';
     el.style.transform = `translateX(${startX}px)`;
 
-    // 🎬 start movement (double RAF = reliable)
+    // FORCE PAINT → THEN ANIMATE
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         el.style.transition = `transform ${data.duration}ms linear`;
@@ -36,13 +35,10 @@ export default function NPC({ data, onExit }) {
       });
     });
 
-    // 🧠 WORLD-BASED EXIT (NOT viewport)
+    // ✅ FIX: TIME-BASED EXIT (NO DOM MEASUREMENTS)
     const timeout = setTimeout(() => {
-      if (!exitedRef.current) {
-        exitedRef.current = true;
-        onExit(data.id);
-      }
-    }, data.duration + 100); // small buffer
+      onExit(data.id);
+    }, data.duration);
 
     return () => clearTimeout(timeout);
   }, [data, onExit]);
@@ -55,16 +51,14 @@ export default function NPC({ data, onExit }) {
         bottom: 0,
         left: 0,
         pointerEvents: 'none',
-        zIndex: data.scale > 0.9 ? 10 : 10
+        zIndex: Math.floor(data.scale * 10)
       }}
     >
       {/* 🦶 BOUNCE LAYER */}
       <div
         className="npc-bounce"
         style={{
-          animation: `npcBounce ${
-            0.35 + (data.id % 3) * 0.08
-          }s infinite ease-in-out`
+          animation: `npcBounce ${0.35 + Math.random() * 0.15}s infinite ease-in-out`
         }}
       >
         <img
@@ -75,7 +69,7 @@ export default function NPC({ data, onExit }) {
             width: `${data.size}px`,
             height: 'auto',
 
-            // 🎯 base art faces LEFT
+            // BASE ART FACES LEFT → flip when going right
             transform:
               data.direction === 'right'
                 ? 'scaleX(-1)'
