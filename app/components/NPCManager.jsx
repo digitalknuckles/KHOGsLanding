@@ -19,7 +19,7 @@ export default function NPCManager() {
       src: `${BASE_CID}/KnuckleheadsOG%23${index}.png`,
       direction: Math.random() > 0.5 ? 'right' : 'left',
       scale,
-      size: 120 + scale * 120,
+      size: 500 + scale * 500,
       duration: (4000 + Math.random() * 4000) / scale
     };
   }
