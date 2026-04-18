@@ -33,8 +33,10 @@ export default function NPCManager() {
     let idCounter = 0;
 
     function spawnNPC() {
-      setNpcs(prev => {
-        if (prev.length >= 3) return prev;
+    setNPCs(prev => {
+      if (prev.length >= 3) return prev;
+      return [...prev, getRandomNPC(Date.now() + Math.random())];
+    });
 
         const newNPC = getRandomNPC(idCounter++);
         return [...prev, newNPC];
