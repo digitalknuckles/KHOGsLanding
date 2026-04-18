@@ -1,39 +1,43 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import NPC from './NPC';
 
 const BASE_CID = "https://ipfs.io/ipfs/bafybeide4mwhz4hzck5tnpchd4h5tsexsj6ij4nxddz2jaeqwb3bib5wyy";
 
+function getRandomNPC(id) {
+  const index = Math.floor(Math.random() * 46) + 1;
+
+  const scale = 0.6 + Math.random() * 0.6;
+
+  return {
+    id,
+    src: `${BASE_CID}/KnuckleheadsOG%23${index}.png`,
+
+    direction: Math.random() > 0.5 ? 'right' : 'left',
+
+    duration: 4000 + Math.random() * 5000,
+
+    y: 72 + Math.random() * 18,
+
+    scale,
+
+    // 🎯 REAL SIZE CONTROL (THIS FIXES VISIBILITY)
+    size: 500 + scale * 500
+  };
+}
+
 export default function NPCManager() {
-  const [npcs, setNPCs] = useState([]);
-  const idRef = useRef(0);
-
-  function getRandomNPC(id) {
-    const index = Math.floor(Math.random() * 46) + 1;
-
-    const scale = 0.6 + Math.random() * 0.6;
-
-    return {
-      id,
-      src: `${BASE_CID}/KnuckleheadsOG%23${index}.png`,
-      direction: Math.random() > 0.5 ? 'right' : 'left',
-      scale,
-      size: 500 + scale * 500,
-      duration: (4000 + Math.random() * 4000) / scale
-    };
-  }
+  const [npcs, setNpcs] = useState([]);
 
   useEffect(() => {
-    let active = true;
+    let idCounter = 0;
 
     function spawnNPC() {
-      if (!active) return;
-
-      setNPCs(prev => {
+      setNpcs(prev => {
         if (prev.length >= 3) return prev;
 
-        const newNPC = getRandomNPC(idRef.current++);
+        const newNPC = getRandomNPC(idCounter++);
         return [...prev, newNPC];
       });
 
@@ -42,20 +46,16 @@ export default function NPCManager() {
     }
 
     spawnNPC();
-
-    return () => {
-      active = false;
-    };
   }, []);
 
-  function removeNPC(id) {
-    setNPCs(prev => prev.filter(npc => npc.id !== id));
+  function handleExit(id) {
+    setNpcs(prev => prev.filter(npc => npc.id !== id));
   }
 
   return (
     <>
       {npcs.map(npc => (
-        <NPC key={npc.id} data={npc} onExit={removeNPC} />
+        <NPC key={npc.id} data={npc} onExit={handleExit} />
       ))}
     </>
   );
