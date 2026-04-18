@@ -8,13 +8,22 @@ const BASE_CID = "https://ipfs.io/ipfs/bafybeide4mwhz4hzck5tnpchd4h5tsexsj6ij4nx
 function getRandomNPC(id) {
   const index = Math.floor(Math.random() * 46) + 1;
 
+  const scale = 0.6 + Math.random() * 0.6;
+
   return {
     id,
     src: `${BASE_CID}/KnuckleheadsOG%23${index}.png`,
+
     direction: Math.random() > 0.5 ? 'right' : 'left',
+
     duration: 4000 + Math.random() * 5000,
-    y: 70 + Math.random() * 20,
-    scale: 0.7 + Math.random() * 0.5
+
+    y: 72 + Math.random() * 18,
+
+    scale,
+
+    // 🎯 REAL SIZE CONTROL (THIS FIXES VISIBILITY)
+    size: 120 + scale * 120
   };
 }
 
