@@ -38,7 +38,7 @@ export default function NPCManager() {
       src: getNextImage(),
       direction,
       scale,
-      size: 280 + scale * 220,
+      size: 500 + scale * 500,
 
       // slower = larger NPC feels heavier
       duration: (6000 + Math.random() * 4000) / scale
