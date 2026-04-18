@@ -110,7 +110,7 @@ useEffect(() => {
           {/* 🚪 DOOR */}
           {/*<Door onEnter={() => console.log("🚪 ENTER ROOM")} />*/}
           <Door onEnter={() => setShowDoorModal(true)} />
-
+          <NPCManager />
           {/* 🎮 CHARACTER */}
           <Character currentTab={tab} tabsRef={tabsRef} />
 
@@ -452,7 +452,20 @@ html, body {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }
 }
+.npc {
+  transform-origin: bottom center;
+  will-change: transform;
+}
 
+/* 🪄 fake walking bounce */
+@keyframes npcBounce {
+  0%, 100% {
+    transform: translateY(0) scale(var(--npc-scale, 1));
+  }
+  50% {
+    transform: translateY(-6px) scale(var(--npc-scale, 1));
+  }
+}
       `}</style>
     </div>
   );
