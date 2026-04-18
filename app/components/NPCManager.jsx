@@ -16,14 +16,13 @@ function getRandomNPC(id) {
 
     direction: Math.random() > 0.5 ? 'right' : 'left',
 
-    duration: 4000 + Math.random() * 5000,
-
-    y: 72 + Math.random() * 18,
-
     scale,
 
-    // 🎯 REAL SIZE CONTROL (THIS FIXES VISIBILITY)
-    size: 520 + scale * 520
+    // 🎯 size based on depth
+    size: 500 + scale * 500,
+
+    // 🎯 speed tied to scale (feels natural)
+    duration: (4000 + Math.random() * 4000) / scale
   };
 }
 
