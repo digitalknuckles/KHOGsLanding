@@ -7,37 +7,51 @@ const WORLD_WIDTH = 2560;
 export default function NPC({ data, onExit }) {
   const ref = useRef(null);
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
+useEffect(() => {
+  const el = ref.current;
+  if (!el) return;
 
-    const buffer = 400; // 🔥 fully off-screen spawn/exit
+  const buffer = 400;
 
-    const startX = data.direction === 'right'
-      ? -buffer
-      : WORLD_WIDTH + buffer;
+  const startX = data.direction === 'right'
+    ? -buffer
+    : WORLD_WIDTH + buffer;
 
-    const endX = data.direction === 'right'
-      ? WORLD_WIDTH + buffer
-      : -buffer;
+  const endX = data.direction === 'right'
+    ? WORLD_WIDTH + buffer
+    : -buffer;
 
-    // ✅ force layout before animating (prevents stuck bug)
-    el.style.transition = 'none';
-    el.style.transform = `translateX(${startX}px)`;
+  // reset
+  el.style.transition = 'none';
+  el.style.transform = `translateX(${startX}px)`;
 
+  requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        el.style.transition = `transform ${data.duration}ms linear`;
-        el.style.transform = `translateX(${endX}px)`;
-      });
+      el.style.transition = `transform ${data.duration}ms linear`;
+      el.style.transform = `translateX(${endX}px)`;
     });
+  });
 
-    const timeout = setTimeout(() => {
+  let raf;
+
+  const checkExit = () => {
+    const rect = el.getBoundingClientRect();
+
+    const offLeft = rect.right < -100;
+    const offRight = rect.left > window.innerWidth + 100;
+
+    if (offLeft || offRight) {
       onExit(data.id);
-    }, data.duration + 500); // slight delay after exit
+      return;
+    }
 
-    return () => clearTimeout(timeout);
-  }, [data, onExit]);
+    raf = requestAnimationFrame(checkExit);
+  };
+
+  raf = requestAnimationFrame(checkExit);
+
+  return () => cancelAnimationFrame(raf);
+}, [data, onExit]);
 
   return (
     <div
