@@ -9,10 +9,10 @@ export default function NPC({ data, onExit }) {
     const el = ref.current;
     if (!el) return;
 
-    const startX = data.direction === 'right' ? -200 : 2760;
-    const endX = data.direction === 'right' ? 2760 : -200;
+    const startX = data.direction === 'right' ? -300 : 2860;
+    const endX = data.direction === 'right' ? 2860 : -300;
 
-    // 🧭 movement ONLY (no scale, no bounce)
+    // 🧭 movement ONLY
     el.style.transform = `translateX(${startX}px)`;
 
     requestAnimationFrame(() => {
@@ -20,44 +20,49 @@ export default function NPC({ data, onExit }) {
       el.style.transform = `translateX(${endX}px)`;
     });
 
+    // ⏱ delay removal slightly AFTER leaving screen
     const timeout = setTimeout(() => {
       onExit(data.id);
-    }, data.duration);
+    }, data.duration + 300);
 
     return () => clearTimeout(timeout);
   }, [data, onExit]);
 
   return (
-<div
-  ref={ref}
-  className="npc-wrapper"
-  style={{
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    zIndex: data.scale > 0.9 ? 6 : 4,
-    pointerEvents: 'none'
-  }}
->
-  <div
-    className="npc-bounce"
-    style={{
-      animationDuration: `${0.5 + Math.random() * 0.3}s`
-    }}
-  >
-    <img
-      src={data.src}
-      alt="npc"
-      draggable={false}
+    <div
+      ref={ref}
       style={{
-        width: `${data.size}px`,
-        transform: data.direction === 'left'
-          ? 'scaleX(-1)'
-          : 'scaleX(1)',
-        transformOrigin: 'bottom center'
+        position: 'absolute',
+        bottom: 0, // ✅ grounded like character
+        left: 0,
+        zIndex: data.scale > 0.9 ? 7 : 4,
+        pointerEvents: 'none'
       }}
-    />
-  </div>
-</div>
+    >
+      {/* 🎯 bounce layer */}
+      <div
+        className="npc-bounce"
+        style={{
+          animationDuration: `${0.5 + Math.random() * 0.3}s`
+        }}
+      >
+        {/* 🎯 flip + size layer */}
+        <img
+          src={data.src}
+          alt="npc"
+          draggable={false}
+          style={{
+            width: `${data.size}px`,
+            height: 'auto',
+
+            transform: data.direction === 'left'
+              ? 'scaleX(-1)'
+              : 'scaleX(1)',
+
+            transformOrigin: 'bottom center'
+          }}
+        />
+      </div>
+    </div>
   );
 }
