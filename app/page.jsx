@@ -249,7 +249,7 @@ html, body {
   height:100%;
   transform:translateX(0) translateX(-50%);
   transform-origin:bottom center;
-  z-index:5;
+  z-index:7;
   pointer-events:none;
 }
 
@@ -257,7 +257,7 @@ html, body {
 .door {
   position:absolute;
   transform-origin:bottom center;
-  z-index:1;
+  z-index:2;
   cursor:pointer;
   transition: transform 0.1s ease, filter 0.1s ease;
 }
