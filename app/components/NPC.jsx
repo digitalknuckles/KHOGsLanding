@@ -15,7 +15,6 @@ export default function NPC({ data, onExit }) {
     el.style.transform = `
       translateX(${startX}px)
       translateY(-50%)
-      scale(${data.scale})
     `;
 
     requestAnimationFrame(() => {
