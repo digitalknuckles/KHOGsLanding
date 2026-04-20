@@ -8,6 +8,7 @@ import NFTCard from './components/NFTCard';
 import { connectWallet, reconnectWallet, handleMobileWalletRedirect } from './lib/wallet';
 import { fetchNFTs } from './lib/opensea';
 import NPCManager from './components/NPCManager';
+import ShopScene from './components/ShopScene';
 
 export default function Page() {
   const tabsRef = useRef([]);
@@ -105,7 +106,11 @@ useEffect(() => {
 
   {scene === 'landing' && (
     <div className="scene">
-      <img className="bg" src="..." />
+    <img
+      className="bg"
+      src="https://ipfs.io/ipfs/bafybeih56xgsgacrqmx7mgh5zwd5f72ptngrr4xgrbyl4ghvh54ooomlby"
+      alt="background"
+    />
 
       <Door onEnter={() => setShowDoorModal(true)} />
       <Character currentTab={tab} tabsRef={tabsRef} scale={1.2} />
