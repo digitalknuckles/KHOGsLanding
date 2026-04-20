@@ -79,16 +79,20 @@ export default function ShopWalker() {
   if (!active || !src) return null;
 
   return (
-    <div
-      ref={ref}
-      style={{
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        zIndex: 2, // 👈 BETWEEN BG AND COUNTER
-        pointerEvents: 'none'
-      }}
-    >
+   <div
+  ref={ref}
+  style={{
+    position: 'absolute',
+
+    top: '62%', // 🔥 adjust this value (try 58%–68%)
+    left: 0,
+
+    transform: 'translateY(-50%)',
+
+    pointerEvents: 'none',
+    zIndex: 2 // stays behind counter-back (z 5)
+  }}
+>
       <div className="npc-bounce">
         <img
           src={src}
