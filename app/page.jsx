@@ -115,6 +115,7 @@ useEffect(() => {
       <Door onEnter={() => setShowDoorModal(true)} />
       <Character currentTab={tab} tabsRef={tabsRef} scale={1.2} />
        {/* <Character currentTab={tab} tabsRef={tabsRef} />*/}
+      <ShopWalker />
       <NPCManager />
     </div>
   )}
