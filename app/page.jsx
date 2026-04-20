@@ -183,9 +183,26 @@ useEffect(() => {
         KHOGs Collection
       </a>
 
-    </div>
-  </div>
-)}
+      <button
+        className="modal-btn secondary"
+        onClick={() => {
+          setTransitioning(true);
+      
+          setTimeout(() => {
+            setScene('shop');
+          }, 400);
+      
+          setTimeout(() => {
+            setTransitioning(false);
+          }, 900);
+        }}
+      >
+        Enter Shop
+      </button>
+            
+          </div>
+        </div>
+      )}
       
       <style jsx global>{`
 
