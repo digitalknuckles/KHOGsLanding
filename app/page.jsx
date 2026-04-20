@@ -540,16 +540,37 @@ html, body {
 }
 
 .shop-counter.back {
-  bottom: 180px;
-  z-index: 4;
-  width: 1400px;
+  position: absolute;
+inset: 0;
+width: 100%;
+height: 100%;
+object-fit: cover;
 }
 
 .shop-counter.front {
-  bottom: 0;
-  z-index: 8;
-  width: 1600px;
+ position: absolute;
+inset: 0;
+width: 100%;
+height: 100%;
+object-fit: cover;
 }
+.layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* 🎯 Layer ordering */
+.bg { z-index: 0; }
+.npc-layer { z-index: 3; }
+.counter-back { z-index: 5; }
+.counter-front { z-index: 9; }
+
+/* Character stays above */
+.character { z-index: 10; }
       `}</style>
     </div>
   );
