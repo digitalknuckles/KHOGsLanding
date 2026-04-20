@@ -154,7 +154,24 @@ useEffect(() => {
     {widescreen ? 'Auto View' : 'Widescreen'}
   </button>
 )}
+{scene === 'shop' && !transitioning && (
+  <button
+    className="leave-shop"
+    onClick={() => {
+      setTransitioning(true);
 
+      setTimeout(() => {
+        setScene('landing');
+      }, 400);
+
+      setTimeout(() => {
+        setTransitioning(false);
+      }, 900);
+    }}
+  >
+    ← Leave Shop
+  </button>
+)}
       {/* 🎠 NFT CARD */}
       {tab === 3 && nfts.length > 0 && (
         <NFTCard
@@ -579,6 +596,35 @@ object-fit: cover;
 
 /* Character stays above */
 .character { z-index: 7; }
+
+.leave-shop {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+
+  z-index: 30;
+
+  padding: 10px 16px;
+  border-radius: 12px;
+
+  background: rgba(0,0,0,0.75);
+  color: white;
+
+  font-weight: 600;
+  font-size: 14px;
+
+  backdrop-filter: blur(10px);
+
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.leave-shop:active {
+  transform: scale(0.92);
+}
+
+.leave-shop:hover {
+  background: rgba(255,255,255,0.2);
+}
       `}</style>
     </div>
   );
