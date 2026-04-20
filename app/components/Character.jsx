@@ -26,6 +26,7 @@ export default function Character({ currentTab, tabsRef }) {
   const idleTimer = useRef(null);
   const wandering = useRef(false);
   const facing = useRef("right");
+  const isShop = document.body.classList.contains('shop');
 
   const WORLD_WIDTH = 2560;
 
