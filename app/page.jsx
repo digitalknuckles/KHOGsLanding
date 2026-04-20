@@ -199,7 +199,12 @@ useEffect(() => {
       >
         Enter Shop
       </button>
-            
+      
+      {transitioning && (
+      <div className="scene-transition">
+        <div className="transition-text">Entering Shop...</div>
+      </div>
+      )}
           </div>
         </div>
       )}
@@ -296,6 +301,34 @@ html, body {
 
 .door.pressed img {
   transform: scale(3.30);
+}
+
+/* 🚪 DOOR TRANSITION*/
+.scene-transition {
+  position: fixed;
+  inset: 0;
+  background: black;
+  z-index: 999;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  animation: fadeInOut 0.9s ease forwards;
+}
+
+.transition-text {
+  color: white;
+  font-size: 18px;
+  opacity: 0.8;
+  animation: pulseText 1s infinite;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  30% { opacity: 1; }
+  70% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 /* 🧭 NAV */
