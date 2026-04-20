@@ -568,10 +568,10 @@ object-fit: cover;
 .bg { z-index: 0; }
 .npc-layer { z-index: 3; }
 .counter-back { z-index: 5; }
-.counter-front { z-index: 9; }
+.counter-front { z-index: 6; }
 
 /* Character stays above */
-.character { z-index: 10; }
+.character { z-index: 7; }
       `}</style>
     </div>
   );
