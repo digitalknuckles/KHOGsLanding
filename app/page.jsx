@@ -626,6 +626,10 @@ object-fit: cover;
 .leave-shop:hover {
   background: rgba(255,255,255,0.2);
 }
+@keyframes idleSway {
+  0%,100% { transform: rotate(0deg); }
+  50% { transform: rotate(1deg); }
+}
       `}</style>
     </div>
   );
