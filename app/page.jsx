@@ -296,7 +296,7 @@ html, body {
   height:100%;
   transform:translateX(0) translateX(-50%);
   transform-origin:bottom center;
-  z-index:7;
+  z-index:18;
   pointer-events:none;
 }
 
@@ -595,7 +595,7 @@ object-fit: cover;
 .counter-front { z-index: 6; }
 
 /* Character stays above */
-.character { z-index: 7; }
+.character { z-index: 18; }
 
 .leave-shop {
   position: absolute;
