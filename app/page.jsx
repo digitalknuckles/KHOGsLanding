@@ -16,6 +16,9 @@ export default function Page() {
   const [nfts, setNfts] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
+  const [scene, setScene] = useState('landing'); // 'landing' | 'shop'
+  const [transitioning, setTransitioning] = useState(false);
+
   const [isMobile, setIsMobile] = useState(false);
 
 useEffect(() => {
