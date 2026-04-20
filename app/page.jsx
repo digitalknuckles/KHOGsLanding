@@ -163,7 +163,13 @@ useEffect(() => {
           setActiveIndex={setActiveIndex}
         />
       )}
-
+      
+{transitioning && (
+  <div className="scene-transition">
+    <div className="transition-text">Entering Shop...</div>
+  </div>
+)}
+      
 {showDoorModal && (
   <div className="modal-overlay" onClick={() => setShowDoorModal(false)}>
     <div className="modal" onClick={(e) => e.stopPropagation()}>
@@ -204,11 +210,6 @@ useEffect(() => {
         Enter Shop
       </button>
       
-      {transitioning && (
-      <div className="scene-transition">
-        <div className="transition-text">Entering Shop...</div>
-      </div>
-      )}
           </div>
         </div>
       )}
