@@ -85,7 +85,7 @@ export default function ShopWalker() {
       ref={ref}
       style={{
         position: 'absolute',
-        bottom: '88%', // 🔥 adjust Y position here
+        bottom: '58%', // 🔥 adjust Y position here
         left: 0,
         transform: `translateX(${npc.x}px)`,
         zIndex: 2, // between bg and counter1
