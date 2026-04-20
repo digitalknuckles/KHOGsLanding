@@ -101,25 +101,23 @@ useEffect(() => {
     <div className="viewport">
 
       {/* 🎬 WRAPPER */}
-      <div className="scene-wrapper">
-        <div className="scene">
+<div className="scene-wrapper">
 
-          {/* 🌄 BACKGROUND */}
-          <img
-            className="bg"
-            src="https://ipfs.io/ipfs/bafybeih56xgsgacrqmx7mgh5zwd5f72ptngrr4xgrbyl4ghvh54ooomlby"
-            alt="background"
-          />
+  {scene === 'landing' && (
+    <div className="scene">
+      <img className="bg" src="..." />
 
-          {/* 🚪 DOOR */}
-          {/*<Door onEnter={() => console.log("🚪 ENTER ROOM")} />*/}
-          <Door onEnter={() => setShowDoorModal(true)} />
-          <NPCManager />
-          {/* 🎮 CHARACTER */}
-          <Character currentTab={tab} tabsRef={tabsRef} />
+      <Door onEnter={() => setShowDoorModal(true)} />
+      <Character currentTab={tab} tabsRef={tabsRef} />
+      <NPCManager />
+    </div>
+  )}
 
-        </div>
-      </div>
+  {scene === 'shop' && (
+    <ShopScene tab={tab} tabsRef={tabsRef} />
+  )}
+
+</div>
 
       {/* 🧭 NAV */}
       <Navigation
@@ -532,6 +530,25 @@ html, body {
   50% {
     transform: translateY(-20px);
   }
+}
+
+.shop-scene .shop-counter {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.shop-counter.back {
+  bottom: 180px;
+  z-index: 4;
+  width: 1400px;
+}
+
+.shop-counter.front {
+  bottom: 0;
+  z-index: 8;
+  width: 1600px;
 }
       `}</style>
     </div>
