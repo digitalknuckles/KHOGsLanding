@@ -2,6 +2,7 @@
 
 import Character from './Character';
 import NPCManager from './NPCManager';
+import ShopWalker from './ShopWalker';
 
 const BG =
   "https://ipfs.io/ipfs/bafybeiakrcczgynayzfosyklhq4vehyuugwieeujyfuebwhd6ipgf2o7fq";
