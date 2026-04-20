@@ -108,7 +108,8 @@ useEffect(() => {
       <img className="bg" src="..." />
 
       <Door onEnter={() => setShowDoorModal(true)} />
-      <Character currentTab={tab} tabsRef={tabsRef} />
+      <Character currentTab={tab} tabsRef={tabsRef} scale={1.2} />
+       {/* <Character currentTab={tab} tabsRef={tabsRef} />*/}
       <NPCManager />
     </div>
   )}
