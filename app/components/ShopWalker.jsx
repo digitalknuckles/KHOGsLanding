@@ -30,7 +30,9 @@ export default function ShopWalker() {
       const buffer = 400;
 
       // 🟢 STEP 1: ENTER FROM LEFT
-      el.style.transition = 'none';
+      //el.style.transition = 'none';
+      const duration = 5000 + Math.random() * 3000;
+      el.style.transition = `transform ${duration}ms linear`;
       el.style.transform = `translateX(${-buffer}px) scale(0.65) scaleX(1)`;
 
       requestAnimationFrame(() => {
