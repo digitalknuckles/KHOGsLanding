@@ -9,7 +9,7 @@ import { connectWallet, reconnectWallet, handleMobileWalletRedirect } from './li
 import { fetchNFTs } from './lib/opensea';
 import NPCManager from './components/NPCManager';
 import ShopScene from './components/ShopScene';
-import ShopWalker from './components/ShopWalker';
+//import ShopWalker from './components/ShopWalker';
 
 export default function Page() {
   const tabsRef = useRef([]);
@@ -115,8 +115,8 @@ useEffect(() => {
 
       <Door onEnter={() => setShowDoorModal(true)} />
       <Character currentTab={tab} tabsRef={tabsRef} scale={1.2} />
-       {/* <Character currentTab={tab} tabsRef={tabsRef} />*/}
-      <ShopWalker />
+       {/* <Character currentTab={tab} tabsRef={tabsRef} />
+      <ShopWalker />*/}
       <NPCManager />
     </div>
   )}
