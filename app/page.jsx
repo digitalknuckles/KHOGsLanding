@@ -539,7 +539,8 @@ html, body {
   pointer-events: none;
 }
 
-.shop-counter.back {
+
+.counter-back {
   position: absolute;
 inset: 0;
 width: 100%;
@@ -547,7 +548,7 @@ height: 100%;
 object-fit: cover;
 }
 
-.shop-counter.front {
+.counter-front {
  position: absolute;
 inset: 0;
 width: 100%;
