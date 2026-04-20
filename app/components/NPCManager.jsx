@@ -36,23 +36,23 @@ export default function NPCManager() {
     const depth = Math.random();
 
     let z;
-    if (depth < 0.33) z = 6;      // behind
-    else if (depth < 0.66) z = 9; // mid
-    else z = 12;                  // front
+    if (depth < 0.33) z = 17;      // behind
+    else if (depth < 0.66) z = 29; // mid
+    else z = 32;                  // front
 
     // 🎯 SIZE BASED ON DEPTH
     const baseSize = 900;
 
     let size;
-    if (z === 6) size = baseSize * 1.01;
-    else if (z === 9) size = baseSize;
+    if (z === 16) size = baseSize * 1.01;
+    else if (z === 29) size = baseSize;
     else size = baseSize * 1.1;
 
     // 🎯 SPEED (tie to depth = more realism)
     const speedBase = 0.12 + Math.random() * 0.12;
     const speed =
-      z === 6 ? speedBase * 0.8 :
-      z === 9 ? speedBase :
+      z === 16 ? speedBase * 0.8 :
+      z === 29 ? speedBase :
       speedBase * 1.2;
 
     return {
