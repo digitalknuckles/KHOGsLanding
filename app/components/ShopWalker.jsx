@@ -84,7 +84,7 @@ export default function ShopWalker() {
   style={{
     position: 'absolute',
 
-    top: '62%', // 🔥 adjust this value (try 58%–68%)
+    top: '82%', // 🔥 adjust this value (try 58%–68%)
     left: 0,
 
     transform: 'translateY(-50%)',
