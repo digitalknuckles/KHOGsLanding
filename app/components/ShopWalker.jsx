@@ -88,7 +88,7 @@ export default function ShopWalker() {
         bottom: '38%', // 🔥 adjust Y position here
         left: 0,
         transform: `translateX(${npc.x}px)`,
-        zIndex: 8, // between bg and counter1
+        zIndex: 2, // between bg and counter1
         pointerEvents: 'none'
       }}
     >
