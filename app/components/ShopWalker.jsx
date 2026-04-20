@@ -2,105 +2,113 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-const BASE_CID =
-  "https://ipfs.io/ipfs/bafybeide4mwhz4hzck5tnpchd4h5tsexsj6ij4nxddz2jaeqwb3bib5wyy";
-
 const WORLD_WIDTH = 2560;
+const BASE_CID = "https://ipfs.io/ipfs/bafybeide4mwhz4hzck5tnpchd4h5tsexsj6ij4nxddz2jaeqwb3bib5wyy";
+
+function getRandomNPC() {
+  const i = Math.floor(Math.random() * 46) + 1;
+  return `${BASE_CID}/KnuckleheadsOG%23${i}.png`;
+}
 
 export default function ShopWalker() {
   const ref = useRef(null);
-  const [src, setSrc] = useState(null);
-  const [active, setActive] = useState(false);
 
-  function getRandomNPC() {
-    const i = Math.floor(Math.random() * 46) + 1;
-    return `${BASE_CID}/KnuckleheadsOG%23${i}.png`;
-  }
+  const [npc, setNpc] = useState(null);
 
   useEffect(() => {
-    let timeout;
+    let raf;
 
-    function startCycle() {
-      setSrc(getRandomNPC());
-      setActive(true);
+    function spawn() {
+      const newNpc = {
+        src: getRandomNPC(),
+        x: -400,
+        direction: 'right',
+        speed: 0.18 + Math.random() * 0.12,
+        state: 'walking-right',
+        pauseUntil: null
+      };
 
-      const el = ref.current;
-      if (!el) return;
-
-      const buffer = 400;
-
-      // 🟢 STEP 1: ENTER FROM LEFT
-      //el.style.transition = 'none';
-      const duration = 5000 + Math.random() * 3000;
-      el.style.transition = `transform ${duration}ms linear`;
-      el.style.transform = `translateX(${-buffer}px) scale(0.65) scaleX(1)`;
-
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          el.style.transition = 'transform 6s linear';
-          el.style.transform = `translateX(${WORLD_WIDTH - 300}px) scale(0.65) scaleX(1)`;
-        });
-      });
-
-      // 🟡 STEP 2: PAUSE AT RIGHT
-      const pauseTime = 7000 + Math.random() * 7000;
-
-      setTimeout(() => {
-        // 🔁 flip direction
-        el.style.transition = 'none';
-        el.style.transform = `translateX(${WORLD_WIDTH - 300}px) scale(0.65) scaleX(-1)`;
-
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            // 🔴 STEP 3: WALK BACK LEFT
-            el.style.transition = 'transform 6s linear';
-            el.style.transform = `translateX(${-buffer}px) scale(0.65) scaleX(-1)`;
-          });
-        });
-
-        // 🧹 CLEANUP AFTER EXIT
-        setTimeout(() => {
-          setActive(false);
-
-          // 🔁 NEXT CYCLE (30–45s)
-          timeout = setTimeout(startCycle, 30000 + Math.random() * 15000);
-        }, 6000);
-
-      }, 6000 + pauseTime); // walk duration + pause
-
+      setNpc(newNpc);
     }
 
-    // initial delay so it doesn’t fire instantly
-    timeout = setTimeout(startCycle, 2000 + Math.random() * 3000);
+    function loop() {
+      setNpc(prev => {
+        if (!prev) return prev;
 
-    return () => clearTimeout(timeout);
+        let next = { ...prev };
+
+        // 👉 WALK RIGHT
+        if (next.state === 'walking-right') {
+          next.x += next.speed * 16;
+
+          if (next.x >= WORLD_WIDTH - 200) {
+            next.state = 'pause';
+            next.pauseUntil = performance.now() + (7000 + Math.random() * 7000);
+          }
+        }
+
+        // 👉 PAUSE
+        else if (next.state === 'pause') {
+          if (performance.now() >= next.pauseUntil) {
+            next.state = 'walking-left';
+            next.direction = 'left';
+          }
+        }
+
+        // 👉 WALK LEFT (EXIT)
+        else if (next.state === 'walking-left') {
+          next.x -= next.speed * 16;
+
+          if (next.x < -500) {
+            // despawn and schedule next spawn
+            setTimeout(() => spawn(), 30000 + Math.random() * 15000);
+            return null;
+          }
+        }
+
+        return next;
+      });
+
+      raf = requestAnimationFrame(loop);
+    }
+
+    spawn();
+    raf = requestAnimationFrame(loop);
+
+    return () => cancelAnimationFrame(raf);
   }, []);
 
-  if (!active || !src) return null;
+  if (!npc) return null;
 
   return (
-   <div
-  ref={ref}
-  style={{
-    position: 'absolute',
-
-    top: '32%', // 🔥 adjust this value (try 58%–68%)
-    left: 0,
-
-    transform: 'translateY(-50%)',
-
-    pointerEvents: 'none',
-    zIndex: 2 // stays behind counter-back (z 5)
-  }}
->
-      <div className="npc-bounce">
+    <div
+      ref={ref}
+      style={{
+        position: 'absolute',
+        bottom: '38%', // 🔥 adjust Y position here
+        left: 0,
+        transform: `translateX(${npc.x}px)`,
+        zIndex: 8, // between bg and counter1
+        pointerEvents: 'none'
+      }}
+    >
+      <div
+        className="npc-bounce"
+        style={{
+          animationDuration: '0.35s'
+        }}
+      >
         <img
-          src={src}
-          alt="shop walker"
+          src={npc.src}
+          alt="shop-walker"
           draggable={false}
           style={{
-            width: '500px',
+            width: '420px', // 🔥 tuned size
             height: 'auto',
+            transform:
+              npc.direction === 'right'
+                ? 'scaleX(-1)'
+                : 'scaleX(1)',
             transformOrigin: 'bottom center'
           }}
         />
