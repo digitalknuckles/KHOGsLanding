@@ -9,31 +9,23 @@ const COUNTER_2 = "https://ipfs.io/ipfs/bafybeihwur3phaaphvzu3w57obpjaqwdhdnsfjw
 
 export default function ShopScene({ tab, tabsRef }) {
   return (
-    <div className="scene shop-scene">
+    <div className="scene">
 
-      {/* 🌄 LAYER 0 — BG */}
-      <img className="bg" src={SHOP_BG} alt="shop bg" />
+      {/* 🌄 LAYER 0 */}
+      <img className="layer bg" src={SHOP_BG} alt="bg" />
 
-      {/* 🧍 LAYER 1 — NPC (BEHIND COUNTER 1) */}
-      <div style={{ position: 'absolute', inset: 0, zIndex: 3 }}>
+      {/* 🧍 LAYER 1 (NPC BEHIND COUNTER) */}
+      <div className="layer npc-layer">
         <NPCManager />
       </div>
 
-      {/* 🪑 LAYER 2 — COUNTER BACK */}
-      <img
-        src={COUNTER_1}
-        className="shop-counter back"
-        alt="counter back"
-      />
+      {/* 🪑 LAYER 2 */}
+      <img className="layer counter-back" src={COUNTER_1} alt="" />
 
-      {/* 🪑 LAYER 3 — COUNTER FRONT */}
-      <img
-        src={COUNTER_2}
-        className="shop-counter front"
-        alt="counter front"
-      />
+      {/* 🪑 LAYER 3 */}
+      <img className="layer counter-front" src={COUNTER_2} alt="" />
 
-      {/* 🎮 LAYER 4 — CHARACTER */}
+      {/* 🎮 LAYER 4 */}
       <Character currentTab={tab} tabsRef={tabsRef} />
 
     </div>
