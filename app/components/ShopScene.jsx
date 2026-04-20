@@ -19,7 +19,7 @@ export default function ShopScene({ tab, tabsRef }) {
 
       {/* 🖼️ LAYER 0 — BACKGROUND */}
       <img className="layer bg" src={BG} alt="shop background" />
-
+      <ShopWalker />
       {/* 🧍 LAYER 1 — NPCs (BEHIND COUNTER) */}
       <div className="npc-layer">
         <NPCManager />
