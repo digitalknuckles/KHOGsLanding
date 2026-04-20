@@ -602,7 +602,7 @@ object-fit: cover;
 .leave-shop {
   position: absolute;
   bottom: 20px;
-  left: 1200px;
+  left: 75px;
 
   z-index: 30;
 
