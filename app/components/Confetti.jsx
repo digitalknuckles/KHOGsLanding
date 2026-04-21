@@ -4,32 +4,34 @@ import { useEffect, useState } from 'react';
 
 const CONFETTI_SRC = "https://ipfs.io/ipfs/bafkreiftwyllxleqocv23bwiorpxf5rse4mirzcrci6w4b52cq435nnbpu";
 
-export default function Confetti({ active, onDone }) {
+export default function Confetti({ trigger }) {
   const [pieces, setPieces] = useState([]);
 
   useEffect(() => {
-    if (!active) return;
+    if (!trigger) return;
 
-    const count = 60; // 🔥 number of confetti pieces
+    const count = 60;
 
-    const newPieces = Array.from({ length: count }).map((_, i) => {
-      const size = 48 + Math.random() * 24;
+    const newPieces = Array.from({ length: count }, (_, i) => {
+      const angle = Math.random() * Math.PI * 2;
+      const velocity = 6 + Math.random() * 6;
 
       return {
-        id: i,
-        x: window.innerWidth / 2 + (Math.random() - 0.5) * 200, // burst center
+        id: i + '-' + Date.now(),
+
+        x: window.innerWidth / 2,
         y: window.innerHeight / 2,
 
-        vx: (Math.random() - 0.5) * 6, // horizontal burst
-        vy: -8 - Math.random() * 6,    // upward burst
+        vx: Math.cos(angle) * velocity,
+        vy: Math.sin(angle) * velocity - 8,
 
-        gravity: 0.25 + Math.random() * 0.1,
-        drift: (Math.random() - 0.5) * 0.3,
+        size: 48 + Math.random() * 24,
 
         rotation: Math.random() * 360,
-        spin: (Math.random() - 0.5) * 10,
+        rotationSpeed: (Math.random() - 0.5) * 12,
 
-        size
+        sway: Math.random() * 2,
+        swaySpeed: 0.02 + Math.random() * 0.03
       };
     });
 
@@ -41,19 +43,21 @@ export default function Confetti({ active, onDone }) {
       setPieces(prev =>
         prev
           .map(p => {
-            const next = { ...p };
+            let next = { ...p };
 
-            next.vy += next.gravity;
-            next.vx += next.drift;
+            // gravity
+            next.vy += 0.25;
 
-            next.x += next.vx;
+            // movement
+            next.x += next.vx + Math.sin(Date.now() * next.swaySpeed) * next.sway;
             next.y += next.vy;
 
-            next.rotation += next.spin;
+            // rotation
+            next.rotation += next.rotationSpeed;
 
             return next;
           })
-          .filter(p => p.y < window.innerHeight + 100) // remove offscreen
+          .filter(p => p.y < window.innerHeight + 120) // cleanup
       );
 
       raf = requestAnimationFrame(animate);
@@ -61,19 +65,19 @@ export default function Confetti({ active, onDone }) {
 
     raf = requestAnimationFrame(animate);
 
-    // cleanup after animation
+    // 🔥 auto destroy after ~4s
     const timeout = setTimeout(() => {
       setPieces([]);
-      onDone?.();
+      cancelAnimationFrame(raf);
     }, 4000);
 
     return () => {
       cancelAnimationFrame(raf);
       clearTimeout(timeout);
     };
-  }, [active]);
+  }, [trigger]);
 
-  if (!active) return null;
+  if (!pieces.length) return null;
 
   return (
     <div className="confetti-layer">
@@ -81,23 +85,24 @@ export default function Confetti({ active, onDone }) {
         <img
           key={p.id}
           src={CONFETTI_SRC}
-          alt="confetti"
+          alt=""
+          draggable={false}
           style={{
             position: 'fixed',
             left: 0,
             top: 0,
-            width: `${p.size}px`,
-            height: 'auto',
 
             transform: `
-              translate(${p.x}px, ${p.y}px)
+              translate3d(${p.x}px, ${p.y}px, 0)
               rotate(${p.rotation}deg)
             `,
+
+            width: `${p.size}px`,
+            height: 'auto',
 
             pointerEvents: 'none',
             zIndex: 9999
           }}
-          draggable={false}
         />
       ))}
     </div>
