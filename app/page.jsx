@@ -19,7 +19,7 @@ export default function Page() {
   const [nfts, setNfts] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const [confetti, setConfetti] = useState(false);
+  const [confettiTrigger, setConfettiTrigger] = useState(0);
   const [scene, setScene] = useState('landing'); // 'landing' | 'shop'
   const [transitioning, setTransitioning] = useState(false);
 
@@ -53,7 +53,7 @@ useEffect(() => {
       setActiveIndex(0);
 
       if (data && data.length > 0) {
-        setConfetti(true); // 🎉 TRIGGER
+        setConfettiTrigger(prev => prev + 1); // 🔥 TRIGGER
       }
     });
   }
@@ -109,8 +109,7 @@ useEffect(() => {
 
   return (
     <div className="viewport">
-
-      <Confetti active={confetti} onDone={() => setConfetti(false)} />
+      <Confetti trigger={confettiTrigger} />
       {/* 🎬 WRAPPER */}
 <div className="scene-wrapper">
 
@@ -665,11 +664,10 @@ object-fit: cover;
   position: fixed;
   inset: 0;
   pointer-events: none;
-
-  z-index: 2147483647; /* max safe */
-
-  isolation: isolate; /* 🔥 THIS BREAKS OUT OF STACKING ISSUES */
+  z-index: 9999;
+  overflow: hidden;
 }
+
       `}</style>
     </div>
   );
