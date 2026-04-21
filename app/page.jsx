@@ -651,6 +651,13 @@ object-fit: cover;
   0%,100% { transform: rotate(0deg); }
   50% { transform: rotate(1deg); }
 }
+
+.confetti-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
       `}</style>
     </div>
   );
