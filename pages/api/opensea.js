@@ -18,7 +18,7 @@ export default async function handler(req, res) {
       `https://api.opensea.io/api/v2/chain/polygon/account/${address}/nfts`,
       {
         headers: {
-          "X-API-KEY": process.env.DK_KHOGS_OPENSEA_API
+          "X-API-KEY": process.env.OPENSEA_API
         }
       }
     );
