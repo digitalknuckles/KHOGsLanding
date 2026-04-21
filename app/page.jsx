@@ -9,6 +9,7 @@ import { connectWallet, reconnectWallet, handleMobileWalletRedirect } from './li
 import { fetchNFTs } from './lib/opensea';
 import NPCManager from './components/NPCManager';
 import ShopScene from './components/ShopScene';
+import Confetti from './components/Confetti';
 //import ShopWalker from './components/ShopWalker';
 
 export default function Page() {
