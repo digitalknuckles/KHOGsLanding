@@ -18,6 +18,7 @@ export default function Page() {
   const [nfts, setNfts] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
+  const [confetti, setConfetti] = useState(false);
   const [scene, setScene] = useState('landing'); // 'landing' | 'shop'
   const [transitioning, setTransitioning] = useState(false);
 
@@ -30,6 +31,7 @@ useEffect(() => {
   window.addEventListener('resize', update);
 
   return () => window.removeEventListener('resize', update);
+  
 }, []);
   
   const [showDoorModal, setShowDoorModal] = useState(false);
@@ -43,15 +45,20 @@ useEffect(() => {
   }, []);
 
   // 🎯 NFT FETCH
-  useEffect(() => {
-    if (tab === 3 && wallet && nfts.length === 0) {
-      fetchNFTs(wallet).then((data) => {
-        setNfts(data || []);
-        setActiveIndex(0);
-      });
-    }
-  }, [tab, wallet]);
+useEffect(() => {
+  if (tab === 3 && wallet && nfts.length === 0) {
+    fetchNFTs(wallet).then((data) => {
+      setNfts(data || []);
+      setActiveIndex(0);
 
+      if (data && data.length > 0) {
+        setConfetti(true); // 🎉 TRIGGER
+      }
+    });
+  }
+}, [tab, wallet]);
+
+  
   // 🎮 SCALE ENGINE (FULL + CORRECT)
 useEffect(() => {
   function updateScale() {
@@ -102,6 +109,7 @@ useEffect(() => {
   return (
     <div className="viewport">
 
+      <Confetti active={confetti} onDone={() => setConfetti(false)} />
       {/* 🎬 WRAPPER */}
 <div className="scene-wrapper">
 
