@@ -665,7 +665,10 @@ object-fit: cover;
   position: fixed;
   inset: 0;
   pointer-events: none;
-  overflow: hidden;
+
+  z-index: 2147483647; /* max safe */
+
+  isolation: isolate; /* 🔥 THIS BREAKS OUT OF STACKING ISSUES */
 }
       `}</style>
     </div>
