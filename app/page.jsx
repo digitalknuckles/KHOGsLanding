@@ -428,20 +428,27 @@ html, body {
 
 /* 🎠 CARD */
 .card {
-  position:absolute;
-  bottom:120px;
-  left:20px;
-  width:260px;
-  max-width:80vw;
-  padding:16px;
-  border-radius:16px;
-  background:rgba(0,0,0,0.75);
-  color:white;
-  z-index:25;
+  position: absolute;
 
-  display:flex;
-  flex-direction:column;
-  gap:10px;
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -50%); /* perfect center */
+
+  width: 320px;
+  max-width: 90vw;
+
+  padding: 16px;
+  border-radius: 16px;
+
+  background: rgba(0,0,0,0.75);
+  color: white;
+
+  z-index: 25;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 
   backdrop-filter: blur(12px);
 }
